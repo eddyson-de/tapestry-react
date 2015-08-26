@@ -21,6 +21,7 @@ dependencies {
 That's it, now you can import modules written in (C)JSX. Just give them the `.(c)jsx` extension and they will be compiled to JavaScript automatically.
 
 ### `/META-INF/modules/app/react-test.cjsx`:
+```
 define ['t5/core/dom', 'react'], (dom, React)->
   HelloMessage = React.createClass
     render: -> <div>Hello {this.props.name}</div>
