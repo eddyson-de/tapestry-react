@@ -35,7 +35,7 @@ public class CJSXCompiler implements ResourceTransformer {
   }
 
   public CJSXCompiler(
-      @Path("classpath:de/eddyson/toolbox/services/impl/coffee-react-transform-standalone.js") final Resource compiler,
+      @Path("classpath:de/eddyson/tapestry/react/services/coffee-react-transform-standalone.js") final Resource compiler,
       final OperationTracker tracker, @Autobuild final CoffeeScriptCompiler coffeescritptCompiler) {
 
     this.coffeescritptCompiler = coffeescritptCompiler;

@@ -42,7 +42,10 @@ dependencies {
 
   testCompile "javax.servlet:servlet-api:2.5"
   testCompile "org.spockframework:spock-tapestry:$versions.spock"
+  
   testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
+  testRuntime "cglib:cglib-nodep:3.1"
+  testRuntime 'org.objenesis:objenesis:2.2'
 }
 
 jar {

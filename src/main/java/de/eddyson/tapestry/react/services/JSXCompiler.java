@@ -30,7 +30,7 @@ public class JSXCompiler implements ResourceTransformer {
   }
 
   public JSXCompiler(@Path("webjars:react:JSXTransformer.js") final Resource mainCompiler,
-      @Path("classpath:de/eddyson/toolbox/services/impl/jsx-compiler-wrapper.js") final Resource shim,
+      @Path("classpath:de/eddyson/tapestry/react/services/jsx-compiler-wrapper.js") final Resource shim,
       final OperationTracker tracker) {
 
     executorPool = new RhinoExecutorPool(tracker, Arrays.asList(mainCompiler, shim));
