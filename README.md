@@ -18,4 +18,4 @@ dependencies {
 
 ```
 
-That's it, now you can import modules written in (C)JSX. Just give them the '.(c)jsx' extension and they will be compiled to JavaScript automatically.
+That's it, now you can import modules written in (C)JSX. Just give them the `.(c)jsx` extension and they will be compiled to JavaScript automatically.
