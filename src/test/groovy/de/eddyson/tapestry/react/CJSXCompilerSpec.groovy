@@ -21,13 +21,10 @@ class CJSXCompilerSpec extends Specification {
     OperationTracker operationTracker = new OperationTrackerImpl(logger)
     CoffeeScriptCompiler coffeeScriptCompiler = Mock()
  
-    Resource compiler = new ClasspathResource("de/eddyson/tapestry/react/services/coffee-react-transform-standalone.js")
-
-    CJSXCompiler jsxCompiler = new CJSXCompiler(compiler, operationTracker, coffeeScriptCompiler)
+    CJSXCompiler jsxCompiler = new CJSXCompiler(operationTracker, coffeeScriptCompiler)
     def resource = new ClasspathResource("de/eddyson/tapestry/react/template.cjsx")
 
     expect:
-    compiler.exists()
     resource.exists()
 
     when:

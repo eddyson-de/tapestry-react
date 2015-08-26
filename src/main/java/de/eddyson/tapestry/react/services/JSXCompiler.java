@@ -14,6 +14,7 @@ import org.apache.tapestry5.internal.webresources.RhinoExecutor;
 import org.apache.tapestry5.internal.webresources.RhinoExecutorPool;
 import org.apache.tapestry5.ioc.OperationTracker;
 import org.apache.tapestry5.ioc.Resource;
+import org.apache.tapestry5.ioc.internal.util.ClasspathResource;
 import org.apache.tapestry5.ioc.internal.util.InternalUtils;
 import org.apache.tapestry5.services.assets.ResourceDependencies;
 import org.apache.tapestry5.services.assets.ResourceTransformer;
@@ -30,10 +31,9 @@ public class JSXCompiler implements ResourceTransformer {
   }
 
   public JSXCompiler(@Path("webjars:react:JSXTransformer.js") final Resource mainCompiler,
-      @Path("classpath:de/eddyson/tapestry/react/services/jsx-compiler-wrapper.js") final Resource shim,
       final OperationTracker tracker) {
-
-    executorPool = new RhinoExecutorPool(tracker, Arrays.asList(mainCompiler, shim));
+    executorPool = new RhinoExecutorPool(tracker, Arrays.<Resource> asList(mainCompiler,
+        new ClasspathResource("de/eddyson/tapestry/react/services/jsx-compiler-wrapper.js")));
   }
 
   private static String getString(final NativeObject object, final String key) {
