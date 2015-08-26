@@ -1,0 +1,50 @@
+description = "Use React together with Tapestry"
+
+group = "de.eddyson"
+version = "0.1.0-SNAPSHOT"
+
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+def versions= [
+  react: '0.13.3',
+  webjars: '0.7.0',
+  tapestry: '5.4-beta-35',
+  slf4j: '1.7.12',
+  
+  // test scopes
+  spock: '1.0-groovy-2.4'
+]
+
+repositories {
+  jcenter()
+}
+
+sourceCompatibility = '1.7'
+
+task sourceJar(type: Jar) {
+  dependsOn classes
+  classifier "sources"
+  from sourceSets.main.allSource
+}
+
+artifacts {
+  archives sourceJar
+}
+
+dependencies {
+  compile "org.slf4j:slf4j-api:$versions.slf4j"
+  compile "org.apache.tapestry:tapestry-core:$versions.tapestry"
+  compile "de.eddyson:tapestry-webjars:$versions.webjars"
+  compile "org.apache.tapestry:tapestry-webresources:$versions.tapestry"
+  
+  runtime "org.webjars:react:$versions.react"
+
+  testCompile "javax.servlet:servlet-api:2.5"
+  testCompile "org.spockframework:spock-tapestry:$versions.spock"
+  testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
+}
+
+jar {
+  manifest { attributes 'Tapestry-Module-Classes': 'de.eddyson.tapestry.react.ReactModule' }
+}
