@@ -22,14 +22,12 @@ class JSXCompilerSpec extends Specification {
 
 
     Resource compiler = new WebjarsResource("JSXTransformer.js", WebjarsModule.buildWebJarAssetLocator(), JSXCompiler.class.classLoader)
-    Resource shim = new ClasspathResource("de/eddyson/tapestry/react/services/jsx-compiler-wrapper.js")
 
-    JSXCompiler jsxCompiler = new JSXCompiler(compiler, shim, operationTracker)
+    JSXCompiler jsxCompiler = new JSXCompiler(compiler, operationTracker)
     def resource = new ClasspathResource("de/eddyson/tapestry/react/template.jsx")
 
     expect:
     compiler.exists()
-    shim.exists()
     resource.exists()
 
     when:
