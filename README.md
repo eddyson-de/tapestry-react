@@ -13,7 +13,7 @@ respositories {
 }
 
 dependencies {
-  runtime 'de.eddyson:tapestry-react:0.1.1'
+  runtime 'de.eddyson:tapestry-react:0.1.2'
 }
 
 ```
@@ -29,3 +29,33 @@ define ['t5/core/dom', 'react'], (dom, React)->
   React.render <HelloMessage name="John" />, mountNode
   return
 ```
+
+## Components
+You can also use the `ReactComponent` component to keep the components' code separate from the page code:
+
+### `/META-INF/modules/app/react/HelloMessage.cjsx`:
+```coffeescript
+define ['t5/core/dom', 'react'], (dom, React)->
+  React.createClass
+    render: -> <div>Hello {this.props.name}</div>
+
+```
+
+### `/org/example/app/pages/ReactDemo.tml`:
+```html
+<html title="React Demo Index"
+	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_4.xsd"
+	xmlns:r="tapestry-library:react">
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+			<r:reactcomponent module="app/react/HelloMessage" name="John"/>
+		</div>
+	</div>
+</html>
+```
+## Notes
+### Speeding things up in production
+Compiling templates can take some time, especially when using CJSX. Combined with minification, this can quickly lead to Require.js timeouts in production.  
+To speed things up, you can have the files pre-compiled and minified upon registry startup using https://github.com/eddyson-de/tapestry-minification-cache-warming.
+### Calling server-side code
+You will probably end up having a lot of React components that do not have an associated page class. If this is the case and you find yourself wanting a proper REST API rather than component- or page-level event handlers, have a look at https://github.com/tynamo/tapestry-resteasy.
