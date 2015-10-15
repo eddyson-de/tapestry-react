@@ -20,14 +20,10 @@ class JSXCompilerSpec extends Specification {
     Logger logger = LoggerFactory.getLogger(OperationTracker)
     OperationTracker operationTracker = new OperationTrackerImpl(logger)
 
-
-    Resource compiler = new ClasspathResource("de/eddyson/tapestry/react/services/browser.js")
-
-    JSXCompiler jsxCompiler = new JSXCompiler(compiler, operationTracker)
+    JSXCompiler jsxCompiler = new JSXCompiler( operationTracker)
     def resource = new ClasspathResource("de/eddyson/tapestry/react/template.jsx")
 
     expect:
-    compiler.exists()
     resource.exists()
 
     when:

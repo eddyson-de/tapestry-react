@@ -8,7 +8,6 @@ import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.tapestry5.ContentType;
-import org.apache.tapestry5.annotations.Path;
 import org.apache.tapestry5.internal.InternalConstants;
 import org.apache.tapestry5.internal.webresources.RhinoExecutor;
 import org.apache.tapestry5.internal.webresources.RhinoExecutorPool;
@@ -30,8 +29,8 @@ public class JSXCompiler implements ResourceTransformer {
     return InternalConstants.JAVASCRIPT_CONTENT_TYPE;
   }
 
-  public JSXCompiler(@Path("browser.js") final Resource mainCompiler, final OperationTracker tracker) {
-
+  public JSXCompiler(final OperationTracker tracker) {
+    Resource mainCompiler = new ClasspathResource("de/eddyson/tapestry/react/services/browser.js");
     executorPool = new RhinoExecutorPool(tracker, Arrays.<Resource> asList(mainCompiler,
         new ClasspathResource("de/eddyson/tapestry/react/services/jsx-compiler-wrapper.js")));
   }
