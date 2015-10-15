@@ -30,8 +30,8 @@ public class JSXCompiler implements ResourceTransformer {
     return InternalConstants.JAVASCRIPT_CONTENT_TYPE;
   }
 
-  public JSXCompiler(@Path("webjars:react:JSXTransformer.js") final Resource mainCompiler,
-      final OperationTracker tracker) {
+  public JSXCompiler(@Path("browser.js") final Resource mainCompiler, final OperationTracker tracker) {
+
     executorPool = new RhinoExecutorPool(tracker, Arrays.<Resource> asList(mainCompiler,
         new ClasspathResource("de/eddyson/tapestry/react/services/jsx-compiler-wrapper.js")));
   }

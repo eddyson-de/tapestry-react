@@ -22,10 +22,10 @@ public final class ReactModule {
 
   @Contribute(ModuleManager.class)
   public static void setupJSModules(final MappedConfiguration<String, JavaScriptModuleConfiguration> configuration,
-      // we need to qualify the js file because there are multiple matches for
-      // "react.js". Can probably be removed in a later version
-      @Path("webjars:react:0.13.3/react.js") final Resource react) {
+      @Path("webjars:react:react.js") final Resource react,
+      @Path("webjars:react:react-dom.js") final Resource reactDOM) {
     configuration.add("react", new JavaScriptModuleConfiguration(react));
+    configuration.add("react-dom", new JavaScriptModuleConfiguration(reactDOM));
   }
 
   @Contribute(StreamableResourceSource.class)

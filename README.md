@@ -13,20 +13,21 @@ respositories {
 }
 
 dependencies {
-  runtime 'de.eddyson:tapestry-react:0.1.2'
+  runtime 'de.eddyson:tapestry-react:0.2.0'
 }
 
 ```
 
-That's it, now you can import modules written in (C)JSX. Just give them the `.(c)jsx` extension and they will be compiled to JavaScript automatically.
+That's it, now you can import modules written in (C)JSX. Just give them the `.(c)jsx` extension and they will be compiled to JavaScript automatically.  
+**Note: CJSX transformation may not work with React 0.14 features.** 
 
 ### `/META-INF/modules/app/react-test.cjsx`:
 ```coffeescript
-define ['t5/core/dom', 'react'], (dom, React)->
+define ['t5/core/dom', 'react', 'react-dom'], (dom, React, ReactDOM)->
   HelloMessage = React.createClass
     render: -> <div>Hello {this.props.name}</div>
   mountNode = (dom 'example').element
-  React.render <HelloMessage name="John" />, mountNode
+  ReactDOM.render <HelloMessage name="John" />, mountNode
   return
 ```
 

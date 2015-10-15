@@ -21,7 +21,7 @@ class JSXCompilerSpec extends Specification {
     OperationTracker operationTracker = new OperationTrackerImpl(logger)
 
 
-    Resource compiler = new WebjarsResource("JSXTransformer.js", WebjarsModule.buildWebJarAssetLocator(), JSXCompiler.class.classLoader)
+    Resource compiler = new ClasspathResource("de/eddyson/tapestry/react/services/browser.js")
 
     JSXCompiler jsxCompiler = new JSXCompiler(compiler, operationTracker)
     def resource = new ClasspathResource("de/eddyson/tapestry/react/template.jsx")
@@ -33,9 +33,12 @@ class JSXCompilerSpec extends Specification {
     when:
     def result = jsxCompiler.transform(resource, null)
     then:
-    result.text == '''React.render(
-  React.createElement("h1", null, "Hello, world!"),
-  document.getElementById('example')
-);'''
+    result.text == ''''use strict';
+
+ReactDOM.render(React.createElement(
+  'h1',
+  null,
+  'Hello, world!'
+), document.getElementById('example'));'''
   }
 }
