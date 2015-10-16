@@ -58,8 +58,8 @@ jar {
 }
 
 bintray {
-    user = getProperty('bintrayUser')
-    key = getProperty('bintrayAPIKey')
+    user = { getProperty('bintrayUser') }
+    key = { getProperty('bintrayAPIKey') }
     configurations = ['archives']
     publish = true
     pkg {
