@@ -11,8 +11,7 @@ import org.slf4j.LoggerFactory
 
 import spock.lang.Specification
 import de.eddyson.tapestry.react.services.CJSXCompiler;
-import de.eddyson.tapestry.webjars.WebjarsModule
-
+ 
 class CJSXCompilerSpec extends Specification {
 
   def "Compile a CJSX template"(){

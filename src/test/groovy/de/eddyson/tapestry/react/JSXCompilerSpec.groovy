@@ -9,8 +9,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import de.eddyson.tapestry.react.services.JSXCompiler
-import de.eddyson.tapestry.webjars.WebjarsModule;
-import de.eddyson.tapestry.webjars.WebjarsResource;
 import spock.lang.Specification
 
 class JSXCompilerSpec extends Specification {
