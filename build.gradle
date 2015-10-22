@@ -48,6 +48,8 @@ dependencies {
 
   testCompile "javax.servlet:servlet-api:2.5"
   testCompile "org.spockframework:spock-tapestry:$versions.spock"
+  testCompile "org.apache.tapestry:tapestry-test-constants:$versions.tapestry"
+  
   
   testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
   testRuntime "cglib:cglib-nodep:3.1"
