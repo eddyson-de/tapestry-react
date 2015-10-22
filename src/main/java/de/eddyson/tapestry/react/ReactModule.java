@@ -48,6 +48,11 @@ public final class ReactModule {
             return IOUtils.toInputStream(alteredContent, StandardCharsets.UTF_8);
           }
         }
+
+        @Override
+        public String getFile() {
+          return "react-production.generated.js";
+        }
       };
     }
 

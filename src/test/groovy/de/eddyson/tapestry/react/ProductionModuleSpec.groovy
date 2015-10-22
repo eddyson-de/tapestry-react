@@ -1,6 +1,9 @@
 package de.eddyson.tapestry.react
 
-import org.apache.tapestry5.internal.InternalSymbols;
+import org.apache.tapestry5.SymbolConstants;
+import org.apache.tapestry5.annotations.InjectComponent;
+import org.apache.tapestry5.internal.InternalSymbols
+import org.apache.tapestry5.internal.services.assets.ResourceChangeTracker;
 import org.apache.tapestry5.internal.test.PageTesterContext
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.OperationTracker
@@ -12,7 +15,10 @@ import org.apache.tapestry5.ioc.internal.OperationTrackerImpl
 import org.apache.tapestry5.ioc.internal.util.ClasspathResource
 import org.apache.tapestry5.modules.AssetsModule;
 import org.apache.tapestry5.modules.TapestryModule
-import org.apache.tapestry5.services.ApplicationGlobals;
+import org.apache.tapestry5.services.ApplicationGlobals
+import org.apache.tapestry5.services.assets.StreamableResource
+import org.apache.tapestry5.services.assets.StreamableResourceProcessing;
+import org.apache.tapestry5.services.assets.StreamableResourceSource;
 import org.apache.tapestry5.services.javascript.ModuleManager
 import org.apache.tapestry5.webresources.modules.WebResourcesModule;
 import org.slf4j.Logger
@@ -20,23 +26,32 @@ import org.slf4j.LoggerFactory
 
 import de.eddyson.tapestry.react.services.JSXCompiler
 import de.eddyson.tapestry.webjars.WebjarsModule
-import spock.lang.Issue;
+import spock.lang.Issue
+import spock.lang.Shared;
 import spock.lang.Specification
 
-@SubModule([TapestryModule, ReactModule, AppNameModule, AssetsModule, WebjarsModule, WebResourcesModule])
+@SubModule([TapestryModule, ReactModule, TestModule, AssetsModule, WebjarsModule, WebResourcesModule])
 class ProductionModuleSpec extends Specification {
 
   @Inject
   private ModuleManager moduleManager
 
-
   @Inject
+  @Shared
   private ApplicationGlobals applicationGlobals
+  
+  @Inject
+  private StreamableResourceSource streamableResourceSource
+  
+  @Inject
+  private ResourceChangeTracker resourceChangeTracker
+  
+  def setupSpec(){
+    applicationGlobals.storeContext(new PageTesterContext("/test"));
+  }
 
   @Issue("#5")
   def "Development code is disabled in production"(){
-    setup:
-    applicationGlobals.storeContext(new PageTesterContext("/test"));
 
     when:
     Resource reactResource = moduleManager.findResourceForModule("react")
@@ -48,11 +63,22 @@ class ProductionModuleSpec extends Specification {
     !content.contains('"development')
   }
   
-  public static class AppNameModule {
+  @Issue("#5")
+  def "Generated production mode resource is available as a StreamableResource"(){
+    when:
+    Resource reactResource = moduleManager.findResourceForModule("react")
+    StreamableResource streamableResource = streamableResourceSource.getStreamableResource(reactResource, StreamableResourceProcessing.COMPRESSION_DISABLED, resourceChangeTracker)
+    then:
+    streamableResource != null
     
-        def contributeFactoryDefaults(MappedConfiguration configuration){
+  }
+  
+  public static class TestModule {
+    
+        def contributeApplicationDefaults(MappedConfiguration configuration){
           configuration.add(InternalSymbols.APP_NAME, "test")
           configuration.add("tapestry.app-package", "react")
+          configuration.add(SymbolConstants.MINIFICATION_ENABLED, false)
         }
       }
     
