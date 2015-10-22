@@ -11,3 +11,4 @@ gradle-app.setting
 /.project
 /.classpath
 /.settings/
+/node_modules/

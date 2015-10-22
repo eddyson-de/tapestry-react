@@ -1,5 +1,6 @@
 plugins {
     id "com.jfrog.bintray" version "1.4"
+    id "com.moowork.node" version "0.11"
 }
 
 description = "Use React together with Tapestry"
@@ -53,8 +54,21 @@ dependencies {
   testRuntime 'org.objenesis:objenesis:2.2'
 }
 
+task installCoffeeScript(type: NpmTask) {
+  def coffeeScriptVersion = '1.10.0'
+  args = ['install', "coffee-script@$coffeeScriptVersion", '--save-dev']
+}
+
+task compileCoffeeScript(type: NodeTask, dependsOn: installCoffeeScript) {
+  script = file('node_modules/.bin/coffee')
+  args = [ "-c", "-o", "${project.buildDir}/compiled-coffeescript", 'src/main/resources/META-INF/modules' ]
+}
+
 jar {
+  dependsOn compileCoffeeScript
   manifest { attributes 'Tapestry-Module-Classes': 'de.eddyson.tapestry.react.ReactModule' }
+  rootSpec.exclude 'META-INF/modules/**/*.coffee'
+  from("${project.buildDir}/compiled-coffeescript"){ into "META-INF/modules" }
 }
 
 bintray {
