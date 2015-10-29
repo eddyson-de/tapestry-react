@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_4.xsd"
+	xmlns:p="tapestry:parameter">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=9;IE=8" />
+
+		<title>${title}</title>
+		
+	</head>
+	<body>
+		<!-- start header -->
+		<div class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse"
+						data-target=".navbar-ex1-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+
+					<div page="index" class="navbar-brand"><t:pagelink page="index">Tapestry&nbsp;Extensions&nbsp;Test&nbsp;Application</t:pagelink>&nbsp;&rarr;&nbsp;${title}
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- end header -->
+		<!-- start page -->
+		<div class="container">
+
+			<t:body />
+
+
+		</div>
+		<!-- end page -->
+
+	</body>
+</html>

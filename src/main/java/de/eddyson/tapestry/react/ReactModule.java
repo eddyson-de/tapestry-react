@@ -68,6 +68,8 @@ public final class ReactModule {
 
     configuration.add("jsx",
         factory.createCompiler("text/javascript", "JSX", "JavaScript", jsxCompiler, CacheMode.NONE));
+    configuration.add("jsxm",
+        factory.createCompiler("text/javascript", "JSXM", "JavaScript", jsxCompiler, CacheMode.NONE));
     configuration.add("cjsx",
         factory.createCompiler("text/javascript", "CJSX", "JavaScript", cjsxCompiler, CacheMode.NONE));
 

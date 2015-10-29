@@ -53,9 +53,16 @@ public class JSXCompiler implements ResourceTransformer {
 
     RhinoExecutor executor = executorPool.get();
 
+    boolean isES6Module = false;
+    String fileName = source.getFile();
+    if (fileName != null && fileName.endsWith(".jsxm")) {
+      isES6Module = true;
+    }
+
     try {
 
-      NativeObject result = (NativeObject) executor.invokeFunction("compileJSX", content, source.toString());
+      NativeObject result = (NativeObject) executor.invokeFunction("compileJSX", content, source.toString(),
+          isES6Module);
 
       if (result.containsKey("exception")) {
         throw new RuntimeException(getString(result, "exception"));

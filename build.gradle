@@ -6,20 +6,22 @@ plugins {
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.2.4"
+version = "0.2.5-SNAPSHOT"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
 
 
 def versions= [
-  react: '0.14.0',
+  react: '0.14.1',
   webjars: '0.8.0',
   tapestry: '5.4-beta-35',
   slf4j: '1.7.12',
   
   // test scopes
-  spock: '1.0-groovy-2.4'
+  spock: '1.0-groovy-2.4',
+  selenium: '2.48.2'
+  
 ]
 
 repositories {
@@ -44,12 +46,12 @@ dependencies {
   compile "de.eddyson:tapestry-webjars:$versions.webjars"
   compile "org.apache.tapestry:tapestry-webresources:$versions.tapestry"
   
-  runtime "org.webjars:react:$versions.react"
+  runtime "org.webjars.bower:react:$versions.react"
 
   testCompile "javax.servlet:servlet-api:2.5"
   testCompile "org.spockframework:spock-tapestry:$versions.spock"
-  testCompile "org.apache.tapestry:tapestry-test-constants:$versions.tapestry"
-  
+  testCompile 'de.eddyson:tapestry-geb:0.21.0'
+  testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$versions.selenium"
   
   testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
   testRuntime "cglib:cglib-nodep:3.1"
@@ -71,6 +73,21 @@ jar {
   manifest { attributes 'Tapestry-Module-Classes': 'de.eddyson.tapestry.react.ReactModule' }
   rootSpec.exclude 'META-INF/modules/**/*.coffee'
   from("${project.buildDir}/compiled-coffeescript"){ into "META-INF/modules" }
+}
+
+tasks.withType(Test){
+  systemProperties["tapestry.service-reloading-enabled"] = "false"
+  systemProperties["tapestry.execution-mode"] = "test"
+  systemProperty 'webappLocation', 'src/test/webapp'
+  systemProperty 'jettyPort', 9040
+  enableAssertions = true
+}
+
+task runTestApp(type:JavaExec) {
+  main = 'org.apache.tapestry5.test.Jetty7Runner'
+  args "-d", "src/test/webapp/", "-p", "9040"
+  systemProperties["tapestry.execution-mode"] = "test"
+  classpath = configurations.testRuntime + sourceSets.test.output + sourceSets.main.output
 }
 
 bintray {

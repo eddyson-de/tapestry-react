@@ -1,0 +1,15 @@
+import React from "react"
+import ReactDOM from "react-dom"
+
+export default class Hello extends React.Component {
+
+  constructor(props){
+    super(props);  
+  }
+  
+  render(){
+    return (
+        <span>Hello {this.props.name}!</span>
+      )
+  }
+}

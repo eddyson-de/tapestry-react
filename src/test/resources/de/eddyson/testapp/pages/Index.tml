@@ -1,0 +1,12 @@
+<html xmlns:t="http://tapestry.apache.org/schema/tapestry_5_4.xsd"
+      t:type="Layout"
+      title="Index">
+  
+  <ul class="nav">
+  
+	  <li><t:pagelink page="ReactDemo">React Component Demo</t:pagelink></li>
+
+
+  </ul>
+  
+</html>
