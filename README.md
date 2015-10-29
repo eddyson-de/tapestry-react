@@ -13,7 +13,7 @@ respositories {
 }
 
 dependencies {
-  runtime 'de.eddyson:tapestry-react:0.2.4'
+  runtime 'de.eddyson:tapestry-react:0.2.6'
 }
 
 ```
@@ -36,7 +36,7 @@ You can also use the `ReactComponent` component to keep the components' code sep
 
 ### `/META-INF/modules/app/react/HelloMessage.cjsx`:
 ```coffeescript
-define ['t5/core/dom', 'react'], (dom, React)->
+define ['react'], (React)->
   React.createClass
     render: -> <div>Hello {this.props.name}</div>
 
@@ -54,6 +54,32 @@ define ['t5/core/dom', 'react'], (dom, React)->
 	</div>
 </html>
 ```
+
+## ECMAScript 6 modules => AMD
+If you want to write your classes as ES6 rather than AMD moudules, just use the `.jsxm` file extension to switch the transpiler to AMD output.
+
+### `/META-INF/modules/app/react/HelloMessage.jsxm`:
+```javascript
+import React from 'react'
+
+export default class HelloMessage extends React.Component {
+
+  constructor(props){
+    super(props);  
+  }
+  
+  render(){
+    return (
+      <div>Hello {this.props.name}!</div>
+    )
+  }
+}
+
+```
+
+## Demo?
+Unfortunately, there is no live demo available, but the test application can be examined by running `./gradlew runTestApp` and pointing your browser to `http://localhost:9040/`.
+
 ## Notes
 ### Speeding things up in production
 Compiling templates can take some time, especially when using CJSX. Combined with minification, this can quickly lead to Require.js timeouts in production.  
