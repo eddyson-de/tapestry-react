@@ -1,6 +1,7 @@
 package de.eddyson.tapestry.react.components;
 
 import org.apache.tapestry5.BindingConstants;
+import org.apache.tapestry5.ClientElement;
 import org.apache.tapestry5.ComponentResources;
 import org.apache.tapestry5.MarkupWriter;
 import org.apache.tapestry5.annotations.Parameter;
@@ -10,7 +11,7 @@ import org.apache.tapestry5.json.JSONObject;
 import org.apache.tapestry5.services.javascript.JavaScriptSupport;
 
 @SupportsInformalParameters
-public class ReactComponent {
+public class ReactComponent implements ClientElement {
 
   @Parameter(required = true, allowNull = false, defaultPrefix = BindingConstants.LITERAL)
   private String module;
@@ -26,10 +27,13 @@ public class ReactComponent {
 
   private String clientId;
 
-  void beginRender(final MarkupWriter writer) {
-    writer.element(elementName);
+  void setupRender() {
     clientId = javaScriptSupport.allocateClientId(componentResources);
-    writer.attributes("id", clientId);
+  }
+
+  boolean beginRender(final MarkupWriter writer) {
+    writer.element(elementName, "id", clientId);
+    return false;
   }
 
   void afterRender(final MarkupWriter writer) {
@@ -42,4 +46,8 @@ public class ReactComponent {
     javaScriptSupport.require("eddyson/react/components/reactcomponent").with(module, clientId, parameters);
   }
 
+  @Override
+  public String getClientId() {
+    return clientId;
+  }
 }
