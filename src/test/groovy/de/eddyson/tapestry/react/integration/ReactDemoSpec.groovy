@@ -6,10 +6,23 @@ import org.openqa.selenium.Keys
 
 class ReactDemoSpec extends JettyGebSpec {
  
-  def "Select some values"(){
+  def "Simple component test"(){
     given:
     to ReactDemo
     expect:
     hello.text().contains ('Hello John!')
+  }
+  
+  def "Unmount component inside Zone"(){
+    given:
+    to ReactDemo
+    expect:
+    mountedTalkativeComponent.displayed
+    when:
+    updateZone.click()
+    then:
+    waitFor {
+      ummountingTalkativeComponent.displayed
+    }
   }
 }

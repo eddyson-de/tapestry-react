@@ -1,0 +1,23 @@
+import React from "react"
+import alert from "t5/core/alert"
+
+export default class TalkativeComponent extends React.Component {
+
+  constructor(props){
+    super(props);  
+  }
+  
+  componentDidMount(){
+    alert({"message": "Mounted TalkativeComponent"});
+  }
+  
+  componentWillUnmount(){
+    alert({"message": "Unmounting TalkativeComponent"});
+  }
+  
+  render(){
+    return (
+      <span>I am a talkative component</span>
+    )
+  }
+}
