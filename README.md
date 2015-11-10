@@ -1,4 +1,6 @@
 # tapestry-react [![Build Status](https://travis-ci.org/eddyson-de/tapestry-react.svg?branch=master)](https://travis-ci.org/eddyson-de/tapestry-react)
+
+[![Join the chat at https://gitter.im/eddyson-de/tapestry-react](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eddyson-de/tapestry-react?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Use React (http://facebook.github.io/react/index.html) together with Tapestry (http://tapestry.apache.org/).
 
 This library provides basic integration for using JSX and CJSX templates with Tapestry.
