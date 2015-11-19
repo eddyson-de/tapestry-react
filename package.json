@@ -7,6 +7,9 @@
     
     "browserify": "latest",
     "coffee-script": "latest",
-    "derequire": "latest"
+    "derequire": "latest",
+    "minifyify": "latest",
+    "bundle-collapser": "latest",
+    "envify": "latest"
   }
 }

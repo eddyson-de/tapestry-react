@@ -6,7 +6,7 @@ plugins {
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.4.0"
+version = "0.4.1"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -80,7 +80,15 @@ task createBabelBrowserPackage(type: NodeTask, dependsOn: npmInstall) {
   outputs.file generatedCompiler
 
   script = file('node_modules/.bin/browserify')
-  args = ['src/main/resources/de/eddyson/tapestry/react/services/jsx-compiler-wrapper.js', '-s', 'Babel', '-o', generatedCompiler, '--plugin', 'derequire/plugin',  '-i', 'esprima-fb', '-i', 'through']
+  args = ['src/main/resources/de/eddyson/tapestry/react/services/jsx-compiler-wrapper.js',
+     '-s', 'Babel',
+     '-o', generatedCompiler,
+     '--plugin', 'derequire/plugin',
+     '--plugin', 'bundle-collapser/plugin',
+     '-t', '[', 'envify', 'purge', '--NODE_ENV', 'production', ']',
+     '-p', '[', 'minifyify', '--no-map', ']',
+     '-i', 'esprima-fb',
+     '-i', 'through']
   doFirst {
     file(generatedCompiler).parentFile.mkdirs()
   }
@@ -88,7 +96,7 @@ task createBabelBrowserPackage(type: NodeTask, dependsOn: npmInstall) {
     // rewrite the Resource to work around
     // https://github.com/babel/babel/issues/2839 and
     // https://github.com/mozilla/rhino/issues/153
-    file(generatedCompiler).text = file(generatedCompiler).text.replaceFirst(/\Qvar stack = new Error().stack.split("\n").slice(1).join("\n");\E/, 'var stack = "transforming JSX template";')
+    file(generatedCompiler).text = file(generatedCompiler).text.replaceFirst(/\Q(new Error).stack.split("\n").slice(1).join("\n")\E/, '"transforming JSX template"')
   
   }
 }
