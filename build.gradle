@@ -6,7 +6,7 @@ plugins {
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.4.1"
+version = "0.4.2"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -85,7 +85,7 @@ task createBabelBrowserPackage(type: NodeTask, dependsOn: npmInstall) {
      '-o', generatedCompiler,
      '--plugin', 'derequire/plugin',
      '--plugin', 'bundle-collapser/plugin',
-     '-t', '[', 'envify', 'purge', '--NODE_ENV', 'production', ']',
+     '-g', '[', 'envify', 'purge', '--NODE_ENV', 'production', ']',
      '-p', '[', 'minifyify', '--no-map', ']',
      '-i', 'esprima-fb',
      '-i', 'through']
