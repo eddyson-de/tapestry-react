@@ -46,9 +46,7 @@ dependencies {
   compile "de.eddyson:tapestry-webjars:$versions.webjars"
   compile "org.apache.tapestry:tapestry-webresources:$versions.tapestry"
   
-  runtime ("org.webjars.npm:react:$versions.react"){
-    transitive = false
-  }
+  runtime "org.webjars.bower:react:$versions.react"
 
   testCompile "javax.servlet:servlet-api:2.5"
   testCompile "org.spockframework:spock-tapestry:$versions.spock"
