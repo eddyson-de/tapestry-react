@@ -31,7 +31,8 @@ define ["react", "react-dom", "require", "t5/core/dom", "t5/core/events", "t5/co
   (module, clientId, parameters) ->
     element = document.getElementById clientId
     require [module], (componentClass)->
-      reactElement = React.createElement componentClass, parameters
+      
+      reactElement = React.createElement (if componentClass.__esModule then componentClass.default else componentClass), parameters
       reactComponent = ReactDOM.render reactElement, element
       unless reactComponent
         throw "Stateless components are not supported "

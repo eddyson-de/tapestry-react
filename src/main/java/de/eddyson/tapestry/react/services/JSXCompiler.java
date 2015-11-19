@@ -8,12 +8,12 @@ import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.tapestry5.ContentType;
+import org.apache.tapestry5.annotations.Path;
 import org.apache.tapestry5.internal.InternalConstants;
 import org.apache.tapestry5.internal.webresources.RhinoExecutor;
 import org.apache.tapestry5.internal.webresources.RhinoExecutorPool;
 import org.apache.tapestry5.ioc.OperationTracker;
 import org.apache.tapestry5.ioc.Resource;
-import org.apache.tapestry5.ioc.internal.util.ClasspathResource;
 import org.apache.tapestry5.ioc.internal.util.InternalUtils;
 import org.apache.tapestry5.services.assets.ResourceDependencies;
 import org.apache.tapestry5.services.assets.ResourceTransformer;
@@ -29,10 +29,9 @@ public class JSXCompiler implements ResourceTransformer {
     return InternalConstants.JAVASCRIPT_CONTENT_TYPE;
   }
 
-  public JSXCompiler(final OperationTracker tracker) {
-    Resource mainCompiler = new ClasspathResource("de/eddyson/tapestry/react/services/browser.js");
-    executorPool = new RhinoExecutorPool(tracker, Arrays.<Resource> asList(mainCompiler,
-        new ClasspathResource("de/eddyson/tapestry/react/services/jsx-compiler-wrapper.js")));
+  public JSXCompiler(final OperationTracker tracker,
+      @Path("de/eddyson/tapestry/react/services/browser.js") final Resource mainCompiler) {
+    executorPool = new RhinoExecutorPool(tracker, Arrays.<Resource> asList(mainCompiler));
   }
 
   private static String getString(final NativeObject object, final String key) {
