@@ -6,7 +6,7 @@ plugins {
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.4.0-SNAPSHOT"
+version = "0.4.0"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
