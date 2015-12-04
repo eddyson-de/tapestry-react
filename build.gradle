@@ -1,12 +1,12 @@
 plugins {
-    id "com.jfrog.bintray" version "1.4"
+    id "com.jfrog.bintray" version "1.5"
     id "com.moowork.node" version "0.11"
 }
 
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.4.2"
+version = "0.4.3"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -14,7 +14,7 @@ apply plugin: 'maven'
 
 def versions= [
   react: '0.14.3',
-  webjars: '0.9.2',
+  webjars: '0.9.3',
   tapestry: '5.4-rc-1',
   slf4j: '1.7.13',
   
@@ -94,9 +94,12 @@ task createBabelBrowserPackage(type: NodeTask, dependsOn: npmInstall) {
   }
   doLast {
     // rewrite the Resource to work around
-    // https://github.com/babel/babel/issues/2839 and
     // https://github.com/mozilla/rhino/issues/153
+
+	// new Error().stack pattern
     file(generatedCompiler).text = file(generatedCompiler).text.replaceFirst(/\Q(new Error).stack.split("\n").slice(1).join("\n")\E/, '"transforming JSX template"')
+    // try-catch pattern
+    file(generatedCompiler).text = file(generatedCompiler).text.replaceFirst(/\Qvoid 0;try{throw new Error}catch(a){r=a.stack.split("\n").slice(1).join("\n")}\E/, '"transforming JSX template";')
   
   }
 }
