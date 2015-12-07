@@ -6,7 +6,7 @@ plugins {
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.4.3"
+version = "0.4.4"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -96,8 +96,6 @@ task createBabelBrowserPackage(type: NodeTask, dependsOn: npmInstall) {
     // rewrite the Resource to work around
     // https://github.com/mozilla/rhino/issues/153
 
-	// new Error().stack pattern
-    file(generatedCompiler).text = file(generatedCompiler).text.replaceFirst(/\Q(new Error).stack.split("\n").slice(1).join("\n")\E/, '"transforming JSX template"')
     // try-catch pattern
     file(generatedCompiler).text = file(generatedCompiler).text.replaceFirst(/\Qvoid 0;try{throw new Error}catch(a){r=a.stack.split("\n").slice(1).join("\n")}\E/, '"transforming JSX template";')
   
