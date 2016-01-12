@@ -14,15 +14,20 @@ import org.apache.tapestry5.internal.webresources.RhinoExecutor;
 import org.apache.tapestry5.internal.webresources.RhinoExecutorPool;
 import org.apache.tapestry5.ioc.OperationTracker;
 import org.apache.tapestry5.ioc.Resource;
+import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.ioc.internal.util.InternalUtils;
 import org.apache.tapestry5.services.assets.ResourceDependencies;
 import org.apache.tapestry5.services.assets.ResourceTransformer;
 import org.mozilla.javascript.NativeObject;
 
+import de.eddyson.tapestry.react.ReactSymbols;
+
 public class JSXCompiler implements ResourceTransformer {
   private final static Charset UTF8 = StandardCharsets.UTF_8;
 
   private final RhinoExecutorPool executorPool;
+
+  private final boolean useColoredOutput;
 
   @Override
   public ContentType getTransformedContentType() {
@@ -30,7 +35,9 @@ public class JSXCompiler implements ResourceTransformer {
   }
 
   public JSXCompiler(final OperationTracker tracker,
-      @Path("de/eddyson/tapestry/react/services/browser.js") final Resource mainCompiler) {
+      @Path("de/eddyson/tapestry/react/services/browser.js") final Resource mainCompiler,
+      @Symbol(ReactSymbols.USE_COLORED_BABEL_OUTPUT) final boolean useColoredOutput) {
+    this.useColoredOutput = useColoredOutput;
     executorPool = new RhinoExecutorPool(tracker, Arrays.<Resource> asList(mainCompiler));
   }
 
@@ -61,7 +68,7 @@ public class JSXCompiler implements ResourceTransformer {
     try {
 
       NativeObject result = (NativeObject) executor.invokeFunction("compileJSX", content, source.toString(),
-          isES6Module);
+          isES6Module, useColoredOutput);
 
       if (result.containsKey("exception")) {
         throw new RuntimeException(getString(result, "exception"));

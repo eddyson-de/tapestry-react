@@ -17,6 +17,8 @@ import org.apache.tapestry5.ioc.Resource;
 import org.apache.tapestry5.ioc.annotations.Autobuild;
 import org.apache.tapestry5.ioc.annotations.Contribute;
 import org.apache.tapestry5.ioc.annotations.Symbol;
+import org.apache.tapestry5.ioc.services.FactoryDefaults;
+import org.apache.tapestry5.ioc.services.SymbolProvider;
 import org.apache.tapestry5.services.ComponentClassResolver;
 import org.apache.tapestry5.services.LibraryMapping;
 import org.apache.tapestry5.services.assets.ResourceTransformer;
@@ -67,17 +69,23 @@ public final class ReactModule {
     // contribution ids are file extensions:
 
     configuration.add("jsx",
-        factory.createCompiler("text/javascript", "JSX", "JavaScript", jsxCompiler, CacheMode.NONE));
+        factory.createCompiler("text/javascript", "JSX", "JavaScript", jsxCompiler, CacheMode.SINGLE_FILE));
     configuration.add("jsxm",
-        factory.createCompiler("text/javascript", "JSXM", "JavaScript", jsxCompiler, CacheMode.NONE));
+        factory.createCompiler("text/javascript", "JSXM", "JavaScript", jsxCompiler, CacheMode.SINGLE_FILE));
     configuration.add("cjsx",
-        factory.createCompiler("text/javascript", "CJSX", "JavaScript", cjsxCompiler, CacheMode.NONE));
+        factory.createCompiler("text/javascript", "CJSX", "JavaScript", cjsxCompiler, CacheMode.SINGLE_FILE));
 
   }
 
   @Contribute(ComponentClassResolver.class)
   public static void addLibraryMapping(final Configuration<LibraryMapping> configuration) {
     configuration.add(new LibraryMapping("react", "de.eddyson.tapestry.react"));
+  }
+
+  @FactoryDefaults
+  @Contribute(SymbolProvider.class)
+  public static void setupDefaultConfiguration(final MappedConfiguration<String, Object> configuration) {
+    configuration.add(ReactSymbols.USE_COLORED_BABEL_OUTPUT, true);
   }
 
   private ReactModule() {
