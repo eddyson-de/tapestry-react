@@ -16,13 +16,14 @@ import org.apache.tapestry5.ioc.internal.util.ClasspathResource
 import org.apache.tapestry5.modules.AssetsModule;
 import org.apache.tapestry5.modules.TapestryModule
 import org.apache.tapestry5.services.ApplicationGlobals
+import org.apache.tapestry5.services.Request;
+import org.apache.tapestry5.services.RequestGlobals;
 import org.apache.tapestry5.services.assets.StreamableResource
 import org.apache.tapestry5.services.assets.StreamableResourceProcessing;
 import org.apache.tapestry5.services.assets.StreamableResourceSource;
 import org.apache.tapestry5.services.javascript.ModuleManager
 import org.apache.tapestry5.webresources.modules.WebResourcesModule;
 import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 import de.eddyson.tapestry.react.services.JSXCompiler
 import de.eddyson.tapestry.webjars.WebjarsModule
@@ -41,13 +42,19 @@ class ProductionModuleSpec extends Specification {
   private ApplicationGlobals applicationGlobals
   
   @Inject
+  @Shared
+  private RequestGlobals requestGlobals
+
+  @Inject
   private StreamableResourceSource streamableResourceSource
-  
+
   @Inject
   private ResourceChangeTracker resourceChangeTracker
-  
+
   def setupSpec(){
     applicationGlobals.storeContext(new PageTesterContext("/test"));
+    Request request = Mock()
+    requestGlobals.storeRequestResponse(request, null)
   }
 
   @Issue("#5")
@@ -62,7 +69,7 @@ class ProductionModuleSpec extends Specification {
     then:
     !content.contains('"development')
   }
-  
+
   @Issue("#5")
   def "Generated production mode resource is available as a StreamableResource"(){
     when:
@@ -70,16 +77,14 @@ class ProductionModuleSpec extends Specification {
     StreamableResource streamableResource = streamableResourceSource.getStreamableResource(reactResource, StreamableResourceProcessing.COMPRESSION_DISABLED, resourceChangeTracker)
     then:
     streamableResource != null
-    
   }
-  
+
   public static class TestModule {
-    
-        def contributeApplicationDefaults(MappedConfiguration configuration){
-          configuration.add(InternalSymbols.APP_NAME, "test")
-          configuration.add("tapestry.app-package", "react")
-          configuration.add(SymbolConstants.MINIFICATION_ENABLED, false)
-        }
-      }
-    
+
+    def contributeApplicationDefaults(MappedConfiguration configuration){
+      configuration.add(InternalSymbols.APP_NAME, "test")
+      configuration.add("tapestry.app-package", "react")
+      configuration.add(SymbolConstants.MINIFICATION_ENABLED, false)
+    }
+  }
 }

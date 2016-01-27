@@ -6,7 +6,7 @@ plugins {
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.5.6"
+version = "0.6.0"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -16,7 +16,7 @@ def versions= [
   react: '0.14.6',
   webjars: '0.9.3',
   tapestry: '5.4.0',
-  slf4j: '1.7.13',
+  slf4j: '1.7.14',
   
   // test scopes
   spock: '1.0-groovy-2.4',

@@ -5,6 +5,7 @@
   <ul class="nav">
   
 	  <li><t:pagelink page="ReactDemo">React Component Demo</t:pagelink></li>
+	  <li><t:pagelink page="AlertDemo">Alert Component Demo</t:pagelink></li>
 
 
   </ul>

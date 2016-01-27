@@ -1,0 +1,37 @@
+import alert from 't5/core/alert';
+import ajax from 't5/core/ajax';
+import React from 'react';
+import reactUtils from '../../utils'
+
+const retrieveURL = reactUtils.createAPIURL('retrieve-alerts');
+const dismissURL = reactUtils.createAPIURL('dismiss-alerts');
+
+// TODO: regularly poll server for new alerts. May have to rewrite compoennt without t5/core/alert for that
+// so that persistent alerts do not get added again and again
+class Alerts extends React.Component {
+
+  constructor(props){
+    super(props)
+  }
+
+  componentDidMount(){
+    ajax(retrieveURL, {success: (response)=> {
+      const alerts = response.json.alerts;
+      alerts && alerts.forEach((item)=>{
+        alert(item);
+      });
+    }});
+  }
+
+  render(){
+    return (
+      <div data-container-type="alerts" data-dismiss-url={dismissURL} data-show-dismiss-all={this.props.showDismissAll || false}/>
+    );
+  }
+}
+
+Alerts.propTypes = {
+    showDismissAll: React.PropTypes.bool
+}
+
+export default Alerts;
