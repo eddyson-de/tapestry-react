@@ -126,7 +126,7 @@ public final class ReactModule {
     sb.append(");");
     final byte[] bytes = sb.toString().getBytes(StandardCharsets.UTF_8);
 
-    configuration.add("toolbox/application-config", new JavaScriptModuleConfiguration(new VirtualResource() {
+    configuration.add("eddyson/react/application-config", new JavaScriptModuleConfiguration(new VirtualResource() {
 
       @Override
       public InputStream openStream() throws IOException {
