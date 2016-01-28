@@ -10,9 +10,11 @@ class AlertDemo extends TapestryPage {
   static at = { title == "Alerts Component Demo" }
 
   static content = {
-    
+    helloTapestry { $('a', text: contains('Hello Tapestry')) }
+    helloWorld(required:false) { $('.alert').has(text: contains('Hello World!')) }
     sayHello { $('a', text: contains('Say hello')) }
-    alert(required:false) { $('.alert').has(text: contains('Hello Roger!')) }
-    dismiss(required:false) { alert.find('.close') }
+    helloRoger(required:false) { $('.alert').has(text: contains('Hello Roger!')) }
+    dismissHelloWorld(required:false) { helloWorld.find('.close') }
+    dismissHelloRoger(required:false) { helloRoger.find('.close') }
   }
 }

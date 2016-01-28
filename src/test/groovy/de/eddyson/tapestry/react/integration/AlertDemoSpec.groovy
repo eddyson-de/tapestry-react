@@ -12,34 +12,50 @@ class AlertDemoSpec extends JettyGebSpec {
   
   @Inject
   ApplicationStateManager applicationStateManager
- 
-  def "Say hello"(){
+  
+  def "Trigger alert with traditional event link"(){
     given:
     to AlertDemo
     expect:
-    !alert.displayed
+    !helloWorld.displayed
+    
     when:
-    sayHello.click(AlertDemo)
+    helloTapestry.click(AlertDemo)
     then:
     // TODO: this will need a custom ApplicationStatePersistenceStrategy
     // applicationStateManager.get(AlertStorage).alerts.size() == 1
-    alert.displayed
+    helloWorld.displayed
     when:
     driver.navigate().refresh();
     then:
     waitFor {
-      alert.displayed
+      helloWorld.displayed
     }
     when:
-    dismiss.click(AlertDemo)
+    dismissHelloWorld.click(AlertDemo)
     then:
     // TODO: this will need a custom ApplicationStatePersistenceStrategy
     // applicationStateManager.get(AlertStorage).alerts.size() == 0
-    !alert.displayed
+    !helloWorld.displayed
     when:
     driver.navigate().refresh();
     then:
-    !alert.displayed
+    !helloWorld.displayed
+  }
+ 
+  def "Trigger alert with async event link"(){
+    given:
+    to AlertDemo
+    expect:
+    !helloRoger.displayed
+    
+    when:
+    sayHello.click()
+    then:
+    // TODO: this will need a custom ApplicationStatePersistenceStrategy
+    // applicationStateManager.get(AlertStorage).alerts.size() == 1
+    helloRoger.displayed
+   
   }
   
   

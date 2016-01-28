@@ -11,8 +11,13 @@ public class AlertDemo {
   @Inject
   private AlertManager alertManager;
 
+  @OnEvent("hello")
+  void helloWorld() {
+    alertManager.alert(Duration.UNTIL_DISMISSED, Severity.INFO, "Hello World!");
+  }
+
   @OnEvent("addalert")
-  void updateZone() {
+  void helloRoger() {
     alertManager.alert(Duration.UNTIL_DISMISSED, Severity.INFO, "Hello Roger!");
   }
 

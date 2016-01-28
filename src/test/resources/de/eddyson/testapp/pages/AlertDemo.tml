@@ -4,7 +4,9 @@
 		<div class="col-sm-12">
 			<r:reactcomponent module="eddyson/react/components/react/Alerts" />
 		</div>
-		<t:eventlink event="addalert">Say hello Roger!</t:eventlink>
+		<r:reactcomponent module="eddyson/react/components/react/EventLink" event="hello">Hello Tapestry!</r:reactcomponent>
+		
+		<r:reactcomponent module="eddyson/react/components/react/EventLink" event="addalert" async="prop:true">Say hello Roger!</r:reactcomponent>
 
 	</div>
 </html>
