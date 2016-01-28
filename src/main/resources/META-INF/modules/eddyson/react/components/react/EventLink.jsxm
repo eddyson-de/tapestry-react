@@ -1,0 +1,34 @@
+import ajax from 't5/core/ajax';
+import React from 'react';
+import reactUtils from '../../utils'
+
+class EventLink extends React.Component {
+
+  constructor(props){
+    super(props)
+  }
+
+  handleClick(event){
+    if (this.props.async){
+      event.preventDefault();
+      ajax(event.currentTarget.href, {success: (response)=> {
+
+      }});
+    }
+  }
+
+  render(){
+    const url = reactUtils.createEventURI(this.props.event, ...(this.props.context || []));
+    return (
+      <a onClick={this.handleClick.bind(this)} href={url}>{this.props.children}</a>
+    );
+  }
+}
+
+EventLink.propTypes = {
+    event: React.PropTypes.string.isRequired,
+    context: React.PropTypes.array,
+    async: React.PropTypes.bool
+}
+
+export default EventLink;
