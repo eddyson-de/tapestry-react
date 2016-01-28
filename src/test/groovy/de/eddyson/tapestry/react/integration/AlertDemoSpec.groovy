@@ -54,7 +54,9 @@ class AlertDemoSpec extends JettyGebSpec {
     then:
     // TODO: this will need a custom ApplicationStatePersistenceStrategy
     // applicationStateManager.get(AlertStorage).alerts.size() == 1
-    helloRoger.displayed
+    waitFor {
+      helloRoger.displayed
+    }
    
   }
   
