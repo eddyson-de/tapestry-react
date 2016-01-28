@@ -26,7 +26,6 @@ import org.apache.tapestry5.ioc.services.FactoryDefaults;
 import org.apache.tapestry5.ioc.services.SymbolProvider;
 import org.apache.tapestry5.ioc.services.SymbolSource;
 import org.apache.tapestry5.json.JSONObject;
-import org.apache.tapestry5.services.BaseURLSource;
 import org.apache.tapestry5.services.ComponentClassResolver;
 import org.apache.tapestry5.services.LibraryMapping;
 import org.apache.tapestry5.services.MarkupRenderer;
@@ -106,7 +105,7 @@ public final class ReactModule {
   @Contribute(ModuleManager.class)
   public static void addApplicationConfigModule(
       final MappedConfiguration<String, JavaScriptModuleConfiguration> configuration, final SymbolSource symbolSource,
-      @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode, final BaseURLSource baseURLSource) {
+      @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode) {
 
     final JSONObject config = new JSONObject();
 
@@ -116,8 +115,6 @@ public final class ReactModule {
       String value = symbolSource.valueForSymbol(symbolName);
       config.put(symbolName, value);
     }
-    config.put("baseURL", baseURLSource.getBaseURL(false));
-    config.put("baseURL-secure", baseURLSource.getBaseURL(true));
     config.put("react-api-path", ReactAPIFilter.path);
 
     StringBuilder sb = new StringBuilder();
