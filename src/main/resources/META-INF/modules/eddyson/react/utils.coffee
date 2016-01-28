@@ -1,10 +1,10 @@
 define ['./application-config'], (config)->
 
-  pageBaseURL : document.documentElement.getAttribute 'data-page-base-url'
+  pageBaseURL = document.documentElement.getAttribute 'data-page-base-url'
 
+  pageBaseURL : pageBaseURL
   createAPIURL : (operation) ->
    "#{config['tapestry.context-path']}#{config['react-api-path']}?operation=#{operation}"
-
   createEventURI : (event, context...)->
     currentPath = window.location.pathname
     indexOfParams = currentPath.indexOf '?'
