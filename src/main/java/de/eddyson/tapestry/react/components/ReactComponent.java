@@ -33,7 +33,7 @@ public class ReactComponent implements ClientElement {
 
   boolean beginRender(final MarkupWriter writer) {
     writer.element(elementName, "id", clientId);
-    return false;
+    return true;
   }
 
   void afterRender(final MarkupWriter writer) {

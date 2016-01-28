@@ -25,15 +25,33 @@ define ["react", "react-dom", "require", "t5/core/dom", "t5/core/events", "t5/co
       else
         newElementsWithMountedComponents.push clientId
     elementsWithMountedComponents = newElementsWithMountedComponents
-    return  
+    return
     
+  convertNode = (node, key)->
+    if node.nodeType is 3
+      node.wholeText
+    else if node.nodeType is 1
+      children = (convertNode n, "c#{idx}" for n, idx in node.childNodes)
+      # TODO isn't there an easier way to copy a node's properties?
+      props = key: key
+      props[k] = node[k] for k in ['className', 'title']
+      props[a.nodeName] = a.value for a in node.attributes when (a.nodeName.indexOf 'data-') is 0
+      for key in node.style
+        value = node.style[key]
+        if value isnt ''
+          throw new Error("Cannot handle inline styles on children of ReactComponent.")
+      props.style = {}
+      props.style[key] = value for own key, value of node.style when value isnt ''
+
+      React.createElement node.nodeName, props, children
+    # TODO else?
 
   (module, clientId, parameters) ->
     element = document.getElementById clientId
     require [module], (componentClass)->
-      
-      reactElement = React.createElement (if componentClass.__esModule then componentClass.default else componentClass), parameters
+      children = (convertNode c, "c#{idx}" for c, idx in element.childNodes)
+      reactElement = React.createElement (if componentClass.__esModule then componentClass.default else componentClass), parameters, children
       reactComponent = ReactDOM.render reactElement, element
       unless reactComponent
-        throw "Stateless components are not supported "
+        throw new Error("Stateless components are not supported")
       elementsWithMountedComponents.push clientId
