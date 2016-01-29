@@ -15,6 +15,7 @@ public final class TestModule {
   @Contribute(SymbolProvider.class)
   @ApplicationDefaults
   public static void configureApplicationDefaults(final MappedConfiguration<String, Object> configuration) {
+    configuration.add(SymbolConstants.PRODUCTION_MODE, "false");
     configuration.add(SymbolConstants.JAVASCRIPT_INFRASTRUCTURE_PROVIDER, "jquery");
   }
 

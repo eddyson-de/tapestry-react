@@ -1,10 +1,10 @@
 import alert from 't5/core/alert';
 import ajax from 't5/core/ajax';
 import React from 'react';
-import reactUtils from '../../utils'
+import { createAPIURL } from '../../utils'
 
-const retrieveURL = reactUtils.createAPIURL('retrieve-alerts');
-const dismissURL = reactUtils.createAPIURL('dismiss-alerts');
+const retrieveURL = createAPIURL('retrieve-alerts');
+const dismissURL = createAPIURL('dismiss-alerts');
 
 // TODO: regularly poll server for new alerts. May have to rewrite compoennt without t5/core/alert for that
 // so that persistent alerts do not get added again and again

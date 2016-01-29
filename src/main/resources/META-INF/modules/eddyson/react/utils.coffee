@@ -12,7 +12,7 @@ define ['./application-config'], (config)->
     if indexOfParams > -1
       currentPath = currentPath.substring 0, indexOfParams
       params = currentPath.substring indexOfParams
-    activationContext = currentPath.substring this.pageBaseURL.length
+    activationContext = currentPath.substring pageBaseURL.length
     if (activationContext.indexOf '/') is 0
       activationContext = activationContext.substring 1
     if activationContext isnt ''
@@ -20,7 +20,7 @@ define ['./application-config'], (config)->
         params = '?t:ac=' + activationContext
       else
         params = '&t:ac=' + activationContext
-    eventUrl = this.pageBaseURL + ':' + event
+    eventUrl = pageBaseURL + ':' + event
     for item in context
       eventUrl = eventUrl + '/' + item
     eventUrl + params
