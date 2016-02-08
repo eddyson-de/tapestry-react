@@ -1,12 +1,12 @@
 plugins {
-    id "com.jfrog.bintray" version "1.5"
+    id "com.jfrog.bintray" version "1.6"
     id "com.moowork.node" version "0.11"
 }
 
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.6.4"
+version = "0.6.5"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -20,7 +20,7 @@ def versions= [
   
   // test scopes
   spock: '1.0-groovy-2.4',
-  selenium: '2.50.1'
+  selenium: '2.51.0'
   
 ]
 
@@ -50,7 +50,7 @@ dependencies {
 
   testCompile "javax.servlet:servlet-api:2.5"
   testCompile "org.spockframework:spock-tapestry:$versions.spock"
-  testCompile 'de.eddyson:tapestry-geb:0.24.0'
+  testCompile 'de.eddyson:tapestry-geb:0.25.0'
   testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$versions.selenium"
   
   testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
@@ -97,7 +97,7 @@ task createBabelBrowserPackage(type: NodeTask, dependsOn: npmInstall) {
     // https://github.com/mozilla/rhino/issues/153
 
     // try-catch pattern
-    file(generatedCompiler).text = file(generatedCompiler).text.replaceFirst(/\Qvoid 0;try{throw new Error}catch(a){r=a.stack.split("\n").slice(1).join("\n")}\E/, '"transforming JSX template";')
+    file(generatedCompiler).text = file(generatedCompiler).text.replaceFirst(/\Qvoid 0;try{throw new Error}catch(t){a=t.stack.split("\n").slice(1).join("\n")}\E/, '"transforming JSX template";')
   
   }
 }
