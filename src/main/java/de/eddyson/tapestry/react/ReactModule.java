@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.tapestry5.Link;
 import org.apache.tapestry5.MarkupWriter;
 import org.apache.tapestry5.SymbolConstants;
 import org.apache.tapestry5.annotations.Path;
@@ -154,7 +155,11 @@ public final class ReactModule {
         renderer.renderMarkup(writer);
         Element html = writer.getDocument().find("html");
         if (html != null) {
-          String url = pageRenderLinkSource.createPageRenderLinkWithContext(requestGlobals.getActivePageName()).toURI();
+          Link link = pageRenderLinkSource.createPageRenderLinkWithContext(requestGlobals.getActivePageName());
+          for (String parameterName : link.getParameterNames()) {
+            link = link.removeParameter(parameterName);
+          }
+          String url = link.toURI();
           html.attributes("data-page-base-url", url);
         }
       }
