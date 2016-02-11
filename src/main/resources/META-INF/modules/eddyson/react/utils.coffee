@@ -1,4 +1,4 @@
-define ['./application-config'], (config)->
+define ['./application-config','t5/core/console'], (config, console)->
 
   pageBaseURL = document.documentElement.getAttribute 'data-page-base-url'
 
@@ -7,20 +7,20 @@ define ['./application-config'], (config)->
    "#{config['tapestry.context-path']}#{config['react-api-path']}?operation=#{operation}"
   createEventURI : (event, context...)->
     currentPath = window.location.pathname
-    indexOfParams = currentPath.indexOf '?'
-    params = ''
-    if indexOfParams > -1
-      currentPath = currentPath.substring 0, indexOfParams
-      params = currentPath.substring indexOfParams
+    
     activationContext = currentPath.substring pageBaseURL.length
     if (activationContext.indexOf '/') is 0
       activationContext = activationContext.substring 1
+    else if activationContext.length isnt 0
+      console.warn "Unable to extract page activation context, base URL = #{pageBaseURL}, current path = #{currentPath}, please report a bug at https://github.com/eddyson-de/tapestry-react/issues."
+      activationContext = ''
+    queryParams = window.location.search
     if activationContext isnt ''
-      if params is ''
-        params = '?t:ac=' + activationContext
+      if queryParams is ''
+        queryParams = '?t:ac=' + activationContext
       else
-        params = '&t:ac=' + activationContext
-    eventUrl = pageBaseURL + ':' + event
+        queryParams = queryParams + '&t:ac=' + activationContext
+    eventUrl = pageBaseURL.replace /($|;)/, ":#{event}$1"
     for item in context
       eventUrl = eventUrl + '/' + item
-    eventUrl + params
+    eventUrl + queryParams
