@@ -13,7 +13,7 @@ define ["react", "react-dom", "require", "t5/core/dom", "t5/core/events", "t5/co
     return false
   
 
-  dom.onDocument events.zone.willUpdate, (event)->
+  zoneUpdateListener = (event)->
     newElementsWithMountedComponents = []
     for clientId in elementsWithMountedComponents
       element = (dom clientId)
@@ -26,6 +26,19 @@ define ["react", "react-dom", "require", "t5/core/dom", "t5/core/events", "t5/co
         newElementsWithMountedComponents.push clientId
     elementsWithMountedComponents = newElementsWithMountedComponents
     return
+
+  stopListener = dom.onDocument events.zone.willUpdate, zoneUpdateListener
+  windowUnloadListener = ->
+    console.info "Unload"
+    stopListener()
+    console.info "1"
+    elementsWithMountedComponents = null
+    console.info "2"
+    window.removeEventListener 'unload', windowUnloadListener
+    console.info "3"
+    return
+
+  window.addEventListener 'unload', windowUnloadListener
     
   convertNode = (node, key)->
     if node.nodeType is 3
