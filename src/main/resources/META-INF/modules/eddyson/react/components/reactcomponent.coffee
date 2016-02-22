@@ -29,13 +29,9 @@ define ["react", "react-dom", "require", "t5/core/dom", "t5/core/events", "t5/co
 
   stopListener = dom.onDocument events.zone.willUpdate, zoneUpdateListener
   windowUnloadListener = ->
-    console.info "Unload"
     stopListener()
-    console.info "1"
     elementsWithMountedComponents = null
-    console.info "2"
     window.removeEventListener 'unload', windowUnloadListener
-    console.info "3"
     return
 
   window.addEventListener 'unload', windowUnloadListener
