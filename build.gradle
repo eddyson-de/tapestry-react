@@ -6,7 +6,7 @@ plugins {
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.6.11"
+version = "0.6.12"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -16,7 +16,7 @@ def versions= [
   react: '0.14.7',
   webjars: '0.9.3',
   tapestry: '5.4.0',
-  slf4j: '1.7.16',
+  slf4j: '1.7.18',
   
   // test scopes
   spock: '1.0-groovy-2.4',
@@ -54,7 +54,7 @@ dependencies {
   testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$versions.selenium"
   
   testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
-  testRuntime "cglib:cglib-nodep:3.2.0"
+  testRuntime "cglib:cglib-nodep:3.2.1"
   testRuntime 'org.objenesis:objenesis:2.2'
 }
 
