@@ -21,7 +21,7 @@ dependencies {
 ```
 
 That's it, now you can import modules written in (C)JSX. Just give them the `.(c)jsx` extension and they will be compiled to JavaScript automatically.  
-**Note: CJSX transformation may not work with React 0.14 features.** 
+**Note: CJSX transformation may not work with React 0.14 and/or React 15 features.** 
 
 ### `/META-INF/modules/app/react-test.cjsx`:
 ```coffeescript
@@ -88,3 +88,49 @@ Compiling templates can take some time, especially when using CJSX. Combined wit
 To speed things up, you can have the files pre-compiled and minified upon registry startup using https://github.com/eddyson-de/tapestry-minification-cache-warming.
 ### Calling server-side code
 You will probably end up having a lot of React components that do not have an associated page class. If this is the case and you find yourself wanting a proper REST API rather than component- or page-level event handlers, have a look at https://github.com/tynamo/tapestry-resteasy.
+
+## React 15
+There is an RC for `tapestry-react` available (currently 0.7.0-rc-4) which ships with a React 15 RC. Use it at your own risk.  
+### Known issues
+If you use this package, chances are high that you also use https://github.com/react-bootstrap/react-bootstrap with https://github.com/eddyson-de/tapestry-webjars.  
+If you do, you need to pull in the fix for https://github.com/react-bootstrap/react-bootstrap/issues/1686 (https://github.com/jquense/uncontrollable/pull/10). You can hack the module resource in-place by changing your module contribution from
+```
+Contribute(ModuleManager.class)
+public static void setupJSModules(final MappedConfiguration<String, JavaScriptModuleConfiguration> configuration,
+    @Path("webjars:react-bootstrap:dist/react-bootstrap.js") final Resource reactBootstrap) {
+    configuration.add("react-bootstrap", reactBootstrap);
+}
+```
+to
+```
+Contribute(ModuleManager.class)
+public static void setupJSModules(final MappedConfiguration<String, JavaScriptModuleConfiguration> configuration,
+    @Path("webjars:react-bootstrap:dist/react-bootstrap.js") final Resource reactBootstrap) {
+    configuration.add("react-bootstrap", new JavaScriptModuleConfiguration(new VirtualResource() {
+
+      @Override
+      public InputStream openStream() throws IOException {
+        try (InputStream reactBootstrapIs = reactBootstrap.openStream()) {
+          String content = IOUtils.toString(reactBootstrapIs, StandardCharsets.UTF_8);
+          // apply https://github.com/jquense/uncontrollable/pull/10
+          content = content.replace("version[0] === 0 && version[1] >= 13",
+              "version[0] >= 15 || (version[0] === 0 && version[1] >= 13)");
+          return new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
+        }
+      }
+
+      @Override
+      public String getFile() {
+        return "react-bootstrap-with-workaround.generated.js";
+      }
+
+      @Override
+      public URL toURL() {
+        return null;
+      }
+
+    }));
+}
+```
+. Just remember to change it back when a compatible version has been released.
+
