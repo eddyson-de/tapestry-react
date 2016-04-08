@@ -15,7 +15,7 @@ respositories {
 }
 
 dependencies {
-  runtime 'de.eddyson:tapestry-react:0.6.12'
+  runtime 'de.eddyson:tapestry-react:0.7.0'
 }
 
 ```
@@ -88,6 +88,3 @@ Compiling templates can take some time, especially when using CJSX. Combined wit
 To speed things up, you can have the files pre-compiled and minified upon registry startup using https://github.com/eddyson-de/tapestry-minification-cache-warming.
 ### Calling server-side code
 You will probably end up having a lot of React components that do not have an associated page class. If this is the case and you find yourself wanting a proper REST API rather than component- or page-level event handlers, have a look at https://github.com/tynamo/tapestry-resteasy.
-
-## React 15
-There is an RC for `tapestry-react` available (currently 0.7.0-rc-4) which ships with a React 15 RC. Use it at your own risk.  
