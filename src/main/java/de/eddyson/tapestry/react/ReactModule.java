@@ -42,7 +42,7 @@ import org.apache.tapestry5.services.javascript.ModuleManager;
 
 import de.eddyson.tapestry.react.requestfilters.ReactAPIFilter;
 import de.eddyson.tapestry.react.services.CJSXCompiler;
-import de.eddyson.tapestry.react.services.JSXCompiler;
+import de.eddyson.tapestry.react.services.BabelCompiler;
 
 public final class ReactModule {
 
@@ -79,14 +79,20 @@ public final class ReactModule {
 
   @Contribute(StreamableResourceSource.class)
   public static void provideCompilers(final MappedConfiguration<String, ResourceTransformer> configuration,
-      final ResourceTransformerFactory factory, @Autobuild final JSXCompiler jsxCompiler,
+      final ResourceTransformerFactory factory, @Autobuild final BabelCompiler jsxCompiler,
       @Autobuild final CJSXCompiler cjsxCompiler) {
     // contribution ids are file extensions:
 
+    // regular module with React support
     configuration.add("jsx",
         factory.createCompiler("text/javascript", "JSX", "JavaScript", jsxCompiler, CacheMode.SINGLE_FILE));
+    // ES6 module with React support
     configuration.add("jsxm",
         factory.createCompiler("text/javascript", "JSXM", "JavaScript", jsxCompiler, CacheMode.SINGLE_FILE));
+    // ES6 module
+    configuration.add("jsm",
+        factory.createCompiler("text/javascript", "JSXM", "JavaScript", jsxCompiler, CacheMode.SINGLE_FILE));
+    // regular CoffeeScript module with React support
     configuration.add("cjsx",
         factory.createCompiler("text/javascript", "CJSX", "JavaScript", cjsxCompiler, CacheMode.SINGLE_FILE));
 

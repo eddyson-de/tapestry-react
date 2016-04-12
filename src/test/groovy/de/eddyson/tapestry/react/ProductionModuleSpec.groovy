@@ -25,7 +25,7 @@ import org.apache.tapestry5.services.javascript.ModuleManager
 import org.apache.tapestry5.webresources.modules.WebResourcesModule;
 import org.slf4j.Logger
 
-import de.eddyson.tapestry.react.services.JSXCompiler
+import de.eddyson.tapestry.react.services.BabelCompiler
 import de.eddyson.tapestry.webjars.WebjarsModule
 import spock.lang.Issue
 import spock.lang.Shared;

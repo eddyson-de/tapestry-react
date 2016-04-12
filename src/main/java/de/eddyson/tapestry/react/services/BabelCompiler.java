@@ -22,7 +22,7 @@ import org.mozilla.javascript.NativeObject;
 
 import de.eddyson.tapestry.react.ReactSymbols;
 
-public class JSXCompiler implements ResourceTransformer {
+public class BabelCompiler implements ResourceTransformer {
   private final static Charset UTF8 = StandardCharsets.UTF_8;
 
   private final RhinoExecutorPool executorPool;
@@ -34,7 +34,7 @@ public class JSXCompiler implements ResourceTransformer {
     return InternalConstants.JAVASCRIPT_CONTENT_TYPE;
   }
 
-  public JSXCompiler(final OperationTracker tracker,
+  public BabelCompiler(final OperationTracker tracker,
       @Path("de/eddyson/tapestry/react/services/browser.js") final Resource mainCompiler,
       @Symbol(ReactSymbols.USE_COLORED_BABEL_OUTPUT) final boolean useColoredOutput) {
     this.useColoredOutput = useColoredOutput;
@@ -60,15 +60,31 @@ public class JSXCompiler implements ResourceTransformer {
     RhinoExecutor executor = executorPool.get();
 
     boolean isES6Module = false;
+    boolean withReact = false;
     String fileName = source.getFile();
-    if (fileName != null && fileName.endsWith(".jsxm")) {
-      isES6Module = true;
+    if (fileName != null) {
+      int idx = fileName.lastIndexOf('.');
+      if (idx >= -1) {
+        String extension = fileName.substring(idx + 1);
+        switch (extension) {
+        case "jsm":
+          isES6Module = true;
+          break;
+        case "jsxm":
+          isES6Module = true;
+          withReact = true;
+          break;
+        case "jsx":
+          withReact = true;
+          break;
+        }
+      }
     }
 
     try {
 
       NativeObject result = (NativeObject) executor.invokeFunction("compileJSX", content, source.toString(),
-          isES6Module, useColoredOutput);
+          isES6Module, useColoredOutput, withReact);
 
       if (result.containsKey("exception")) {
         throw new RuntimeException(getString(result, "exception"));

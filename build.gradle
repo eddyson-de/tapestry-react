@@ -6,7 +6,7 @@ plugins {
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.7.1"
+version = "0.7.2"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -76,11 +76,11 @@ def generatedCompiler = "$generatedJavaScriptDir/de/eddyson/tapestry/react/servi
 
 task createBabelBrowserPackage(type: NodeTask, dependsOn: npmInstall) {
   inputs.property 'version', versions.babel
-  inputs.file "src/main/resources/de/eddyson/tapestry/react/services/jsx-compiler-wrapper.js"
+  inputs.file "src/main/resources/de/eddyson/tapestry/react/services/babel-compiler-wrapper.js"
   outputs.file generatedCompiler
 
   script = file('node_modules/.bin/browserify')
-  args = ['src/main/resources/de/eddyson/tapestry/react/services/jsx-compiler-wrapper.js',
+  args = ['src/main/resources/de/eddyson/tapestry/react/services/babel-compiler-wrapper.js',
      '-s', 'Babel',
      '-o', generatedCompiler,
      '--plugin', 'derequire/plugin',
