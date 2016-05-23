@@ -6,14 +6,14 @@ plugins {
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.7.7"
+version = "0.7.8"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
 
 
 def versions= [
-  react: '15.0.2',
+  react: '15.1.0',
   webjars: '0.9.4',
   tapestry: '5.4.1',
   slf4j: '1.7.21',
@@ -55,7 +55,7 @@ dependencies {
   
   testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
   testRuntime "cglib:cglib-nodep:3.2.2"
-  testRuntime 'org.objenesis:objenesis:2.3'
+  testRuntime 'org.objenesis:objenesis:2.4'
 }
 
 def compiledCoffeeScriptDir = "${project.buildDir}/compiled-coffeescript"
