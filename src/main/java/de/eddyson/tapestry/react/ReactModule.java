@@ -18,6 +18,7 @@ import org.apache.tapestry5.internal.webresources.CacheMode;
 import org.apache.tapestry5.internal.webresources.ResourceTransformerFactory;
 import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.MappedConfiguration;
+import org.apache.tapestry5.ioc.ObjectLocator;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.Resource;
 import org.apache.tapestry5.ioc.annotations.Autobuild;
@@ -39,12 +40,17 @@ import org.apache.tapestry5.services.assets.ResourceTransformer;
 import org.apache.tapestry5.services.assets.StreamableResourceSource;
 import org.apache.tapestry5.services.javascript.JavaScriptModuleConfiguration;
 import org.apache.tapestry5.services.javascript.ModuleManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.eddyson.tapestry.react.requestfilters.ReactAPIFilter;
-import de.eddyson.tapestry.react.services.CJSXCompiler;
 import de.eddyson.tapestry.react.services.BabelCompiler;
+import de.eddyson.tapestry.react.services.CJSXCompiler;
+import de.eddyson.tapestry.react.services.NodeBabelCompiler;
 
 public final class ReactModule {
+
+  private final static Logger logger = LoggerFactory.getLogger(ReactModule.class);
 
   @Contribute(ModuleManager.class)
   public static void setupJSModules(final MappedConfiguration<String, JavaScriptModuleConfiguration> configuration,
@@ -79,9 +85,25 @@ public final class ReactModule {
 
   @Contribute(StreamableResourceSource.class)
   public static void provideCompilers(final MappedConfiguration<String, ResourceTransformer> configuration,
-      final ResourceTransformerFactory factory, @Autobuild final BabelCompiler jsxCompiler,
-      @Autobuild final CJSXCompiler cjsxCompiler) {
+      final ResourceTransformerFactory factory, final ObjectLocator objectLocator,
+      @Autobuild final CJSXCompiler cjsxCompiler,
+      @Symbol(ReactSymbols.USE_NODE_IF_AVAILABLE) final boolean useNodeIfAvailable)
+          throws InterruptedException, IOException {
     // contribution ids are file extensions:
+
+    boolean useNodeBasedCompiler = false;
+    if (useNodeIfAvailable) {
+      ProcessBuilder pb = new ProcessBuilder("node", "-v");
+      int exitCode = pb.start().waitFor();
+
+      useNodeBasedCompiler = exitCode == 0;
+      if (exitCode != 0) {
+        logger.warn("Failed to call node executable, make sure it is on the PATH. Falling back to Rhino compiler.");
+      }
+
+    }
+    ResourceTransformer jsxCompiler = useNodeBasedCompiler ? objectLocator.autobuild(NodeBabelCompiler.class)
+        : objectLocator.autobuild(BabelCompiler.class);
 
     // regular module with React support
     configuration.add("jsx",
@@ -107,6 +129,7 @@ public final class ReactModule {
   @Contribute(SymbolProvider.class)
   public static void setupDefaultConfiguration(final MappedConfiguration<String, Object> configuration) {
     configuration.add(ReactSymbols.USE_COLORED_BABEL_OUTPUT, true);
+    configuration.add(ReactSymbols.USE_NODE_IF_AVAILABLE, true);
   }
 
   @Contribute(ModuleManager.class)
