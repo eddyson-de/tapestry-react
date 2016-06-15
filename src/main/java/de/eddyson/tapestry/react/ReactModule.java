@@ -11,7 +11,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.tapestry5.Link;
 import org.apache.tapestry5.MarkupWriter;
 import org.apache.tapestry5.SymbolConstants;
-import org.apache.tapestry5.annotations.Path;
 import org.apache.tapestry5.dom.Element;
 import org.apache.tapestry5.internal.util.VirtualResource;
 import org.apache.tapestry5.internal.webresources.CacheMode;
@@ -28,6 +27,7 @@ import org.apache.tapestry5.ioc.services.FactoryDefaults;
 import org.apache.tapestry5.ioc.services.SymbolProvider;
 import org.apache.tapestry5.ioc.services.SymbolSource;
 import org.apache.tapestry5.json.JSONObject;
+import org.apache.tapestry5.services.AssetSource;
 import org.apache.tapestry5.services.ComponentClassResolver;
 import org.apache.tapestry5.services.LibraryMapping;
 import org.apache.tapestry5.services.MarkupRenderer;
@@ -54,18 +54,20 @@ public final class ReactModule {
 
   @Contribute(ModuleManager.class)
   public static void setupJSModules(final MappedConfiguration<String, JavaScriptModuleConfiguration> configuration,
-      @Path("webjars:react:react.js") final Resource react, @Path("webjars:react:react-dom.js") final Resource reactDOM,
-      @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode) {
+      final AssetSource assetSource, @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode,
+      @Symbol(ReactSymbols.REACT_ASSET_PATH) final String reactAssetPath,
+      @Symbol(ReactSymbols.REACT_DOM_ASSET_PATH) final String reactDomAssetPath) {
 
-    Resource reactResource = react;
+    Resource reactResource = assetSource.resourceForPath(reactAssetPath);
     if (productionMode) {
       // issue #5
+      final Resource reactResourceRef = reactResource;
       final Pattern development = Pattern.compile(Pattern.quote("\"development\" !== 'production'"));
       reactResource = new VirtualResource() {
 
         @Override
         public InputStream openStream() throws IOException {
-          try (InputStream reactResourceStream = react.openStream()) {
+          try (InputStream reactResourceStream = reactResourceRef.openStream()) {
             String content = IOUtils.toString(reactResourceStream, StandardCharsets.UTF_8);
             String alteredContent = development.matcher(content).replaceAll("false");
             return IOUtils.toInputStream(alteredContent, StandardCharsets.UTF_8);
@@ -80,7 +82,7 @@ public final class ReactModule {
     }
 
     configuration.add("react", new JavaScriptModuleConfiguration(reactResource));
-    configuration.add("react-dom", new JavaScriptModuleConfiguration(reactDOM));
+    configuration.add("react-dom", new JavaScriptModuleConfiguration(assetSource.resourceForPath(reactDomAssetPath)));
   }
 
   @Contribute(StreamableResourceSource.class)
@@ -130,6 +132,8 @@ public final class ReactModule {
   public static void setupDefaultConfiguration(final MappedConfiguration<String, Object> configuration) {
     configuration.add(ReactSymbols.USE_COLORED_BABEL_OUTPUT, true);
     configuration.add(ReactSymbols.USE_NODE_IF_AVAILABLE, true);
+    configuration.add(ReactSymbols.REACT_ASSET_PATH, "webjars:react:$version/react.js");
+    configuration.add(ReactSymbols.REACT_DOM_ASSET_PATH, "webjars:react:$version/react:react-dom.js");
   }
 
   @Contribute(ModuleManager.class)
