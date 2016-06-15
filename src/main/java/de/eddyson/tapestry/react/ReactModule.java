@@ -133,7 +133,7 @@ public final class ReactModule {
     configuration.add(ReactSymbols.USE_COLORED_BABEL_OUTPUT, true);
     configuration.add(ReactSymbols.USE_NODE_IF_AVAILABLE, true);
     configuration.add(ReactSymbols.REACT_ASSET_PATH, "webjars:react:$version/react.js");
-    configuration.add(ReactSymbols.REACT_DOM_ASSET_PATH, "webjars:react:$version/react:react-dom.js");
+    configuration.add(ReactSymbols.REACT_DOM_ASSET_PATH, "webjars:react:$version/react-dom.js");
   }
 
   @Contribute(ModuleManager.class)
