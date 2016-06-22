@@ -503,7 +503,14 @@ Ardagryd.defaultProps = {
 Ardagryd.propTypes = {
     objects: React.PropTypes.arrayOf(React.PropTypes.object),
     config: React.PropTypes.object.isRequired,
-    columns: React.PropTypes.object.isRequired,
+    columns: React.PropTypes.objectOf(React.PropTypes.shape({
+      displayValueGetter: React.PropTypes.func,
+      id: React.PropTypes.bool,
+      label: React.PropTypes.string,
+      order: React.PropTypes.number,
+      hideTools: React.PropTypes.bool,
+      sortable: React.PropTypes.bool
+    })).isRequired,
     dispatch: React.PropTypes.func.isRequired
 };
 
