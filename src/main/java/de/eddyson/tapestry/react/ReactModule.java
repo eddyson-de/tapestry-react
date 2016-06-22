@@ -93,18 +93,22 @@ public final class ReactModule {
           throws InterruptedException, IOException {
     // contribution ids are file extensions:
 
-    boolean useNodeBasedCompiler = false;
+    boolean canUseNode = false;
     if (useNodeIfAvailable) {
-      ProcessBuilder pb = new ProcessBuilder("node", "-v");
-      int exitCode = pb.start().waitFor();
+      try {
+        ProcessBuilder pb = new ProcessBuilder("node", "-v");
+        int exitCode = pb.start().waitFor();
 
-      useNodeBasedCompiler = exitCode == 0;
-      if (exitCode != 0) {
+        if (exitCode == 0) {
+          canUseNode = true;
+        } else {
+          logger.warn("Received exit code {} from call to node executable, falling back to Rhino compiler.");
+        }
+      } catch (IOException e) {
         logger.warn("Failed to call node executable, make sure it is on the PATH. Falling back to Rhino compiler.");
       }
-
     }
-    ResourceTransformer jsxCompiler = useNodeBasedCompiler ? objectLocator.autobuild(NodeBabelCompiler.class)
+    ResourceTransformer jsxCompiler = canUseNode ? objectLocator.autobuild(NodeBabelCompiler.class)
         : objectLocator.autobuild(BabelCompiler.class);
 
     // regular module with React support
