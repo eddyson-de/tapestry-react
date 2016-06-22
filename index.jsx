@@ -3,7 +3,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Grid} from './Ardagryd';
 import data from './testData'
-import ObjectEditor from './ObjectEditor'
 import 'react-select/dist/react-select.css';
 
 
@@ -39,67 +38,5 @@ export class App extends React.Component {
 	}
 }
 
-export class EditorTest extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {object: {
-      "name": "Vern Schuster Dr.",
-      "username": "Delores.Kerluke62",
-      "email": "Burnice_Kiehn87@yahoo.com",
-      "male": true,
-      "address": {
-        "street": "edblvd",
-        "suite": "Suite 381",
-        "city": "Raynor land",
-        "zipcode": "61031",
-        "geo": {
-          "lat": "-45.3177",
-          "lng": "177.4623"
-        }
-      },
-      "phone": "1-544-246-0502",
-      "website": "lorena.name",
-      "company": {
-        "name": "Murray, Hirthe and Parisian",
-        "catchPhrase": "Decentralized systemic productivity",
-        "bs": "plug-and-play utilize experiences"
-      },
-      "id": 10
-    }};
 
-    this.updateObject = this.updateObject.bind(this);
-  }
-
-  updateObject(obj) {
-    this.setState({object: obj});
-  }
-
-
-  render() {
-    let config = [
-      {
-        propertyName: "name",
-        label: "Name"
-      },
-      {propertyName: "address",
-
-            config: [{propertyName: "geo", config:[{propertyName:"lat", label: "Latitude",
-          changeHandler: (changedValue, parentHandler) => {
-            console.log("Lat changed: "+ changedValue);
-            parentHandler.call(this, "transformed lat "+ changedValue);
-          } }]},
-              {propertyName: "street", label:"Street", allowCustomValues: true, options: [{value:"edblvd", label:"Eddyson Blvd."},
-                 {value:"edblvd2", label:"Eddyson Blvd. 2"}] }]
-      }
-    ];
-    return (
-
-      <div>
-        <ObjectEditor id={"test-editor"} properties={config} object={this.state.object} changeHandler={this.updateObject}/>
-      </div>
-    );
-  }
-}
-
-//ReactDOM.render(<App/>, document.querySelector("#myApp"));
-ReactDOM.render(<EditorTest/>, document.querySelector("#myApp"));
+ReactDOM.render(<App/>, document.querySelector("#myApp"));
