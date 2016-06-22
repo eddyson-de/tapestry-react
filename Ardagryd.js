@@ -470,8 +470,6 @@ Pager.propTypes = {
   updatePagination : React.PropTypes.func.isRequired
 };
 
-const DisplayValueGetter = (props) => <span>{props.value}</span>
-
 const defaultConfig = {
     grid: GridTable,
     body: GridBody,
