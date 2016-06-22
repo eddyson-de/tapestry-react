@@ -100,11 +100,11 @@ const Ardagryd = (props)=>{
             });
         }
         //Extract sort column from config or define one
-        var order = "asc";
+        var order = ASCENDING;
         var sortColumn = _.chain(columnConfig).pick((value, key) => {
             if (_.has(value, "sort") && value.sort){
-                if (value.sort == "desc"){
-                    order = "desc";
+                if (value.sort === DESCENDING){
+                    order = DESCENDING;
                 }
                 return true;
             } else {
@@ -136,7 +136,7 @@ const Ardagryd = (props)=>{
         }
 
         //reverse order on "descending" sort option
-        if (order == "desc"){
+        if (order === DESCENDING){
             objects.reverse();
         }
 
@@ -238,9 +238,9 @@ class GridHeaderCell extends React.Component {
 
     sortChanged(){
       const key = this.props.columnName;
-      let order = 'asc';
-      if (this.props.sort && this.props.sort !== 'desc'){
-        order = 'desc';
+      let order = ASCENDING;
+      if (this.props.sort && this.props.sort !== DESCENDING){
+        order = DESCENDING;
       }
       this.props.updateSort({
         type: "toggle-sort",
@@ -256,7 +256,7 @@ class GridHeaderCell extends React.Component {
         let iconName = 'sort';
         let active = false;
         if (sort){
-          iconName = sort === 'desc' ? 'sort-by-attributes-alt' : 'sort-by-attributes';
+          iconName = sort === DESCENDING ? 'sort-by-attributes-alt' : 'sort-by-attributes';
           active = true;
         }
         return(
