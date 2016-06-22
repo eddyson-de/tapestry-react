@@ -185,8 +185,7 @@ const GridBody=(props)=>{
 
         var rows = props.objects.map((curr) => {
             let current = curr;
-            var cells = _.chain(props.columnKeys)
-                .map((key) => {
+            var cells = props.columnKeys.map((key) => {
                 return (
                     <Cell key={key} columnName={key}>
                         <CellRenderer config={props.config} value={current[key]} columns={props.columns} columnName={key} object={current}>
@@ -194,7 +193,7 @@ const GridBody=(props)=>{
                         </CellRenderer>
                     </Cell>
                 )
-            }).value();
+            });
 
             return(
                 <Row key={current[props.idColumn]} columns={props.columns} config={props.config} object={current}>
