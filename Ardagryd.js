@@ -32,6 +32,9 @@ const Ardagryd = (props)=>{
         var columnKeys = [];
         //extract filters from columnConfig
 
+        var order = ASCENDING;
+        var sortColumn;
+
         let filters = {};
         for (const columnName in columnConfig){
             const configForColumn = columnConfig[columnName];
@@ -40,8 +43,22 @@ const Ardagryd = (props)=>{
                 if (filter && filter !== ""){
                     filters[columnName] = filter;
                 }
+                // Extract sort column from config
+                // TODO: handle case where multiple columns have a sort property
+                if (sortColumn === undefined){
+                    const sort = configForColumn.sort;
+                    if (sort !== undefined){
+                        sortColumn = columnName;
+                        if (sort === DESCENDING){
+                          order = DESCENDING;
+                        }
+                    }
+                }
             }
         }
+        //If there is no configured sort-column take first configured column
+
+        sortColumn = sortColumn ? sortColumn : availableColumnKeys && availableColumnKeys.length > 0 ? availableColumnKeys[0]: null;
 
         var idColumn = getOrCreateIdColumn(props.objects,columnConfig);
 
@@ -89,21 +106,6 @@ const Ardagryd = (props)=>{
                 return valueForA-valueForB;
             });
         }
-        //Extract sort column from config or define one
-        var order = ASCENDING;
-        var sortColumn = _.chain(columnConfig).pick((value, key) => {
-            if (_.has(value, "sort") && value.sort){
-                if (value.sort === DESCENDING){
-                    order = DESCENDING;
-                }
-                return true;
-            } else {
-                return false;
-            }
-        }).keys().first().value();
-        //If there is no configured sort-column take first configured column
-
-        sortColumn = sortColumn ? sortColumn : availableColumnKeys && availableColumnKeys.length > 0 ? availableColumnKeys[0]: null;
 
         //Sort
         if (sortColumn){
