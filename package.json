@@ -4,7 +4,7 @@
   "description": "Redux Compatible React Grid Component",
   "main": "dist/Ardagryd.umd.js",
   "scripts": {
-    "prepublish": "babel --plugins=transform-es2015-modules-umd Ardagryd.js --out-file dist/Ardagryd.umd.js --source-maps",
+    "prepublish": "babel --plugins=transform-es2015-modules-umd Ardagryd.js --out-file ./dist/Ardagryd.umd.js --source-maps",
     "dev": "webpack-dev-server --progress --profile --colors --hot",
     "test": "mocha --compilers js:babel-core/register --recursive --require ./test/setup.js",
     "testw": "mocha --compilers js:babel-core/register --recursive --watch --require ./test/setup.js"
