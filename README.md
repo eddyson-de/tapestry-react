@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/eddyson-de/react-grid.svg?branch=master)](https://travis-ci.org/eddyson-de/react-grid)
+
 # react-grid
 Customizable data grid for React.js
 
