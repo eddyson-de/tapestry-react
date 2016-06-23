@@ -32,88 +32,80 @@ const Ardagryd = (props)=>{
         var columnKeys = [];
         //extract filters from columnConfig
 
-        var filters = _.chain(columnConfig)
-            .pick((value, key) =>{
-                if(!_.has(value,"filter") || value.filter == ""){
-                    return false;
-                } else {
-                    return true;
+        var order = ASCENDING;
+        var sortColumn;
+
+        let filters = {};
+        for (const columnName in columnConfig){
+            const configForColumn = columnConfig[columnName];
+            if (configForColumn){
+                const filter = configForColumn.filter;
+                if (filter && filter !== ""){
+                    filters[columnName] = filter;
                 }
-            })
-            .mapObject(value => value.filter).value();
+                // Extract sort column from config
+                // TODO: handle case where multiple columns have a sort property
+                if (sortColumn === undefined){
+                    const sort = configForColumn.sort;
+                    if (sort !== undefined){
+                        sortColumn = columnName;
+                        if (sort === DESCENDING){
+                          order = DESCENDING;
+                        }
+                    }
+                }
+            }
+        }
+        //If there is no configured sort-column take first configured column
+
+        sortColumn = sortColumn ? sortColumn : availableColumnKeys && availableColumnKeys.length > 0 ? availableColumnKeys[0]: null;
 
         var idColumn = getOrCreateIdColumn(props.objects,columnConfig);
 
 
         //Filter objects based on supplied filter strings
-        var objects = _.chain(props.objects)
-            .filter((currentObjectToBeFiltered) => {
-                    var columnNamesWithFilter = _.keys(filters);
-                    for (var i in columnNamesWithFilter){
+        var columnNamesWithFilter = Object.keys(filters);
+        var objects = props.objects.filter((currentObjectToBeFiltered) => {
+            for (var i in columnNamesWithFilter){
 
-                        if (!currentObjectToBeFiltered[columnNamesWithFilter[i]]){
-                            return false;
-                        } else if(!(JSON.stringify(currentObjectToBeFiltered[columnNamesWithFilter[i]]).toLowerCase().indexOf(filters[columnNamesWithFilter[i]].toLowerCase()) > -1)){
-                            return false;
-                        }
-                    }
-                        return true;
+                if (!currentObjectToBeFiltered[columnNamesWithFilter[i]]){
+                    return false;
+                } else if(!(JSON.stringify(currentObjectToBeFiltered[columnNamesWithFilter[i]]).toLowerCase().indexOf(filters[columnNamesWithFilter[i]].toLowerCase()) > -1)){
+                    return false;
                 }
-            ).value();
+            }
+            return true;
+        });
 
 
 
 
         //Generate array with selected column-names in configured order
-        var availableColumnKeys;
+        let availableColumnKeys;
         if (props.objects.length > 0){
-            availableColumnKeys = _.union(Object.keys(props.objects[0]),Object.keys(columnConfig));
-            columnKeys = _.sortBy(availableColumnKeys.filter((currentColumnKey) => {
+            availableColumnKeys = Object.keys(props.objects[0]);
+            Object.keys(columnConfig).forEach((columnName)=>{
+              if (availableColumnKeys.indexOf(columnName) === -1){
+                availableColumnKeys.push(columnName);
+              }
+            });
+
+            columnKeys = availableColumnKeys.filter((currentColumnKey) => {
+                const configForColumn = columnConfig[currentColumnKey];
                 if(config.showColumnsWithoutConfig){
-                    if(!columnConfig.hasOwnProperty(currentColumnKey)){
-                        return true;
-                    } else if (_.has(columnConfig, currentColumnKey)
-                        && _.has(columnConfig[currentColumnKey],"show")
-                        && !columnConfig[currentColumnKey].show){
-                        return false;
-                    } else {
-                        return true;
-                    }
+                    return configForColumn === undefined || configForColumn.show !== false;
                 } else {
                     //Show only configured columns
-                    if(!columnConfig.hasOwnProperty(currentColumnKey)){
-                        return false;
-                    } else if (_.has(columnConfig, currentColumnKey)
-                        && _.has(columnConfig[currentColumnKey],"show")
-                        && !columnConfig[currentColumnKey].show){
-                        return false;
-                    } else {
-                        return true;
-                    }
+                    return configForColumn !== undefined && configForColumn.show !== false
                 }
-            }), (current) => {
-                if(columnConfig.hasOwnProperty(current)){
-                    return columnConfig[current].order != null ? columnConfig[current].order : 1000;
-                } else {
-                    return 1000;
-                }
+            }).sort((a,b) => {
+                const configForA = columnConfig[a];
+                const configForB = columnConfig[b];
+                let valueForA = configForA && configForA.order ? configForA.order : 1000;
+                let valueForB = configForB && configForB.order ? configForB.order : 1000;
+                return valueForA-valueForB;
             });
         }
-        //Extract sort column from config or define one
-        var order = ASCENDING;
-        var sortColumn = _.chain(columnConfig).pick((value, key) => {
-            if (_.has(value, "sort") && value.sort){
-                if (value.sort === DESCENDING){
-                    order = DESCENDING;
-                }
-                return true;
-            } else {
-                return false;
-            }
-        }).keys().first().value();
-        //If there is no configured sort-column take first configured column
-
-        sortColumn = sortColumn ? sortColumn : availableColumnKeys && availableColumnKeys.length > 0 ? availableColumnKeys[0]: null;
 
         //Sort
         if (sortColumn){
@@ -148,7 +140,7 @@ const Ardagryd = (props)=>{
         let pagedObjects;
         var paging = config.paging;
         if (paging){
-            pagedObjects = _.chain(objects).rest(props.skip).first(config.paging).value();
+            pagedObjects = objects.slice(props.skip, props.paging);
         } else {
             pagedObjects = props.objects;
         }
@@ -325,11 +317,11 @@ const ObjectCellRenderer =(props)=> {
         let columnName = props.columnName;
         let object = props.object;
 
-        var props = _.map(props.value, (value, key) => {
+        var props = Object.keys(props.value).map((key) => {
             return(
                 [
                     <dt>{key}</dt>,
-                    <dd><Renderer config={props.config} value={value} object={object} columns={columns}  columnName={columnName}/></dd>
+                    <dd><Renderer config={props.config} value={props.value[key]} object={object} columns={columns} columnName={columnName}/></dd>
                     ]
             )
         });
@@ -351,10 +343,10 @@ class ArrayCellRenderer extends React.Component {
         var object = this.props.object;
 
 
-        var elements = _.map(this.props.value, (value, i) => {
-            return(
-                <li key={i}><Renderer object={object} config={this.props.config} value={value} columns={columns}  columnName={columnName}/></li>
-            )
+        var elements = this.props.value.map((value, i) => {
+            return (
+                <li key={i}><Renderer object={object} config={this.props.config} value={value} columns={columns} columnName={columnName}/></li>
+            );
         });
         return(
             <ul>
@@ -506,7 +498,8 @@ Ardagryd.propTypes = {
       label: React.PropTypes.string,
       order: React.PropTypes.number,
       hideTools: React.PropTypes.bool,
-      sortable: React.PropTypes.bool
+      sortable: React.PropTypes.bool,
+      filter: React.PropTypes.string
     })).isRequired,
     dispatch: React.PropTypes.func.isRequired
 };
@@ -514,17 +507,15 @@ Ardagryd.propTypes = {
 //Find id-column, or enhance objects with ids
 function getOrCreateIdColumn(objects, columns){
     //check if explicit id-column is set in column-config
-    var idColumn;
-    _.chain(columns).keys().find((key)=>{
+    const idColumn = Object.keys(columns).find((key)=>{
         if(columns[key].id){
-            idColumn = key;
             return true;
         }
-    }).value();
+    });
 
     if (idColumn){
         return idColumn;
-    } else if (_.isArray(objects) && objects.length > 0 && _.has(objects[0], "id")) {
+    } else if (objects.length > 0 && objects[0].id !== undefined) {
         //check if objects have a id-property
         return "id"
     } else {
