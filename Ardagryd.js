@@ -317,11 +317,11 @@ const ObjectCellRenderer =(props)=> {
         let columnName = props.columnName;
         let object = props.object;
 
-        var props = _.map(props.value, (value, key) => {
+        var props = Object.keys(props.value).map((key) => {
             return(
                 [
                     <dt>{key}</dt>,
-                    <dd><Renderer config={props.config} value={value} object={object} columns={columns}  columnName={columnName}/></dd>
+                    <dd><Renderer config={props.config} value={props.value[key]} object={object} columns={columns} columnName={columnName}/></dd>
                     ]
             )
         });
@@ -343,10 +343,10 @@ class ArrayCellRenderer extends React.Component {
         var object = this.props.object;
 
 
-        var elements = _.map(this.props.value, (value, i) => {
-            return(
-                <li key={i}><Renderer object={object} config={this.props.config} value={value} columns={columns}  columnName={columnName}/></li>
-            )
+        var elements = this.props.value.map((value, i) => {
+            return (
+                <li key={i}><Renderer object={object} config={this.props.config} value={value} columns={columns} columnName={columnName}/></li>
+            );
         });
         return(
             <ul>
