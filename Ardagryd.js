@@ -64,38 +64,29 @@ const Ardagryd = (props)=>{
 
 
         //Generate array with selected column-names in configured order
-        var availableColumnKeys;
+        let availableColumnKeys;
         if (props.objects.length > 0){
-            availableColumnKeys = _.union(Object.keys(props.objects[0]),Object.keys(columnConfig));
-            columnKeys = _.sortBy(availableColumnKeys.filter((currentColumnKey) => {
+            availableColumnKeys = Object.keys(props.objects[0]);
+            Object.keys(columnConfig).forEach((columnName)=>{
+              if (availableColumnKeys.indexOf(columnName) === -1){
+                availableColumnKeys.push(columnName);
+              }
+            });
+
+            columnKeys = availableColumnKeys.filter((currentColumnKey) => {
+                const configForColumn = columnConfig[currentColumnKey];
                 if(config.showColumnsWithoutConfig){
-                    if(!columnConfig.hasOwnProperty(currentColumnKey)){
-                        return true;
-                    } else if (_.has(columnConfig, currentColumnKey)
-                        && _.has(columnConfig[currentColumnKey],"show")
-                        && !columnConfig[currentColumnKey].show){
-                        return false;
-                    } else {
-                        return true;
-                    }
+                    return configForColumn === undefined || configForColumn.show !== false;
                 } else {
                     //Show only configured columns
-                    if(!columnConfig.hasOwnProperty(currentColumnKey)){
-                        return false;
-                    } else if (_.has(columnConfig, currentColumnKey)
-                        && _.has(columnConfig[currentColumnKey],"show")
-                        && !columnConfig[currentColumnKey].show){
-                        return false;
-                    } else {
-                        return true;
-                    }
+                    return configForColumn !== undefined && configForColumn.show !== false
                 }
-            }), (current) => {
-                if(columnConfig.hasOwnProperty(current)){
-                    return columnConfig[current].order != null ? columnConfig[current].order : 1000;
-                } else {
-                    return 1000;
-                }
+            }).sort((a,b) => {
+                const configForA = columnConfig[a];
+                const configForB = columnConfig[b];
+                let valueForA = configForA && configForA.order ? configForA.order : 1000;
+                let valueForB = configForB && configForB.order ? configForB.order : 1000;
+                return valueForA-valueForB;
             });
         }
         //Extract sort column from config or define one
