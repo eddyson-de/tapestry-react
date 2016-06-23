@@ -399,5 +399,43 @@ describe('Grid render tests', function(){
 
     should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<ul><li><span>Dude</span></li><li><span>Johnny</span></li></ul>");
   });
+  
+  it('Can dynamically add an array-typed column', function (){
+
+    let grid = TestUtils.renderIntoDocument(
+      <Grid objects={[{name: "John"}]} columns={{
+        nickNames: {
+          displayValueGetter: ({object})=>["Dude", "Johnny"],
+          order: 0
+        },
+        name: {
+          id: true,
+          show: false
+        }
+        }} config={{}}/>
+    );
+
+    let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
+    let tbodyDOM = ReactDOM.findDOMNode(tbody);
+
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<ul><li><span>Dude</span></li><li><span>Johnny</span></li></ul>");
+  });
+  
+  it('Can override the displayValueGetter for an array-typed column', function (){
+
+    let grid = TestUtils.renderIntoDocument(
+      <Grid objects={[{nickNames: ["Dude", "Johnny"]}]} columns={{
+        nickNames: {
+          order: 0,
+          displayValueGetter:  ({value})=>value.join(" or ")
+        }
+        }} config={{}}/>
+    );
+
+    let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
+    let tbodyDOM = ReactDOM.findDOMNode(tbody);
+
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("Dude or Johnny");
+  });
 
 });
