@@ -1,6 +1,6 @@
 {
   "name": "eddyson-react-grid",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Redux Compatible React Grid Component",
   "main": "dist/Ardagryd.umd.js",
     "files": ["dist","Ardagryd.js", "README", "LICENSE"],
@@ -20,16 +20,14 @@
   "author": "eddyson GmbH",
   "license": "MIT",
   "dependencies": {
-    "bootstrap": "3.3.6",
     "deepmerge": "^0.2.10",
-    "faker": "^3.0.1",
-    "node-libs-browser": "1.0.0",
-    "react": "^15.1.0",
     "react-bootstrap": "^0.29.4",
-    "react-dom": "^15.1.0",
     "react-select": "^1.0.0-beta13",
     "underscore": "^1.8.3"
   },
+    "peerDependencies": {
+        "react": "^15.1.0"
+    },
   "devDependencies": {
     "babel-cli": "^6.0.0",
     "babel-core": "6.10.4",
@@ -53,6 +51,10 @@
     "style-loader": "0.13.1",
     "url-loader": "0.5.7",
     "webpack": "1.13.1",
-    "webpack-dev-server": "1.14.1"
+    "webpack-dev-server": "1.14.1",
+      "faker": "^3.0.1",
+      "node-libs-browser": "1.0.0",
+      "react-dom": "^15.1.0",
+      "bootstrap": "3.3.6"
   }
 }
