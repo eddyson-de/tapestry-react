@@ -3,10 +3,10 @@
   "version": "0.1.2",
   "description": "Redux Compatible React Grid Component",
   "main": "dist/Ardagryd.umd.js",
-    "files": ["dist","Ardagryd.js"],
+    "files": ["dist","Ardagryd.js", "README", "LICENSE"],
     "repository": "https://github.com/eddyson-de/react-grid",
   "scripts": {
-    "prepublish": "babel --plugins=transform-es2015-modules-umd Ardagryd.js --out-file ./dist/Ardagryd.umd.js --source-maps",
+    "prepublish": "mkdir -p dist && babel --plugins=transform-es2015-modules-umd Ardagryd.js --out-file ./dist/Ardagryd.umd.js --source-maps",
     "dev": "webpack-dev-server --progress --profile --colors --hot",
     "test": "mocha --compilers js:babel-core/register --recursive --require ./test/setup.js",
     "testw": "mocha --compilers js:babel-core/register --recursive --watch --require ./test/setup.js"
