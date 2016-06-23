@@ -57,7 +57,7 @@ const Ardagryd = (props)=>{
                 }
             }
             return true;
-        );
+        });
 
 
 
