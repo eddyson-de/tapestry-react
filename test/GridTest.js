@@ -438,4 +438,34 @@ describe('Grid render tests', function(){
     should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("Dude or Johnny");
   });
 
+  
+  it('Can use a component class as displayValueGetter', function (){
+    
+    class Renderer extends React.Component {
+      
+      constructor(props){
+        super(props);
+      }
+      
+      render(){
+        return <span className="custom">{this.props.value}</span>;
+      }
+      
+    }
+
+    let grid = TestUtils.renderIntoDocument(
+      <Grid objects={[{name: "John Doe"}]} columns={{
+        name: {
+          order: 0,
+          displayValueGetter: Renderer
+        }
+        }} config={{}}/>
+    );
+
+    let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
+    let tbodyDOM = ReactDOM.findDOMNode(tbody);
+
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly('<span class="custom">John Doe</span>');
+  });
+
 });
