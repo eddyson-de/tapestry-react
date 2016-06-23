@@ -366,5 +366,20 @@ describe('Grid render tests', function(){
 
     should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<span>Robert Paulson</span>");
   });
+  
+  it('Should render an array value', function (){
+
+    let grid = TestUtils.renderIntoDocument(
+      <Grid objects={[{nickNames: ["Dude", "Johnny"]}]} columns={{
+        nickNames: {
+          order: 0}
+        }} config={{}}/>
+    );
+
+    let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
+    let tbodyDOM = ReactDOM.findDOMNode(tbody);
+
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<ul><li><span>Dude</span></li><li><span>Johnny</span></li></ul>");
+  });
 
 });
