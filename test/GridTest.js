@@ -329,5 +329,42 @@ describe('Grid render tests', function(){
 
     should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<span>John Doe</span>");
   });
+  
+  it('Should be possible to override global displayValueGetter', function (){
+
+    let grid = TestUtils.renderIntoDocument(
+      <Grid objects={data} columns={{
+        name: {
+          order: 0
+        }
+        }} config={{
+          displayValueGetter: ({object})=><span>This is the name</span>
+        }}/>
+    );
+
+    let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
+    let tbodyDOM = ReactDOM.findDOMNode(tbody);
+
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<span>This is the name</span>");
+  });
+  
+  it('Should be possible to override the global displayValueGetter with a per-column configuration', function (){
+
+    let grid = TestUtils.renderIntoDocument(
+      <Grid objects={data} columns={{
+        name: {
+          order: 0,
+          displayValueGetter: ({object})=><span>Robert Paulson</span>
+        }
+        }} config={{
+          displayValueGetter: ({object})=><span>This is the name</span>
+        }}/>
+    );
+
+    let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
+    let tbodyDOM = ReactDOM.findDOMNode(tbody);
+
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<span>Robert Paulson</span>");
+  });
 
 });
