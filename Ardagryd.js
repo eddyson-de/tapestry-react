@@ -140,7 +140,7 @@ const Ardagryd = (props)=>{
         let pagedObjects;
         var paging = config.paging;
         if (paging){
-            pagedObjects = _.chain(objects).rest(props.skip).first(config.paging).value();
+            pagedObjects = objects.slice(props.skip, props.paging);
         } else {
             pagedObjects = props.objects;
         }
@@ -507,17 +507,15 @@ Ardagryd.propTypes = {
 //Find id-column, or enhance objects with ids
 function getOrCreateIdColumn(objects, columns){
     //check if explicit id-column is set in column-config
-    var idColumn;
-    _.chain(columns).keys().find((key)=>{
+    const idColumn = Object.keys(columns).find((key)=>{
         if(columns[key].id){
-            idColumn = key;
             return true;
         }
-    }).value();
+    });
 
     if (idColumn){
         return idColumn;
-    } else if (_.isArray(objects) && objects.length > 0 && _.has(objects[0], "id")) {
+    } else if (objects.length > 0 && objects[0].id !== undefined) {
         //check if objects have a id-property
         return "id"
     } else {
