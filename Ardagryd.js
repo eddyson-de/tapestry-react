@@ -46,20 +46,18 @@ const Ardagryd = (props)=>{
 
 
         //Filter objects based on supplied filter strings
-        var objects = _.chain(props.objects)
-            .filter((currentObjectToBeFiltered) => {
-                    var columnNamesWithFilter = _.keys(filters);
-                    for (var i in columnNamesWithFilter){
+        var columnNamesWithFilter = Object.keys(filters);
+        var objects = props.objects.filter((currentObjectToBeFiltered) => {
+            for (var i in columnNamesWithFilter){
 
-                        if (!currentObjectToBeFiltered[columnNamesWithFilter[i]]){
-                            return false;
-                        } else if(!(JSON.stringify(currentObjectToBeFiltered[columnNamesWithFilter[i]]).toLowerCase().indexOf(filters[columnNamesWithFilter[i]].toLowerCase()) > -1)){
-                            return false;
-                        }
-                    }
-                        return true;
+                if (!currentObjectToBeFiltered[columnNamesWithFilter[i]]){
+                    return false;
+                } else if(!(JSON.stringify(currentObjectToBeFiltered[columnNamesWithFilter[i]]).toLowerCase().indexOf(filters[columnNamesWithFilter[i]].toLowerCase()) > -1)){
+                    return false;
                 }
-            ).value();
+            }
+            return true;
+        );
 
 
 
