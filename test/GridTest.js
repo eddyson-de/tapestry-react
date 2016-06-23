@@ -312,5 +312,22 @@ describe('Grid render tests', function(){
     should(tbodyDOM.childNodes[0].childNodes.length).be.exactly(1);
 
   });
+  
+  it('Should be possible to override the displayValueGetter per column', function (){
+
+    let grid = TestUtils.renderIntoDocument(
+      <Grid objects={data} columns={{
+        name: {
+          order: 0,
+          displayValueGetter: ({object})=><span>John Doe</span>
+        }
+        }} config={{}}/>
+    );
+
+    let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
+    let tbodyDOM = ReactDOM.findDOMNode(tbody);
+
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<span>John Doe</span>");
+  });
 
 });
