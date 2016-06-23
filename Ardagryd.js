@@ -32,15 +32,16 @@ const Ardagryd = (props)=>{
         var columnKeys = [];
         //extract filters from columnConfig
 
-        var filters = _.chain(columnConfig)
-            .pick((value, key) =>{
-                if(!_.has(value,"filter") || value.filter == ""){
-                    return false;
-                } else {
-                    return true;
+        let filters = {};
+        for (const columnName in columnConfig){
+            const configForColumn = columnConfig[columnName];
+            if (configForColumn){
+                const filter = configForColumn.filter;
+                if (filter && filter !== ""){
+                    filters[columnName] = filter;
                 }
-            })
-            .mapObject(value => value.filter).value();
+            }
+        }
 
         var idColumn = getOrCreateIdColumn(props.objects,columnConfig);
 
@@ -504,7 +505,8 @@ Ardagryd.propTypes = {
       label: React.PropTypes.string,
       order: React.PropTypes.number,
       hideTools: React.PropTypes.bool,
-      sortable: React.PropTypes.bool
+      sortable: React.PropTypes.bool,
+      filter: React.PropTypes.string
     })).isRequired,
     dispatch: React.PropTypes.func.isRequired
 };
