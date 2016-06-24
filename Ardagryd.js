@@ -431,25 +431,40 @@ class ToolbarDefault extends React.Component {
 }
 
 class Filter extends React.Component {
+
     constructor(props){
         super(props);
-        this.updateFilter = this.updateFilter.bind(this);
+        this.inputChanged = this.inputChanged.bind(this);
     }
-    updateFilter(event){
-        this.props.config.eventHandler(
-            {
-                type:"filter-change",
-                id: this.props.config.id,
-                column: this.props.column,
-                query: event.target.value
-            }
-        );
+
+    componentWillUnmount(){
+        if(this.timeout){
+            window.clearTimeout(this.timeout);
+            this.timeout = null
+        }
+    }
+
+    inputChanged(event){
+        if (this.timeout){
+            window.clearTimeout(this.timeout);
+            this.timeout = null
+        }
+        const value = event.target.value;
+        window.setTimeout(()=>{
+            this.props.config.eventHandler(
+                {
+                    type:"filter-change",
+                    id: this.props.config.id,
+                    column: this.props.column,
+                    query: value
+                }
+            );
+        }, 500);
     }
 
     render(){
-        var throttledUpdate = _.throttle(this.updateFilter, 1000);
         return(
-            <FormControl id={"filter_for_"+this.props.column} type="search" key={this.props.column} value={this.props.query} onChange={throttledUpdate} placeholder={"Filter..."} />
+            <FormControl id={"filter_for_"+this.props.column} type="search" key={this.props.column} value={this.props.query} onChange={this.inputChanged} placeholder={"Filter..."} />
         )
     }
 };
