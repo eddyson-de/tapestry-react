@@ -190,16 +190,32 @@ const GridBody=(props)=>{
             let current = curr;
             var cells = props.columnKeys.map((key) => {
                 let configForColumn = props.columns[key];
-                if(configForColumn && configForColumn.cellRenderer){
-                    CellRenderer = configForColumn.cellRenderer;
+                let displayValueGetter = props.config.displayValueGetter;
+                if(configForColumn && configForColumn.displayValueGetter){
+                    displayValueGetter = configForColumn.displayValueGetter;
                 }
-                return (
-                    <Cell key={key} columnName={key}>
-                        <CellRenderer config={props.config} value={current[key]} columns={props.columns} columnName={key} object={current}>
-
-                        </CellRenderer>
-                    </Cell>
-                )
+                const args = {columns:props.columns, columnName:key, config:props.config, value:current[key], object:current};
+                let value;
+                if (displayValueGetter.prototype.isReactComponent){
+                    value = React.createElement(displayValueGetter, args);
+                }else{
+                    value = displayValueGetter(args);
+                }
+                if (value == null){
+                    return <Cell key={key} columnName={key}/>;
+                }
+                else if (typeof value === "string" || typeof value === "number" || typeof value === "boolean" || React.isValidElement(value)){
+                    return <Cell key={key} columnName={key}>{value}</Cell>;
+                } else {
+                    if(configForColumn && configForColumn.cellRenderer){
+                        CellRenderer = configForColumn.cellRenderer;
+                    }
+                    return (
+                        <Cell key={key} columnName={key}>
+                            <CellRenderer config={props.config} value={value} columns={props.columns} columnName={key} object={current}/>
+                        </Cell>
+                    );
+                }
             });
 
             return(
@@ -323,17 +339,9 @@ const BaseCellRenderer = (props) =>{
         let ArrCellRenderer = props.config.cellRendererArray;
         var valueType = typeof props.value;
 
-        var DisplayValue = props.config.displayValueGetter;
         var columns = props.columns;
         var columnName = props.columnName;
-        if(columns[columnName]
-            && columns[columnName].displayValueGetter
-            && typeof columns[columnName].displayValueGetter == "function"){
-            DisplayValue = columns[columnName].displayValueGetter;
-        }
 
-        // FIXME: columns[columnName].displayValueGetter is not used if value is an array or object
-        // TODO: it should be possible to return a string from displayValueGetter
         switch(valueType){
             case "object":
                 if(Array.isArray(props.value)){
@@ -342,7 +350,7 @@ const BaseCellRenderer = (props) =>{
                     return(<ObjCellRenderer columns={columns}  columnName={columnName} config={props.config} value={props.value} object={props.object} />);
                 }
             default:
-                return(<DisplayValue columns={columns}  columnName={columnName} config={props.config} value={props.value} object={props.object}/>)
+                return <span>{props.value}</span>;
         }
 
 }
@@ -529,7 +537,7 @@ const defaultConfig = {
     showToolbar: true,
     showColumnsWithoutConfig: true, //show all columns which are not explicitly hidden
     paging: 10,
-    displayValueGetter: ({value}) => <span>{value}</span>
+    displayValueGetter: ({value}) => value
 };
 
 

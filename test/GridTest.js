@@ -319,7 +319,7 @@ describe('Grid render tests', function(){
       <Grid objects={data} columns={{
         name: {
           order: 0,
-          displayValueGetter: ({object})=><span>John Doe</span>
+          displayValueGetter: ({object})=>"John Doe"
         }
         }} config={{}}/>
     );
@@ -327,7 +327,7 @@ describe('Grid render tests', function(){
     let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
     let tbodyDOM = ReactDOM.findDOMNode(tbody);
 
-    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<span>John Doe</span>");
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("John Doe");
   });
   
   it('Should be possible to override global displayValueGetter', function (){
@@ -338,14 +338,14 @@ describe('Grid render tests', function(){
           order: 0
         }
         }} config={{
-          displayValueGetter: ({object})=><span>This is the name</span>
+          displayValueGetter: ({object})=>"This is the name"
         }}/>
     );
 
     let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
     let tbodyDOM = ReactDOM.findDOMNode(tbody);
 
-    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<span>This is the name</span>");
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("This is the name");
   });
   
   it('Should be possible to override the global displayValueGetter with a per-column configuration', function (){
@@ -354,17 +354,35 @@ describe('Grid render tests', function(){
       <Grid objects={data} columns={{
         name: {
           order: 0,
-          displayValueGetter: ({object})=><span>Robert Paulson</span>
+          displayValueGetter: ({object})=>"Robert Paulson"
         }
         }} config={{
-          displayValueGetter: ({object})=><span>This is the name</span>
+          displayValueGetter: ({object})=>"This is the name"
         }}/>
     );
 
     let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
     let tbodyDOM = ReactDOM.findDOMNode(tbody);
 
-    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<span>Robert Paulson</span>");
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("Robert Paulson");
+  });
+  
+  //TODO this is deprecated!
+  it('Should be possible to return an element from the displayValueGetter', function (){
+
+    let grid = TestUtils.renderIntoDocument(
+      <Grid objects={data} columns={{
+        name: {
+          order: 0,
+          displayValueGetter: ({object})=><span>"John Doe"</span>
+        }
+        }} config={{}}/>
+    );
+
+    let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
+    let tbodyDOM = ReactDOM.findDOMNode(tbody);
+
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly('<span>"John Doe"</span>');
   });
   
   it('Should render an array value', function (){
@@ -380,6 +398,44 @@ describe('Grid render tests', function(){
     let tbodyDOM = ReactDOM.findDOMNode(tbody);
 
     should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<ul><li><span>Dude</span></li><li><span>Johnny</span></li></ul>");
+  });
+  
+  it('Can dynamically add an array-typed column', function (){
+
+    let grid = TestUtils.renderIntoDocument(
+      <Grid objects={[{name: "John"}]} columns={{
+        nickNames: {
+          displayValueGetter: ({object})=>["Dude", "Johnny"],
+          order: 0
+        },
+        name: {
+          id: true,
+          show: false
+        }
+        }} config={{}}/>
+    );
+
+    let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
+    let tbodyDOM = ReactDOM.findDOMNode(tbody);
+
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<ul><li><span>Dude</span></li><li><span>Johnny</span></li></ul>");
+  });
+  
+  it('Can override the displayValueGetter for an array-typed column', function (){
+
+    let grid = TestUtils.renderIntoDocument(
+      <Grid objects={[{nickNames: ["Dude", "Johnny"]}]} columns={{
+        nickNames: {
+          order: 0,
+          displayValueGetter:  ({value})=>value.join(" or ")
+        }
+        }} config={{}}/>
+    );
+
+    let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
+    let tbodyDOM = ReactDOM.findDOMNode(tbody);
+
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("Dude or Johnny");
   });
 
   
@@ -419,14 +475,14 @@ describe('Grid render tests', function(){
     let tbody = TestUtils.scryRenderedDOMComponentsWithTag(instance, "tbody")[0];
     let tbodyDOM = ReactDOM.findDOMNode(tbody);
 
-    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<span>John</span>");
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("John");
     let linkToPage2 = TestUtils.scryRenderedDOMComponentsWithTag(instance, "a")[2];
     Simulate.click(linkToPage2);
-    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<span>Jack</span>");
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("Jack");
     should(linkToPage2.parentNode.className).be.exactly("active");
     container.setState({objects: people});
     should(linkToPage2.parentNode.className).be.exactly("active");
-    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<span>Jack</span>");
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("Jack");
   });
 
 });
