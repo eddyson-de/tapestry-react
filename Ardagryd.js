@@ -1,5 +1,4 @@
 import React from 'react'
-import _ from 'underscore'
 import { Input, Glyphicon, Button, FormControl, Table, Pagination } from 'react-bootstrap'
 import { elementType } from 'react-prop-types';
 import merge from 'deepmerge'
