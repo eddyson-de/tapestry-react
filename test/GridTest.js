@@ -319,7 +319,7 @@ describe('Grid render tests', function(){
       <Grid objects={data} columns={{
         name: {
           order: 0,
-          cellRendererBase: ({object: {name, email}})=><a href={`mailto:${email}`}>{name}</a>
+          cellRenderer: ({object: {name, email}})=><a href={`mailto:${email}`}>{name}</a>
         }
         }} config={{}}/>
     );

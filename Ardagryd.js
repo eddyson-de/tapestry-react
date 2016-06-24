@@ -180,8 +180,8 @@ const GridBody=(props)=>{
             let current = curr;
             var cells = props.columnKeys.map((key) => {
                 let configForColumn = props.columns[key];
-                if(configForColumn && configForColumn.cellRendererBase){
-                    CellRenderer = configForColumn.cellRendererBase;
+                if(configForColumn && configForColumn.cellRenderer){
+                    CellRenderer = configForColumn.cellRenderer;
                 }
                 return (
                     <Cell key={key} columnName={key}>
@@ -504,7 +504,7 @@ Ardagryd.propTypes = {
       order: React.PropTypes.number,
       hideTools: React.PropTypes.bool,
       sortable: React.PropTypes.bool,
-      cellRendererBase: elementType,
+      cellRenderer: elementType,
       filter: React.PropTypes.string
     })).isRequired,
     dispatch: React.PropTypes.func.isRequired
