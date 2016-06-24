@@ -337,7 +337,7 @@ const BaseCellRenderer = (props) =>{
         // TODO: it should be possible to return a string from displayValueGetter
         switch(valueType){
             case "object":
-                if(_.isArray(props.value)){
+                if(Array.isArray(props.value)){
                     return(<ArrCellRenderer columns={columns}  columnName={columnName} config={props.config} value={props.value} object={props.object} />);
                 } else {
                     return(<ObjCellRenderer columns={columns}  columnName={columnName} config={props.config} value={props.value} object={props.object} />);
