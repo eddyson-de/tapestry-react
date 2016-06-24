@@ -629,7 +629,7 @@ export class Grid extends React.Component {
             case "toggle-sort":
                 let newColumnConfig = Object.assign({}, this.state.columns);
                 let sortApplied = false;
-                Object.keys(newColumnConfig).each((key)=> {
+                Object.keys(newColumnConfig).forEach((key)=> {
                     const value = newColumnConfig[key];
                     if (key === action.columnName){
                         value.sort = action.order;
