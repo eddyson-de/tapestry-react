@@ -560,7 +560,7 @@ function getOrCreateIdColumn(objects, columns){
         //TODO: use some type of hashing
         //generate id-property
         let index = 0;
-        _.map(objects, (object) => {
+        objects.map((object) => {
             object.id = index++;
         });
         return "id"
@@ -612,13 +612,14 @@ export class Grid extends React.Component {
             case "toggle-sort":
                 let newColumnConfig = _.extend({}, this.state.columns);
                 let sortApplied = false;
-                _.each(newColumnConfig, (value, key)=>{
-                  if (key === action.columnName){
-                    value.sort = action.order;
-                    sortApplied = true;
-                  }else{
-                    delete value.sort;
-                  }
+                Object.keys(newColumnConfig).each((key)=> {
+                    const value = newColumnConfig[key];
+                    if (key === action.columnName){
+                        value.sort = action.order;
+                        sortApplied = true;
+                    } else {
+                        delete value.sort;
+                    }
                 });
                 if (!sortApplied){
                   newColumnConfig[action.columnName] = {sort: action.order};
