@@ -140,7 +140,7 @@ const Ardagryd = (props)=>{
         let pagedObjects;
         var paging = config.paging;
         if (paging){
-            pagedObjects = objects.slice(props.skip, props.paging);
+            pagedObjects = objects.slice(props.skip, props.skip+paging);
         } else {
             pagedObjects = props.objects;
         }
