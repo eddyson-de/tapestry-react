@@ -24,6 +24,7 @@ export class App extends React.Component {
       edit: {
         label: "Edit",
         hideTools: true,
+        sortable: false,
         displayValueGetter: ({value, object, columns}) => <a href={"#"}> EDIT ROW</a>
       },
       id: {show: false}

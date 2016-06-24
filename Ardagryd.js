@@ -141,7 +141,7 @@ const Ardagryd = (props)=>{
         let pagedObjects;
         var paging = config.paging;
         if (paging){
-            pagedObjects = objects.slice(props.skip, props.paging);
+            pagedObjects = objects.slice(props.skip, props.skip+paging);
         } else {
             pagedObjects = props.objects;
         }
@@ -572,8 +572,7 @@ export class Grid extends React.Component {
                 newColumnValues[action.column].filter = action.query;
                 newColumnConfig = merge(this.state.columns,  newColumnValues);
 
-                this.setState({columns: newColumnConfig});
-                this.setState({skip: 0});
+                this.setState({columns: newColumnConfig, skip: 0});
                 break;
             case "change-page":
                 this.setState({skip: action.skip});
