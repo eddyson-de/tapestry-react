@@ -467,5 +467,22 @@ describe('Grid render tests', function(){
 
     should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly('<span class="custom">John Doe</span>');
   });
+  
+  it('Should not jump to the first page if the props don\'t change', function (){
+    let people = [{"name": "John"}, {"name": "Jack"}];
+    let [container, instance] = renderInContainer(Grid, { objects: people, columns: {}, config: {paging: 1} });
+
+    let tbody = TestUtils.scryRenderedDOMComponentsWithTag(instance, "tbody")[0];
+    let tbodyDOM = ReactDOM.findDOMNode(tbody);
+
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("John");
+    let linkToPage2 = TestUtils.scryRenderedDOMComponentsWithTag(instance, "a")[2];
+    Simulate.click(linkToPage2);
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("Jack");
+    should(linkToPage2.parentNode.className).be.exactly("active");
+    container.setState({objects: people});
+    should(linkToPage2.parentNode.className).be.exactly("active");
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("Jack");
+  });
 
 });

@@ -1,6 +1,7 @@
 import React from 'react'
 import _ from 'underscore'
 import { Input, Glyphicon, Button, FormControl, Table, Pagination } from 'react-bootstrap'
+import { elementType } from 'react-prop-types';
 import merge from 'deepmerge'
 
 const ASCENDING = "asc";
@@ -140,7 +141,7 @@ const Ardagryd = (props)=>{
         let pagedObjects;
         var paging = config.paging;
         if (paging){
-            pagedObjects = objects.slice(props.skip, props.paging);
+            pagedObjects = objects.slice(props.skip, props.skip+paging);
         } else {
             pagedObjects = props.objects;
         }
@@ -196,6 +197,9 @@ const GridBody=(props)=>{
                 else if (typeof value === "string" || typeof value === "number" || typeof value === "boolean" || React.isValidElement(value)){
                     return <Cell key={key} columnName={key}>{value}</Cell>;
                 } else {
+                    if(configForColumn && configForColumn.cellRenderer){
+                        CellRenderer = configForColumn.cellRenderer;
+                    }
                     return (
                         <Cell key={key} columnName={key}>
                             <CellRenderer config={props.config} value={value} columns={props.columns} columnName={key} object={current}/>
@@ -295,7 +299,28 @@ GridHeaderCell.defaultProps = {
     sortable: true
 }
 
-const GridRow = (props) => <tr>{props.children}</tr>;
+class GridRow extends React.Component {
+
+    constructor(props){
+        super(props);
+    }
+
+    shouldComponentUpdate(nextProps){
+        return this.props.object !== nextProps.object
+            || this.props.columnConfig !== nextProps.columnConfig
+            || this.props.config.showColumnsWithoutConfig !== nextProps.config.showColumnsWithoutConfig
+            || this.props.config.cell !== nextProps.config.cell
+            || this.props.config.cellRendererBase !== nextProps.config.cellRendererBase
+            || this.props.config.cellRendererObject !== nextProps.config.cellRendererObject
+            || this.props.config.cellRendererArray !== nextProps.config.cellRendererArray
+            || this.props.config.displayValueGetter !== nextProps.config.displayValueGetter;
+    }
+
+    render(){
+        return <tr>{this.props.children}</tr>;
+    }
+
+}
 
 const GridCell = (props) => <td>{props.children}</td>;
 
@@ -508,6 +533,7 @@ Ardagryd.propTypes = {
       order: React.PropTypes.number,
       hideTools: React.PropTypes.bool,
       sortable: React.PropTypes.bool,
+      cellRenderer: elementType,
       filter: React.PropTypes.string
     })).isRequired,
     dispatch: React.PropTypes.func.isRequired
@@ -556,11 +582,9 @@ export class Grid extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-      // TODO: we should not always go back to the first page if props change
       this.setState({
           config: nextProps.config ? nextProps.config : {},
-          columns: nextProps.columns ? nextProps.columns : {},
-          skip: 0
+          columns: nextProps.columns ? nextProps.columns : {}
       });
     }
 
@@ -575,8 +599,7 @@ export class Grid extends React.Component {
                 newColumnValues[action.column].filter = action.query;
                 newColumnConfig = merge(this.state.columns,  newColumnValues);
 
-                this.setState({columns: newColumnConfig});
-                this.setState({skip: 0});
+                this.setState({columns: newColumnConfig, skip: 0});
                 break;
             case "change-page":
                 this.setState({skip: action.skip});
