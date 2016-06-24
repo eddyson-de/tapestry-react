@@ -313,23 +313,6 @@ describe('Grid render tests', function(){
 
   });
   
-  it('Should be possible to override the cell renderer per column', function (){
-
-    let grid = TestUtils.renderIntoDocument(
-      <Grid objects={data} columns={{
-        name: {
-          order: 0,
-          cellRenderer: ({object: {name, email}})=><a href={`mailto:${email}`}>{name}</a>
-        }
-        }} config={{}}/>
-    );
-
-    let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
-    let tbodyDOM = ReactDOM.findDOMNode(tbody);
-
-    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly('<a href="mailto:Emilian20@yahoo.com">Nike Floder</a>');
-  });
-
   it('Should be possible to override the displayValueGetter per column', function (){
 
     let grid = TestUtils.renderIntoDocument(
@@ -429,32 +412,21 @@ describe('Grid render tests', function(){
     should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly('<span class="custom">John Doe</span>');
   });
   
-  it('Should re-render row if showColumnsWithoutConfig changes', function (){
-
-    let [container, instance] = renderInContainer(Grid, { objects: [{name: "John", age: 10}], columns: {age: {show:true}}, config: {showColumnsWithoutConfig: true} });
-
-    let tbody = TestUtils.scryRenderedDOMComponentsWithTag(instance, "tbody")[0];
-    let tbodyDOM = ReactDOM.findDOMNode(tbody);
-
-    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly('<span>John</span>');
-
-    container.setState({config: {showColumnsWithoutConfig: false}});
-    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly('<span>10</span>');
-  });
-  
-  it('Should re-render row if global cell renderer changes', function (){
-
-    let data = [{name: "John"}];
-    let [container, instance] = renderInContainer(Grid, { objects: data, columns: {}, config: {} });
+  it('Should not jump to the first page if the props don\'t change', function (){
+    let people = [{"name": "John"}, {"name": "Jack"}];
+    let [container, instance] = renderInContainer(Grid, { objects: people, columns: {}, config: {paging: 1} });
 
     let tbody = TestUtils.scryRenderedDOMComponentsWithTag(instance, "tbody")[0];
     let tbodyDOM = ReactDOM.findDOMNode(tbody);
 
-    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly('<span>John</span>');
-
-    container.setState({config: {cell: (props)=><td>Foo</td>}});
-    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly('Foo');
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<span>John</span>");
+    let linkToPage2 = TestUtils.scryRenderedDOMComponentsWithTag(instance, "a")[2];
+    Simulate.click(linkToPage2);
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<span>Jack</span>");
+    should(linkToPage2.parentNode.className).be.exactly("active");
+    container.setState({objects: people});
+    should(linkToPage2.parentNode.className).be.exactly("active");
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("<span>Jack</span>");
   });
-
 
 });
