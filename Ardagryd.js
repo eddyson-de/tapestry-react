@@ -566,8 +566,7 @@ export class Grid extends React.Component {
                 newColumnValues[action.column].filter = action.query;
                 newColumnConfig = merge(this.state.columns,  newColumnValues);
 
-                this.setState({columns: newColumnConfig});
-                this.setState({skip: 0});
+                this.setState({columns: newColumnConfig, skip: 0});
                 break;
             case "change-page":
                 this.setState({skip: action.skip});
