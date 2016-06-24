@@ -184,8 +184,12 @@ const GridBody=(props)=>{
                     displayValueGetter = configForColumn.displayValueGetter;
                 }
                 const args = {columns:props.columns, columnName:key, config:props.config, value:current[key], object:current};
-                const value = displayValueGetter(args);
-
+                let value;
+                if (displayValueGetter.prototype.isReactComponent){
+                    value = React.createElement(displayValueGetter, args);
+                }else{
+                    value = displayValueGetter(args);
+                }
                 if (value == null){
                     return <Cell key={key} columnName={key}/>;
                 }
