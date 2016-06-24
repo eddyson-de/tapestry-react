@@ -313,6 +313,23 @@ describe('Grid render tests', function(){
 
   });
   
+  it('Should be possible to override the cell renderer per column', function (){
+
+    let grid = TestUtils.renderIntoDocument(
+      <Grid objects={data} columns={{
+        name: {
+          order: 0,
+          cellRenderer: ({object: {name, email}})=><a href={`mailto:${email}`}>{name}</a>
+        }
+        }} config={{}}/>
+    );
+
+    let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
+    let tbodyDOM = ReactDOM.findDOMNode(tbody);
+
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly('<a href="mailto:Emilian20@yahoo.com">Nike Floder</a>');
+  });
+
   it('Should be possible to override the displayValueGetter per column', function (){
 
     let grid = TestUtils.renderIntoDocument(

@@ -1,6 +1,7 @@
 import React from 'react'
 import _ from 'underscore'
 import { Input, Glyphicon, Button, FormControl, Table, Pagination } from 'react-bootstrap'
+import { elementType } from 'react-prop-types';
 import merge from 'deepmerge'
 
 const ASCENDING = "asc";
@@ -178,6 +179,10 @@ const GridBody=(props)=>{
         var rows = props.objects.map((curr) => {
             let current = curr;
             var cells = props.columnKeys.map((key) => {
+                let configForColumn = props.columns[key];
+                if(configForColumn && configForColumn.cellRenderer){
+                    CellRenderer = configForColumn.cellRenderer;
+                }
                 return (
                     <Cell key={key} columnName={key}>
                         <CellRenderer config={props.config} value={current[key]} columns={props.columns} columnName={key} object={current}>
@@ -520,6 +525,7 @@ Ardagryd.propTypes = {
       order: React.PropTypes.number,
       hideTools: React.PropTypes.bool,
       sortable: React.PropTypes.bool,
+      cellRenderer: elementType,
       filter: React.PropTypes.string
     })).isRequired,
     dispatch: React.PropTypes.func.isRequired
