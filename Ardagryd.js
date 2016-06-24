@@ -401,8 +401,6 @@ class ArrayCellRenderer extends React.Component {
     }
 }
 
-const CellEditorText = (props) => <Input type="text" value={props.value} onchange={props.changeHandler} />;
-
 class ToolbarDefault extends React.Component {
     constructor(props) {
         super(props);
@@ -531,7 +529,6 @@ const defaultConfig = {
     cellRendererBase: BaseCellRenderer,
     cellRendererObject: ObjectCellRenderer,
     cellRendererArray: ArrayCellRenderer,
-    cellEditorText: CellEditorText,
     filter: Filter,
     toolbar: ToolbarDefault,
     showToolbar: true,
