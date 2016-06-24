@@ -1,5 +1,4 @@
 import React from 'react'
-import _ from 'underscore'
 import { Input, Glyphicon, Button, FormControl, Table, Pagination } from 'react-bootstrap'
 import { elementType } from 'react-prop-types';
 import merge from 'deepmerge'
@@ -111,21 +110,32 @@ const Ardagryd = (props)=>{
         //Sort
         if (sortColumn){
             // TODO allow to pass in a custom sort and/or sortValueGetter function
-            objects = _.sortBy(objects, (current) => {
-                const value = current[sortColumn];
-                if (value == null){
-                    return value;
-                }
-                else if (typeof value == "number") {
-                    return value;
-                }
-                else if (typeof value == "string"){
-                    return value.toLowerCase();
-                }
-                else {
-                    return JSON.stringify(value).toLowerCase();
-                }
+
+            // temporary array holds objects with position and sort-value
+            let mapped = objects.map(function(el, i) {
+              let value = el[sortColumn];
+
+              if (typeof value == "string"){
+                  value = value.toLowerCase();
+              }
+              else {
+                  value = JSON.stringify(value).toLowerCase();
+              }
+              return { index: i, value: value };
             });
+
+
+            // sorting the mapped array containing the reduced values
+            mapped.sort((a, b) => {
+                return +(a.value > b.value) || +(a.value === b.value) - 1;
+            });
+
+            // container for the resulting order
+            const list = mapped.map(function(el){
+              return objects[el.index];
+            });
+
+            objects = list;
         }
 
         //reverse order on "descending" sort option
@@ -326,7 +336,7 @@ const BaseCellRenderer = (props) =>{
         // TODO: it should be possible to return a string from displayValueGetter
         switch(valueType){
             case "object":
-                if(_.isArray(props.value)){
+                if(Array.isArray(props.value)){
                     return(<ArrCellRenderer columns={columns}  columnName={columnName} config={props.config} value={props.value} object={props.object} />);
                 } else {
                     return(<ObjCellRenderer columns={columns}  columnName={columnName} config={props.config} value={props.value} object={props.object} />);
@@ -410,7 +420,7 @@ class ToolbarDefault extends React.Component {
             )}
           else {return(<th key={currentColumnKey}></th>)}
         });
-        
+
         return(
             <tr>
                 {filters}
@@ -420,25 +430,40 @@ class ToolbarDefault extends React.Component {
 }
 
 class Filter extends React.Component {
+
     constructor(props){
         super(props);
-        this.updateFilter = this.updateFilter.bind(this);
+        this.inputChanged = this.inputChanged.bind(this);
     }
-    updateFilter(event){
-        this.props.config.eventHandler(
-            {
-                type:"filter-change",
-                id: this.props.config.id,
-                column: this.props.column,
-                query: event.target.value
-            }
-        );
+
+    componentWillUnmount(){
+        if(this.timeout){
+            window.clearTimeout(this.timeout);
+            this.timeout = null
+        }
+    }
+
+    inputChanged(event){
+        if (this.timeout){
+            window.clearTimeout(this.timeout);
+            this.timeout = null
+        }
+        const value = event.target.value;
+        window.setTimeout(()=>{
+            this.props.config.eventHandler(
+                {
+                    type:"filter-change",
+                    id: this.props.config.id,
+                    column: this.props.column,
+                    query: value
+                }
+            );
+        }, 500);
     }
 
     render(){
-        var throttledUpdate = _.throttle(this.updateFilter, 1000);
         return(
-            <FormControl id={"filter_for_"+this.props.column} type="search" key={this.props.column} value={this.props.query} onChange={throttledUpdate} placeholder={"Filter..."} />
+            <FormControl id={"filter_for_"+this.props.column} type="search" key={this.props.column} value={this.props.query} onChange={this.inputChanged} placeholder={"Filter..."} />
         )
     }
 };
@@ -549,7 +574,7 @@ function getOrCreateIdColumn(objects, columns){
         //TODO: use some type of hashing
         //generate id-property
         let index = 0;
-        _.map(objects, (object) => {
+        objects.map((object) => {
             object.id = index++;
         });
         return "id"
@@ -597,15 +622,16 @@ export class Grid extends React.Component {
                 this.setState({skip: action.skip});
                 break;
             case "toggle-sort":
-                let newColumnConfig = _.extend({}, this.state.columns);
+                let newColumnConfig = Object.assign({}, this.state.columns);
                 let sortApplied = false;
-                _.each(newColumnConfig, (value, key)=>{
-                  if (key === action.columnName){
-                    value.sort = action.order;
-                    sortApplied = true;
-                  }else{
-                    delete value.sort;
-                  }
+                Object.keys(newColumnConfig).each((key)=> {
+                    const value = newColumnConfig[key];
+                    if (key === action.columnName){
+                        value.sort = action.order;
+                        sortApplied = true;
+                    } else {
+                        delete value.sort;
+                    }
                 });
                 if (!sortApplied){
                   newColumnConfig[action.columnName] = {sort: action.order};
