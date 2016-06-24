@@ -111,21 +111,32 @@ const Ardagryd = (props)=>{
         //Sort
         if (sortColumn){
             // TODO allow to pass in a custom sort and/or sortValueGetter function
-            objects = _.sortBy(objects, (current) => {
-                const value = current[sortColumn];
-                if (value == null){
-                    return value;
-                }
-                else if (typeof value == "number") {
-                    return value;
-                }
-                else if (typeof value == "string"){
-                    return value.toLowerCase();
-                }
-                else {
-                    return JSON.stringify(value).toLowerCase();
-                }
+
+            // temporary array holds objects with position and sort-value
+            let mapped = objects.map(function(el, i) {
+              let value = el[sortColumn];
+
+              if (typeof value == "string"){
+                  value = value.toLowerCase();
+              }
+              else {
+                  value = JSON.stringify(value).toLowerCase();
+              }
+              return { index: i, value: value };
             });
+
+
+            // sorting the mapped array containing the reduced values
+            mapped.sort((a, b) => {
+                return +(a.value > b.value) || +(a.value === b.value) - 1;
+            });
+
+            // container for the resulting order
+            const list = mapped.map(function(el){
+              return objects[el.index];
+            });
+
+            objects = list;
         }
 
         //reverse order on "descending" sort option
@@ -410,7 +421,7 @@ class ToolbarDefault extends React.Component {
             )}
           else {return(<th key={currentColumnKey}></th>)}
         });
-        
+
         return(
             <tr>
                 {filters}
