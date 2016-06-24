@@ -547,11 +547,9 @@ export class Grid extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-      // TODO: we should not always go back to the first page if props change
       this.setState({
           config: nextProps.config ? nextProps.config : {},
-          columns: nextProps.columns ? nextProps.columns : {},
-          skip: 0
+          columns: nextProps.columns ? nextProps.columns : {}
       });
     }
 
