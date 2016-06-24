@@ -610,7 +610,7 @@ export class Grid extends React.Component {
                 this.setState({skip: action.skip});
                 break;
             case "toggle-sort":
-                let newColumnConfig = _.extend({}, this.state.columns);
+                let newColumnConfig = Object.assign({}, this.state.columns);
                 let sortApplied = false;
                 Object.keys(newColumnConfig).each((key)=> {
                     const value = newColumnConfig[key];
