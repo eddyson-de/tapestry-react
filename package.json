@@ -3,8 +3,13 @@
   "version": "0.1.6",
   "description": "Redux Compatible React Grid Component",
   "main": "dist/Ardagryd.umd.js",
-    "files": ["dist","Ardagryd.js", "README", "LICENSE"],
-    "repository": "https://github.com/eddyson-de/react-grid",
+  "files": [
+    "dist",
+    "Ardagryd.js",
+    "README",
+    "LICENSE"
+  ],
+  "repository": "https://github.com/eddyson-de/react-grid",
   "scripts": {
     "prepublish": "mkdir -p dist && babel --plugins=transform-es2015-modules-umd Ardagryd.js --out-file ./dist/Ardagryd.umd.js --source-maps",
     "dev": "webpack-dev-server --progress --profile --colors --hot",
@@ -25,9 +30,9 @@
     "react-prop-types": "^0.3.2",
     "react-select": "^1.0.0-beta13"
   },
-    "peerDependencies": {
-        "react": "^15.1.0"
-    },
+  "peerDependencies": {
+    "react": "^15.1.0"
+  },
   "devDependencies": {
     "babel-cli": "^6.0.0",
     "babel-core": "6.10.4",
@@ -38,7 +43,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.6.5",
     "babel-plugin-transform-es2015-modules-umd": "^6.0.0",
     "babel-preset-es2015": "6.9.0",
-    "babel-preset-react": "6.5.0",
+    "babel-preset-react": "6.11.0",
     "css-loader": "0.23.1",
     "file-loader": "0.9.0",
     "jest-cli": "^13.0.0",
@@ -52,9 +57,9 @@
     "url-loader": "0.5.7",
     "webpack": "1.13.1",
     "webpack-dev-server": "1.14.1",
-      "faker": "^3.0.1",
-      "node-libs-browser": "1.0.0",
-      "react-dom": "^15.1.0",
-      "bootstrap": "3.3.6"
+    "faker": "^3.0.1",
+    "node-libs-browser": "1.0.0",
+    "react-dom": "^15.1.0",
+    "bootstrap": "3.3.6"
   }
 }
