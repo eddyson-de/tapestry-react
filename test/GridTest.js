@@ -468,6 +468,52 @@ describe('Grid render tests', function(){
     should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly('<span class="custom">John Doe</span>');
   });
   
+  it('Can use a bound function as displayValueGetter', function (){
+    
+    class Renderer extends React.Component {
+      
+      constructor(props){
+        super(props);
+      }
+      
+      render(){
+        return <span className="custom">{this.props.value}</span>;
+      }
+      
+    }
+    
+    class Foo extends React.Component {
+      
+      constructor(props){
+        super(props);
+        this.createRenderer = this.createRenderer.bind(this);
+      }
+      
+      createRenderer({value}){
+        return <Renderer value={value} />;
+      }
+      
+      render(){
+        return <Grid objects={[{name: "John Doe"}]} columns={{
+          name: {
+            order: 0,
+            displayValueGetter: this.createRenderer
+          }
+          }} config={{}}/>;
+      }
+      
+    }
+    
+    let grid = TestUtils.renderIntoDocument(
+      <Foo />
+    );
+
+    let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
+    let tbodyDOM = ReactDOM.findDOMNode(tbody);
+
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly('<span class="custom">John Doe</span>');
+  });
+  
   it('Should not jump to the first page if the props don\'t change', function (){
     let people = [{"name": "John"}, {"name": "Jack"}];
     let [container, instance] = renderInContainer(Grid, { objects: people, columns: {}, config: {paging: 1} });

@@ -196,7 +196,7 @@ const GridBody=(props)=>{
                 }
                 const args = {columns:props.columns, columnName:key, config:props.config, value:current[key], object:current};
                 let value;
-                if (displayValueGetter.prototype.isReactComponent){
+                if (displayValueGetter.prototype instanceof React.Component){
                     value = React.createElement(displayValueGetter, args);
                 }else{
                     value = displayValueGetter(args);
