@@ -101,8 +101,8 @@ const Ardagryd = (props)=>{
             }).sort((a,b) => {
                 const configForA = columnConfig[a];
                 const configForB = columnConfig[b];
-                let valueForA = configForA && configForA.order ? configForA.order : 1000;
-                let valueForB = configForB && configForB.order ? configForB.order : 1000;
+                let valueForA = configForA && configForA.order != null ? configForA.order : 1000;
+                let valueForB = configForB && configForB.order != null ? configForB.order : 1000;
                 return valueForA-valueForB;
             });
         }

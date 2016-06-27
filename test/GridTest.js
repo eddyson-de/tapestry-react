@@ -485,4 +485,23 @@ describe('Grid render tests', function(){
     should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly("Jack");
   });
 
+  it('Should order columns with order 0 before columns with order 1', function (){
+
+    let grid = TestUtils.renderIntoDocument(
+      <Grid objects={[{"first": "John", "last": "Doe"}]} columns={{
+        first: {
+          order: 0
+        },
+        last: {
+          order: 1
+        }
+        }} config={{}}/>
+    );
+
+    let tbody = TestUtils.scryRenderedDOMComponentsWithTag(grid, "tbody")[0];
+    let tbodyDOM = ReactDOM.findDOMNode(tbody);
+
+    should(tbodyDOM.childNodes[0].childNodes[0].innerHTML).be.exactly('John');
+  });
+  
 });
