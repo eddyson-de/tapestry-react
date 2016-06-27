@@ -454,7 +454,6 @@ class Filter extends React.Component {
         this.setState({filterValue: event.target.value});
         if (this.timeout){
             window.clearTimeout(this.timeout);
-            console.info("clear timeout");
             this.timeout = null
         }
         this.timeout = window.setTimeout(()=>{
