@@ -27,8 +27,7 @@
   "dependencies": {
     "deepmerge": "^0.2.10",
     "react-bootstrap": "^0.29.4",
-    "react-prop-types": "^0.3.2",
-    "react-select": "^1.0.0-beta13"
+    "react-prop-types": "^0.3.2"
   },
   "peerDependencies": {
     "react": "^15.1.0"
