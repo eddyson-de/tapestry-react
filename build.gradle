@@ -1,12 +1,12 @@
 plugins {
-    id "com.jfrog.bintray" version "1.6"
+    id "com.jfrog.bintray" version "1.7"
     id "com.moowork.node" version "0.12"
 }
 
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.9.3"
+version = "0.10.0"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -54,7 +54,7 @@ dependencies {
   testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$versions.selenium"
   
   testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
-  testRuntime "cglib:cglib-nodep:3.2.3"
+  testRuntime "cglib:cglib-nodep:3.2.4"
   testRuntime 'org.objenesis:objenesis:2.4'
 }
 
