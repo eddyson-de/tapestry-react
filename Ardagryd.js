@@ -439,6 +439,7 @@ class Filter extends React.Component {
 
     constructor(props){
         super(props);
+        this.state = {filterValue : this.props.query};
         this.inputChanged = this.inputChanged.bind(this);
     }
 
@@ -450,26 +451,27 @@ class Filter extends React.Component {
     }
 
     inputChanged(event){
+        this.setState({filterValue: event.target.value});
         if (this.timeout){
             window.clearTimeout(this.timeout);
+            console.info("clear timeout");
             this.timeout = null
         }
-        const value = event.target.value;
-        window.setTimeout(()=>{
+        this.timeout = window.setTimeout(()=>{
             this.props.config.eventHandler(
                 {
                     type:"filter-change",
                     id: this.props.config.id,
                     column: this.props.column,
-                    query: value
+                    query: this.state.filterValue
                 }
             );
-        }, 500);
+        }, 300);
     }
 
     render(){
         return(
-            <FormControl id={"filter_for_"+this.props.column} type="search" key={this.props.column} value={this.props.query} onChange={this.inputChanged} placeholder={"Filter..."} />
+            <FormControl id={"filter_for_"+this.props.column} type="search" key={this.props.column} value={this.state.filterValue} onChange={this.inputChanged} placeholder={"Filter..."} />
         )
     }
 };
