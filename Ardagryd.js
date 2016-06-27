@@ -1,6 +1,11 @@
 import React from 'react'
-import { Input, Glyphicon, Button, FormControl, Table, Pagination } from 'react-bootstrap'
-import { elementType } from 'react-prop-types';
+import Input from 'react-bootstrap/lib/Input'
+import Glyphicon from 'react-bootstrap/lib/Glyphicon'
+import Button from 'react-bootstrap/lib/Button'
+import FormControl from 'react-bootstrap/lib/FormControl'
+import Table from 'react-bootstrap/lib/Table'
+import Pagination from 'react-bootstrap/lib/Pagination'
+import elementType from 'react-prop-types/lib/elementType';
 import merge from 'deepmerge'
 
 const ASCENDING = "asc";
