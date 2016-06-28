@@ -6,7 +6,7 @@ plugins {
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.10.1"
+version = "0.10.2"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -75,7 +75,7 @@ task compileCoffeeScript(type: NodeTask, dependsOn: npmInstall) {
 def generatedCompiler = "$generatedJavaScriptDir/de/eddyson/tapestry/react/services/browser.js"
 
 task createBabelBrowserPackage(type: NodeTask, dependsOn: npmInstall) {
-  inputs.property 'version', versions.babel
+  inputs.file 'package.json'
   inputs.file "src/main/resources/de/eddyson/tapestry/react/services/babel-compiler-wrapper.js"
   outputs.file generatedCompiler
 
