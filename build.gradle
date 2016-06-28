@@ -1,12 +1,12 @@
 plugins {
     id "com.jfrog.bintray" version "1.7"
-    id "com.moowork.node" version "0.12"
+    id "com.moowork.node" version "0.13"
 }
 
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.10.0"
+version = "0.10.1"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
