@@ -62,7 +62,8 @@ public final class ReactModule {
     if (productionMode) {
       // issue #5
       final Resource reactResourceRef = reactResource;
-      final Pattern development = Pattern.compile(Pattern.quote("\"development\" !== 'production'"));
+      final Pattern development = Pattern
+          .compile("(?:\\Q\"development\" !== 'production'\\E)|(?:\\Q\"development\" === 'test'\\E)");
       reactResource = new VirtualResource() {
 
         @Override
@@ -90,7 +91,7 @@ public final class ReactModule {
       final ResourceTransformerFactory factory, final ObjectLocator objectLocator,
       @Autobuild final CJSXCompiler cjsxCompiler,
       @Symbol(ReactSymbols.USE_NODE_IF_AVAILABLE) final boolean useNodeIfAvailable)
-          throws InterruptedException, IOException {
+      throws InterruptedException, IOException {
     // contribution ids are file extensions:
 
     boolean canUseNode = false;

@@ -13,7 +13,7 @@ apply plugin: 'maven'
 
 
 def versions= [
-  react: '15.2.1',
+  react: '15.3.0',
   webjars: '0.9.4',
   tapestry: '5.4.1',
   slf4j: '1.7.21',
