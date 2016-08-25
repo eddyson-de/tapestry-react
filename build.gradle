@@ -135,6 +135,10 @@ task runTestApp(type:JavaExec) {
   classpath = configurations.testRuntime + sourceSets.test.output + sourceSets.main.output
 }
 
+clean {
+  delete 'node_modules'
+}
+
 bintray {
     user = project.properties.bintrayUser
     key = project.properties.bintrayAPIKey
