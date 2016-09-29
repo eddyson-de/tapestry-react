@@ -15,7 +15,7 @@ respositories {
 }
 
 dependencies {
-  runtime 'de.eddyson:tapestry-react:0.12.3'
+  runtime 'de.eddyson:tapestry-react:0.13.0'
 }
 
 ```
