@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.tapestry5.ContentType;
+import org.apache.tapestry5.SymbolConstants;
 import org.apache.tapestry5.annotations.Path;
 import org.apache.tapestry5.internal.InternalConstants;
 import org.apache.tapestry5.internal.webresources.RhinoExecutor;
@@ -29,6 +30,8 @@ public class BabelCompiler implements ResourceTransformer {
 
   private final boolean useColoredOutput;
 
+  private final boolean productionMode;
+
   @Override
   public ContentType getTransformedContentType() {
     return InternalConstants.JAVASCRIPT_CONTENT_TYPE;
@@ -36,9 +39,11 @@ public class BabelCompiler implements ResourceTransformer {
 
   public BabelCompiler(final OperationTracker tracker,
       @Path("de/eddyson/tapestry/react/services/browser.js") final Resource mainCompiler,
-      @Symbol(ReactSymbols.USE_COLORED_BABEL_OUTPUT) final boolean useColoredOutput) {
+      @Symbol(ReactSymbols.USE_COLORED_BABEL_OUTPUT) final boolean useColoredOutput,
+      @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode) {
     this.useColoredOutput = useColoredOutput;
-    executorPool = new RhinoExecutorPool(tracker, Arrays.<Resource> asList(mainCompiler));
+    this.productionMode = productionMode;
+    executorPool = new RhinoExecutorPool(tracker, Arrays.<Resource>asList(mainCompiler));
   }
 
   private static String getString(final NativeObject object, final String key) {
@@ -84,7 +89,7 @@ public class BabelCompiler implements ResourceTransformer {
     try {
 
       NativeObject result = (NativeObject) executor.invokeFunction("compileJSX", content, source.toString(),
-          isES6Module, useColoredOutput, withReact);
+          isES6Module, useColoredOutput, withReact, productionMode);
 
       if (result.containsKey("exception")) {
         throw new RuntimeException(getString(result, "exception"));

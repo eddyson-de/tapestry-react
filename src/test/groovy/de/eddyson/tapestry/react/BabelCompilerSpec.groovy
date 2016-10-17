@@ -73,6 +73,33 @@ ReactDOM.render(React.createElement(
   }
 
 
+  def "Development code is removed in production"(){
+    setup:
+
+    def resource = new ClasspathResource("de/eddyson/tapestry/react/module-with-dev-code.jsm")
+
+    expect:
+    resource.exists()
+
+    when:
+    def result = babelCompiler.transform(resource, null)
+    then:
+    result.text == '''define(["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  var _exports = {};
+  if (false) {
+    _exports.dev = "yes";
+  }
+
+  exports.default = _exports;
+});'''
+  }
+
+
   public static class TestModule {
 
     def contributeApplicationDefaults(MappedConfiguration configuration){

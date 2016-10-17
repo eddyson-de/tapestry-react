@@ -9,6 +9,7 @@ import java.nio.file.Files;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.tapestry5.ContentType;
+import org.apache.tapestry5.SymbolConstants;
 import org.apache.tapestry5.annotations.Path;
 import org.apache.tapestry5.internal.InternalConstants;
 import org.apache.tapestry5.ioc.OperationTracker;
@@ -27,6 +28,8 @@ public class NodeBabelCompiler implements ResourceTransformer {
 
   private final String compilerText;
 
+  private final boolean productionMode;
+
   @Override
   public ContentType getTransformedContentType() {
     return InternalConstants.JAVASCRIPT_CONTENT_TYPE;
@@ -34,9 +37,11 @@ public class NodeBabelCompiler implements ResourceTransformer {
 
   public NodeBabelCompiler(final OperationTracker tracker,
       @Path("de/eddyson/tapestry/react/services/browser.js") final Resource mainCompiler,
-      @Symbol(ReactSymbols.USE_COLORED_BABEL_OUTPUT) final boolean useColoredOutput)
-          throws InterruptedException, IOException {
+      @Symbol(ReactSymbols.USE_COLORED_BABEL_OUTPUT) final boolean useColoredOutput,
+      @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode) throws InterruptedException, IOException {
     this.useColoredOutput = useColoredOutput;
+    this.productionMode = productionMode;
+
     try (InputStream is = mainCompiler.openStream()) {
       this.compilerText = IOUtils.toString(is, StandardCharsets.UTF_8);
     }
@@ -82,10 +87,11 @@ public class NodeBabelCompiler implements ResourceTransformer {
       params.put("isES6Module", isES6Module);
       params.put("useColoredOutput", useColoredOutput);
       params.put("withReact", withReact);
+      params.put("productionMode", productionMode);
       bw.append("var params = " + params.toCompactString() + ";");
 
       bw.append(
-          "process.stdout.write(JSON.stringify(compileJSX(params.content, params.filename, params.isES6Module, params.useColoredOutput, params.withReact)));");
+          "process.stdout.write(JSON.stringify(compileJSX(params.content, params.filename, params.isES6Module, params.useColoredOutput, params.withReact, params.productionMode)));");
     }
 
     ProcessBuilder pb = new ProcessBuilder("node", tempFile.toString());

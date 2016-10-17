@@ -15,7 +15,7 @@ respositories {
 }
 
 dependencies {
-  runtime 'de.eddyson:tapestry-react:0.14.0'
+  runtime 'de.eddyson:tapestry-react:0.15.0'
 }
 
 ```
@@ -78,6 +78,18 @@ export default class HelloMessage extends React.Component {
 }
 
 ```
+## Development code
+If you want code to be executed only in development mode but not in production, you can use the `__DEV__` pseudo variable:
+```javascript
+
+if (__DEV__) {
+  MyComponent.propTypes = {
+    ...
+  }
+}
+
+```
+This will be compiled to `if (true)` or `if (false)` depending on the value of the `tapestry.production-mode` symbol.
 
 ## Demo?
 Unfortunately, there is no live demo available, but the test application can be examined by running `./gradlew runTestApp` and pointing your browser to `http://localhost:9040/`.

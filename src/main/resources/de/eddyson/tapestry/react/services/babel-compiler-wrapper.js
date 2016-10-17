@@ -2,10 +2,15 @@ var Babel = require("babel-core");
 var react = require("babel-preset-react");
 var es2015 = require("babel-preset-es2015");
 var amd = require("babel-plugin-transform-es2015-modules-amd")
+var inlineReplaceVariables = require("babel-plugin-inline-replace-variables")
 
-compileJSX = function(input, filename, outputamd, useColoredOutput, loadReactPreset) {
+compileJSX = function(input, filename, outputamd, useColoredOutput, loadReactPreset, productionMode) {
     try {
-        var plugins = [];
+        var plugins = [
+          [inlineReplaceVariables, {
+            "__DEV__": !productionMode
+          }]
+        ];
         if (outputamd){
           plugins.push(amd);
         }

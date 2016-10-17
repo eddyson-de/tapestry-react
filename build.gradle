@@ -1,12 +1,12 @@
 plugins {
-    id "com.jfrog.bintray" version "1.7.1"
+    id "com.jfrog.bintray" version "1.7.2"
     id "com.moowork.node" version "0.13"
 }
 
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.14.0"
+version = "0.15.0"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -14,7 +14,7 @@ apply plugin: 'maven'
 
 def versions= [
   react: '15.3.2',
-  webjars: '0.9.5',
+  webjars: '1.0.0-rc2',
   tapestry: '5.4.1',
   slf4j: '1.7.21',
   
