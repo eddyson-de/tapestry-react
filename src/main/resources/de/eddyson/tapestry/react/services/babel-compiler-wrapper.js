@@ -21,6 +21,7 @@ compileJSX = function(input, filename, outputamd, useColoredOutput, loadReactPre
         var config = {filename: filename,
                       compact: false,
                       ast: false,
+                      babelrc: false,
                       presets: presets,
                       plugins: plugins,
                       highlightCode: useColoredOutput};
