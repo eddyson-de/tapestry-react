@@ -52,13 +52,19 @@ public final class ReactModule {
   @Contribute(ModuleManager.class)
   public static void setupJSModules(final MappedConfiguration<String, JavaScriptModuleConfiguration> configuration,
       final AssetSource assetSource, @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode,
+      @Symbol(ReactSymbols.USE_REACT_WITH_ADDONS) final boolean useReactWithAddons,
       @Symbol(ReactSymbols.REACT_ASSET_PATH) final String reactAssetPath,
       @Symbol(ReactSymbols.REACT_ASSET_PATH_PRODUCTION) final String reactAssetPathProduction,
+      @Symbol(ReactSymbols.REACT_WITH_ADDONS_ASSET_PATH) final String reactWithAddonsAssetPath,
+      @Symbol(ReactSymbols.REACT_WITH_ADDONS_ASSET_PATH_PRODUCTION) final String reactWithAddonsAssetPathProduction,
       @Symbol(ReactSymbols.REACT_DOM_ASSET_PATH) final String reactDomAssetPath,
       @Symbol(ReactSymbols.REACT_DOM_ASSET_PATH_PRODUCTION) final String reactDomAssetPathProduction) {
 
-    configuration.add("react", new JavaScriptModuleConfiguration(
-        assetSource.resourceForPath(productionMode ? reactAssetPathProduction : reactAssetPath)));
+    String reactAssetPathToUse = useReactWithAddons
+        ? (productionMode ? reactWithAddonsAssetPathProduction : reactWithAddonsAssetPath)
+        : (productionMode ? reactAssetPathProduction : reactAssetPath);
+
+    configuration.add("react", new JavaScriptModuleConfiguration(assetSource.resourceForPath(reactAssetPathToUse)));
     configuration.add("react-dom", new JavaScriptModuleConfiguration(
         assetSource.resourceForPath(productionMode ? reactDomAssetPathProduction : reactDomAssetPath)));
   }
@@ -114,8 +120,12 @@ public final class ReactModule {
   public static void setupDefaultConfiguration(final MappedConfiguration<String, Object> configuration) {
     configuration.add(ReactSymbols.USE_COLORED_BABEL_OUTPUT, true);
     configuration.add(ReactSymbols.USE_NODE_IF_AVAILABLE, true);
+    configuration.add(ReactSymbols.USE_REACT_WITH_ADDONS, false);
     configuration.add(ReactSymbols.REACT_ASSET_PATH, "webjars:react:$version/react.js");
     configuration.add(ReactSymbols.REACT_ASSET_PATH_PRODUCTION, "webjars:react:$version/react.min.js");
+    configuration.add(ReactSymbols.REACT_WITH_ADDONS_ASSET_PATH, "webjars:react:$version/react-with-addons.js");
+    configuration.add(ReactSymbols.REACT_WITH_ADDONS_ASSET_PATH_PRODUCTION,
+        "webjars:react:$version/react-with-addons.min.js");
     configuration.add(ReactSymbols.REACT_DOM_ASSET_PATH, "webjars:react:$version/react-dom.js");
     configuration.add(ReactSymbols.REACT_DOM_ASSET_PATH_PRODUCTION, "webjars:react:$version/react-dom.min.js");
   }
