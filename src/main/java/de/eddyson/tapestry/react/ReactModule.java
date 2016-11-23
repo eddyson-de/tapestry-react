@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.tapestry5.Link;
 import org.apache.tapestry5.MarkupWriter;
 import org.apache.tapestry5.SymbolConstants;
@@ -19,7 +17,6 @@ import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.ObjectLocator;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
-import org.apache.tapestry5.ioc.Resource;
 import org.apache.tapestry5.ioc.annotations.Autobuild;
 import org.apache.tapestry5.ioc.annotations.Contribute;
 import org.apache.tapestry5.ioc.annotations.Symbol;
@@ -56,34 +53,14 @@ public final class ReactModule {
   public static void setupJSModules(final MappedConfiguration<String, JavaScriptModuleConfiguration> configuration,
       final AssetSource assetSource, @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode,
       @Symbol(ReactSymbols.REACT_ASSET_PATH) final String reactAssetPath,
-      @Symbol(ReactSymbols.REACT_DOM_ASSET_PATH) final String reactDomAssetPath) {
+      @Symbol(ReactSymbols.REACT_ASSET_PATH_PRODUCTION) final String reactAssetPathProduction,
+      @Symbol(ReactSymbols.REACT_DOM_ASSET_PATH) final String reactDomAssetPath,
+      @Symbol(ReactSymbols.REACT_DOM_ASSET_PATH_PRODUCTION) final String reactDomAssetPathProduction) {
 
-    Resource reactResource = assetSource.resourceForPath(reactAssetPath);
-    if (productionMode) {
-      // issue #5
-      final Resource reactResourceRef = reactResource;
-      final Pattern development = Pattern
-          .compile("(?:\\Q\"development\" !== 'production'\\E)|(?:\\Q\"development\" === 'test'\\E)");
-      reactResource = new VirtualResource() {
-
-        @Override
-        public InputStream openStream() throws IOException {
-          try (InputStream reactResourceStream = reactResourceRef.openStream()) {
-            String content = IOUtils.toString(reactResourceStream, StandardCharsets.UTF_8);
-            String alteredContent = development.matcher(content).replaceAll("false");
-            return IOUtils.toInputStream(alteredContent, StandardCharsets.UTF_8);
-          }
-        }
-
-        @Override
-        public String getFile() {
-          return "react-production.generated.js";
-        }
-      };
-    }
-
-    configuration.add("react", new JavaScriptModuleConfiguration(reactResource));
-    configuration.add("react-dom", new JavaScriptModuleConfiguration(assetSource.resourceForPath(reactDomAssetPath)));
+    configuration.add("react", new JavaScriptModuleConfiguration(
+        assetSource.resourceForPath(productionMode ? reactAssetPathProduction : reactAssetPath)));
+    configuration.add("react-dom", new JavaScriptModuleConfiguration(
+        assetSource.resourceForPath(productionMode ? reactDomAssetPathProduction : reactDomAssetPath)));
   }
 
   @Contribute(StreamableResourceSource.class)
@@ -138,7 +115,9 @@ public final class ReactModule {
     configuration.add(ReactSymbols.USE_COLORED_BABEL_OUTPUT, true);
     configuration.add(ReactSymbols.USE_NODE_IF_AVAILABLE, true);
     configuration.add(ReactSymbols.REACT_ASSET_PATH, "webjars:react:$version/react.js");
+    configuration.add(ReactSymbols.REACT_ASSET_PATH_PRODUCTION, "webjars:react:$version/react.min.js");
     configuration.add(ReactSymbols.REACT_DOM_ASSET_PATH, "webjars:react:$version/react-dom.js");
+    configuration.add(ReactSymbols.REACT_DOM_ASSET_PATH_PRODUCTION, "webjars:react:$version/react-dom.min.js");
   }
 
   @Contribute(ModuleManager.class)
