@@ -57,6 +57,23 @@ define ['react'], (React)->
 </html>
 ```
 
+## Experimental isomorphic (serverside) rendering of components
+
+With Java 8 and its Nashorn engine it's possible to pre-render React components on the server to avoid flickering and provide better support for search engines. This feature is highly experimental and has only been tested with the latest Java 8 versions from Oracle.
+
+### Support for require JS and AMD modules.
+
+To support the rendering process we have added r.js from https://github.com/requirejs/r.js and some polyfills for provide basic requirejs compatibility in Nashorn. Still, several features are not available for rendering components on the server like a window object and some libraries are known not to work because of these restrictions.
+
+You should not use any functionality for rendering componments that can only work in a complete browser environment. Instead, you should put all code that interacts with browser-related objects and functions in your `componentDidMount` functions or similar event handlers.
+
+### Usage
+
+Simply add set the `isomorphic` parameter of the `ReactComponent` to true:
+```html
+<r:reactcomponent module="testapp/Hello" name="John" isomorphic="true" />
+```
+
 ## ECMAScript 6 modules => AMD
 If you want to write your classes as ES6 rather than AMD moudules, just use the `.jsxm` file extension to switch the transpiler to AMD output.
 

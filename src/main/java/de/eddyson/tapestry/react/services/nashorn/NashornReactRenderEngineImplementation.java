@@ -29,6 +29,7 @@ public class NashornReactRenderEngineImplementation implements NashornReactRende
   private final ResourceChangeTracker tracker;
   private final ModuleManager moduleManager;
   private final AssetSource assetSource;
+  
   private ScriptEngine _engine;
   private SimpleBindings _bindings;
 
@@ -46,27 +47,35 @@ public class NashornReactRenderEngineImplementation implements NashornReactRende
     Stopwatch watch = Stopwatch.createStarted();
     try {
       StringBuilder builder = new StringBuilder();
-
       builder.append("var reactResult = null;\n");
-      builder.append("require(['eddyson/react/isomorphic/run', '%1$s'], function(ri) { reactResult = ri('%1$s', %2$s); } );\n");
+      builder.append(
+          "require(['eddyson/react/isomorphic/run', '%1$s'], function(ri) { reactResult = ri('%1$s', %2$s); } );\n");
       builder.append("reactResult;");
       String script = String.format(builder.toString(), moduleName, parameters.toCompactString());
       ScriptEngine engine = getEngine();
       Bindings bindings = copyGlobalBindings();
       Object result = engine.eval(script, bindings);
       if (result == null) {
-        this._engine = null; // something went wrong
+        resetEngine();
         return null;
       }
       return result.toString();
     } catch (Throwable e) {
-      this._engine = null; // something went wrong
+      resetEngine();
       throw new RuntimeException(e);
     } finally {
       log.info("Rendering module '" + moduleName + "' took " + watch.toString());
     }
   }
 
+  // when an exception occurs while rendering react component discard the engine
+  // require.js set's some internal timeout values for modules that could not be loaded and
+  // throws an exception on next invocation of that module
+  private void resetEngine() {
+    this._engine = null; 
+  }
+
+  // TODO: check if necessary or if fresh bindings would work too...
   private Bindings copyGlobalBindings() {
     Bindings bindingsCopy = new SimpleBindings();
     bindingsCopy.putAll(this._bindings);
@@ -88,9 +97,17 @@ public class NashornReactRenderEngineImplementation implements NashornReactRende
     ScriptEngine nashorn = new ScriptEngineManager().getEngineByName("nashorn");
     Map<String, Object> data = Maps.newHashMap();
     this._bindings = new SimpleBindings(data);
+    
+    // "__tapestry" is available in JavaScript code to load AMD modules from Tapestry's ModuleManager
     data.put("__tapestry", buildNashornModuleLoader(nashorn));
+    
+    // polyfill.js contains some basic polyfills
     nashorn.eval(read("META-INF/modules/eddyson/react/isomorphic/polyfill.js"), this._bindings);
+    
+    // r.js is the server side implementaiton of require.js for Nashorn/Rhino/Node
     nashorn.eval(read("META-INF/modules/eddyson/react/isomorphic/r.js"), this._bindings);
+    
+    // r-config.js injects the tapestry module loading mechanism in the r.js implementation
     nashorn.eval(read("META-INF/modules/eddyson/react/isomorphic/r-config.js"), this._bindings);
     return nashorn;
   }
