@@ -6,7 +6,7 @@ plugins {
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.18.0-SNAPSHOT"
+version = "0.18.0"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -150,19 +150,4 @@ bintray {
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/eddyson-de/tapestry-react'
     }
-}
-
-uploadArchives {
-  // We need to set the variables if not present
-  ext.snapshot_repository = project.hasProperty('snapshot-repository') ? project.property('snapshot-repository') : ''
-  ext.snapshot_repository_username = project.hasProperty('snapshot-repository-username') ? project.property('snapshot-repository-username') : ''
-  ext.snapshot_repository_password = project.hasProperty('snapshot-repository-password') ? project.property('snapshot-repository-password') : ''
-
-  repositories {
-      mavenDeployer {
-          snapshotRepository(url: snapshot_repository) {
-              authentication(userName: snapshot_repository_username, password: snapshot_repository_password)
-          }
-      }
-  }
 }
