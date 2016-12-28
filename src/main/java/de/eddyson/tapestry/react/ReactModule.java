@@ -73,8 +73,7 @@ public final class ReactModule {
   public static void provideCompilers(final MappedConfiguration<String, ResourceTransformer> configuration,
       final ResourceTransformerFactory factory, final ObjectLocator objectLocator,
       @Autobuild final CJSXCompiler cjsxCompiler,
-      @Symbol(ReactSymbols.USE_NODE_IF_AVAILABLE) final boolean useNodeIfAvailable)
-      throws InterruptedException, IOException {
+      @Symbol(ReactSymbols.USE_NODE_IF_AVAILABLE) final boolean useNodeIfAvailable) throws InterruptedException {
     // contribution ids are file extensions:
 
     boolean canUseNode = false;
