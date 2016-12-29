@@ -47,7 +47,7 @@ import de.eddyson.tapestry.react.requestfilters.ReactAPIFilter;
 import de.eddyson.tapestry.react.services.BabelCompiler;
 import de.eddyson.tapestry.react.services.CJSXCompiler;
 import de.eddyson.tapestry.react.services.NodeBabelCompiler;
-import de.eddyson.tapestry.react.services.nashorn.NashornReactRenderEngine;
+import de.eddyson.tapestry.react.services.nashorn.ReactRenderEngine;
 import de.eddyson.tapestry.react.services.nashorn.NashornReactRenderEngineImplementation;
 
 public final class ReactModule {
@@ -55,7 +55,7 @@ public final class ReactModule {
   private final static Logger logger = LoggerFactory.getLogger(ReactModule.class);
 
   public static void bind(ServiceBinder binder) {
-    binder.bind(NashornReactRenderEngine.class, NashornReactRenderEngineImplementation.class);
+    binder.bind(ReactRenderEngine.class, NashornReactRenderEngineImplementation.class);
   }
 
   @Contribute(ModuleManager.class)
@@ -68,18 +68,20 @@ public final class ReactModule {
       @Symbol(ReactSymbols.REACT_WITH_ADDONS_ASSET_PATH_PRODUCTION) final String reactWithAddonsAssetPathProduction,
       @Symbol(ReactSymbols.REACT_DOM_ASSET_PATH) final String reactDomAssetPath,
       @Symbol(ReactSymbols.REACT_DOM_ASSET_PATH_PRODUCTION) final String reactDomAssetPathProduction,
-      @Path("webjars:react:react-dom-server.js") final Resource reactDomServer) {
+      @Path("webjars:react:$version/react-dom-server.js") final Resource reactDomServer,
+      @Path("de/eddyson/tapestry/react/services/isomorphic/run.js") final Resource reactRunServerRendering) {
 
     String reactAssetPathToUse = useReactWithAddons
         ? (productionMode ? reactWithAddonsAssetPathProduction : reactWithAddonsAssetPath)
         : (productionMode ? reactAssetPathProduction : reactAssetPath);
 
     configuration.add("react", new JavaScriptModuleConfiguration(assetSource.resourceForPath(reactAssetPathToUse)));
-    configuration.add("react-with-addons", new JavaScriptModuleConfiguration(
-        assetSource.resourceForPath(productionMode ? reactWithAddonsAssetPathProduction : reactWithAddonsAssetPath)));
     configuration.add("react-dom", new JavaScriptModuleConfiguration(
         assetSource.resourceForPath(productionMode ? reactDomAssetPathProduction : reactDomAssetPath)));
+    
+    // for isomorphic server side rendering:
     configuration.add("react-dom-server", new JavaScriptModuleConfiguration(reactDomServer));
+    configuration.add("eddyson/react/isomorphic/run", new JavaScriptModuleConfiguration(reactRunServerRendering));
   }
 
   @Contribute(StreamableResourceSource.class)

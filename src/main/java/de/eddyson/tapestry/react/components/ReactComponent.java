@@ -12,7 +12,7 @@ import org.apache.tapestry5.json.JSONObject;
 import org.apache.tapestry5.services.javascript.JavaScriptSupport;
 import org.apache.tapestry5.services.javascript.ModuleManager;
 
-import de.eddyson.tapestry.react.services.nashorn.NashornReactRenderEngine;
+import de.eddyson.tapestry.react.services.nashorn.ReactRenderEngine;
 
 @SupportsInformalParameters
 public class ReactComponent implements ClientElement {
@@ -36,7 +36,7 @@ public class ReactComponent implements ClientElement {
   private ModuleManager moduleManager;
 
   @Inject
-  private NashornReactRenderEngine nashornRenderEngine;
+  private ReactRenderEngine nashornRenderEngine;
 
   private String clientId;
 

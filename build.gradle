@@ -47,6 +47,7 @@ dependencies {
   compile "org.apache.tapestry:tapestry-webresources:$versions.tapestry"
   
   runtime "org.webjars.bower:react:$versions.react"
+  runtime 'org.webjars:requirejs-node:2.3.2'
 
   testCompile "javax.servlet:servlet-api:2.5"
   testCompile "org.spockframework:spock-tapestry:$versions.spock"

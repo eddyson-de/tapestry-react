@@ -1,6 +1,8 @@
 package de.eddyson.tapestry.react.services.nashorn;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 import javax.script.Bindings;
@@ -10,9 +12,11 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.tapestry5.annotations.Path;
 import org.apache.tapestry5.internal.services.assets.ResourceChangeTracker;
+import org.apache.tapestry5.ioc.Resource;
+import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.json.JSONObject;
-import org.apache.tapestry5.services.AssetSource;
 import org.apache.tapestry5.services.assets.StreamableResourceSource;
 import org.apache.tapestry5.services.javascript.ModuleManager;
 import org.slf4j.Logger;
@@ -21,25 +25,26 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Maps;
 
-public class NashornReactRenderEngineImplementation implements NashornReactRenderEngine {
+public class NashornReactRenderEngineImplementation implements ReactRenderEngine {
 
   private static final Logger log = LoggerFactory.getLogger(NashornReactRenderEngineImplementation.class);
 
   private final StreamableResourceSource srs;
   private final ResourceChangeTracker tracker;
   private final ModuleManager moduleManager;
-  private final AssetSource assetSource;
+  private final Resource rJsResource;
   
   private ScriptEngine _engine;
   private SimpleBindings _bindings;
 
-  public NashornReactRenderEngineImplementation(ModuleManager moduleManager, StreamableResourceSource srs,
-      ResourceChangeTracker tracker, AssetSource assetSource) {
+
+  public NashornReactRenderEngineImplementation(@Inject @Path("webjars:requirejs-node:$version/r.js") Resource rJsResource, ModuleManager moduleManager, StreamableResourceSource srs,
+      ResourceChangeTracker tracker) {
     super();
+    this.rJsResource = rJsResource;
     this.moduleManager = moduleManager;
     this.srs = srs;
     this.tracker = tracker;
-    this.assetSource = assetSource;
   }
 
   @Override
@@ -99,26 +104,37 @@ public class NashornReactRenderEngineImplementation implements NashornReactRende
     this._bindings = new SimpleBindings(data);
     
     // "__tapestry" is available in JavaScript code to load AMD modules from Tapestry's ModuleManager
-    data.put("__tapestry", buildNashornModuleLoader(nashorn));
+    NashornModuleLoader nashornModuleLoader = buildNashornModuleLoader(nashorn);
+    data.put("__tapestry", nashornModuleLoader);
     
     // polyfill.js contains some basic polyfills
-    nashorn.eval(read("META-INF/modules/eddyson/react/isomorphic/polyfill.js"), this._bindings);
+    nashorn.eval(read(classpathResource("de/eddyson/tapestry/react/services/isomorphic/polyfill.js")), this._bindings);
     
     // r.js is the server side implementaiton of require.js for Nashorn/Rhino/Node
-    nashorn.eval(read("META-INF/modules/eddyson/react/isomorphic/r.js"), this._bindings);
+    nashorn.eval(read(rJsResource.openStream()), this._bindings);
     
     // r-config.js injects the tapestry module loading mechanism in the r.js implementation
-    nashorn.eval(read("META-INF/modules/eddyson/react/isomorphic/r-config.js"), this._bindings);
+    nashorn.eval(read(classpathResource("de/eddyson/tapestry/react/services/isomorphic/r-config.js")), this._bindings);
+    
     return nashorn;
   }
 
   private NashornModuleLoader buildNashornModuleLoader(ScriptEngine nashorn) {
-    return new NashornModuleLoader(nashorn, this.moduleManager, this._bindings, this.srs, this.tracker,
-        this.assetSource);
+    return new NashornModuleLoader(nashorn, this.moduleManager, this._bindings, this.srs, this.tracker);
   }
 
-  private String read(String resource) throws IOException {
-    return IOUtils.toString(getClass().getClassLoader().getResourceAsStream(resource));
+  private String read(InputStream resource) throws IOException {
+    
+    try {
+      return IOUtils.toString(resource, Charset.forName("UTF-8"));
+    }
+    finally {
+      IOUtils.closeQuietly(resource);
+    }
+  }
+
+  private InputStream classpathResource(String resource) {
+    return getClass().getClassLoader().getResourceAsStream(resource);
   }
 
 }
