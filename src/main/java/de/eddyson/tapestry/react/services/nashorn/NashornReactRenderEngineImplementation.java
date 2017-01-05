@@ -3,9 +3,10 @@ package de.eddyson.tapestry.react.services.nashorn;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.script.Bindings;
+import javax.script.Invocable;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -23,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.Maps;
 
 public class NashornReactRenderEngineImplementation implements ReactRenderEngine {
 
@@ -32,16 +32,14 @@ public class NashornReactRenderEngineImplementation implements ReactRenderEngine
   private final StreamableResourceSource srs;
   private final ResourceChangeTracker tracker;
   private final ModuleManager moduleManager;
-  private final Resource rJsResource;
-  
+
   private ScriptEngine _engine;
-  private SimpleBindings _bindings;
 
+  private AtomicInteger ai = new AtomicInteger(0);
 
-  public NashornReactRenderEngineImplementation(@Inject @Path("webjars:requirejs-node:$version/r.js") Resource rJsResource, ModuleManager moduleManager, StreamableResourceSource srs,
+  public NashornReactRenderEngineImplementation(ModuleManager moduleManager, StreamableResourceSource srs,
       ResourceChangeTracker tracker) {
     super();
-    this.rJsResource = rJsResource;
     this.moduleManager = moduleManager;
     this.srs = srs;
     this.tracker = tracker;
@@ -51,40 +49,27 @@ public class NashornReactRenderEngineImplementation implements ReactRenderEngine
   public String renderReactComponent(String moduleName, JSONObject parameters) {
     Stopwatch watch = Stopwatch.createStarted();
     try {
-      StringBuilder builder = new StringBuilder();
-      builder.append("var reactResult = null;\n");
-      builder.append(
-          "require(['eddyson/react/isomorphic/run', '%1$s'], function(ri) { reactResult = ri('%1$s', %2$s); } );\n");
-      builder.append("reactResult;");
-      String script = String.format(builder.toString(), moduleName, parameters.toCompactString());
+
       ScriptEngine engine = getEngine();
-      Bindings bindings = copyGlobalBindings();
-      Object result = engine.eval(script, bindings);
+      Object result = ((Invocable) engine).invokeFunction("TAPESTRY_REACT_RENDER", moduleName,
+          parameters.toCompactString());
       if (result == null) {
         resetEngine();
         return null;
       }
+      log.info("Rendering module '{}' took {}", moduleName, watch);
       return result.toString();
     } catch (Throwable e) {
       resetEngine();
       throw new RuntimeException(e);
-    } finally {
-      log.info("Rendering module '{}' took {}", moduleName, watch);
     }
   }
 
   // when an exception occurs while rendering react component discard the engine
-  // require.js set's some internal timeout values for modules that could not be loaded and
-  // throws an exception on next invocation of that module
+  // require.js set's some internal timeout values for modules that could not be
+  // loaded and throws an exception on next invocation of that module
   private void resetEngine() {
-    this._engine = null; 
-  }
-
-  // TODO: check if necessary or if fresh bindings would work too...
-  private Bindings copyGlobalBindings() {
-    Bindings bindingsCopy = new SimpleBindings();
-    bindingsCopy.putAll(this._bindings);
-    return bindingsCopy;
+    this._engine = null;
   }
 
   private ScriptEngine getEngine() throws ScriptException, IOException {
@@ -99,36 +84,39 @@ public class NashornReactRenderEngineImplementation implements ReactRenderEngine
   }
 
   private ScriptEngine buildEngine() throws ScriptException, IOException {
+
     ScriptEngine nashorn = new ScriptEngineManager().getEngineByName("nashorn");
-    Map<String, Object> data = Maps.newHashMap();
-    this._bindings = new SimpleBindings(data);
-    
-    // "__tapestry" is available in JavaScript code to load AMD modules from Tapestry's ModuleManager
-    NashornModuleLoader nashornModuleLoader = buildNashornModuleLoader(nashorn);
-    data.put("__tapestry", nashornModuleLoader);
-    
+    // "__tapestry" is available in JavaScript code to load AMD modules from
+    // Tapestry's ModuleManager
+    ModuleLoader nashornModuleLoader = buildNashornModuleLoader(nashorn);
+    nashorn.getBindings(ScriptContext.ENGINE_SCOPE).put("__tapestry", nashornModuleLoader);
+
     // polyfill.js contains some basic polyfills
-    nashorn.eval(read(classpathResource("de/eddyson/tapestry/react/services/isomorphic/polyfill.js")), this._bindings);
-    
-    // r.js is the server side implementaiton of require.js for Nashorn/Rhino/Node
-    nashorn.eval(read(rJsResource.openStream()), this._bindings);
-    
-    // r-config.js injects the tapestry module loading mechanism in the r.js implementation
-    nashorn.eval(read(classpathResource("de/eddyson/tapestry/react/services/isomorphic/r-config.js")), this._bindings);
-    
+    nashorn.eval(read(classpathResource("de/eddyson/tapestry/react/services/isomorphic/polyfill.js")));
+
+    // r.js is the server side implementaiton of require.js for
+    // Nashorn/Rhino/Node
+    // this is a patched verfsion, see r.js-README.md
+    nashorn.eval(read(classpathResource("de/eddyson/tapestry/react/services/isomorphic/r-patched.js")));
+
+    // r-config.js injects the tapestry module loading mechanism in the r.js
+    // implementation
+    nashorn.eval(read(classpathResource("de/eddyson/tapestry/react/services/isomorphic/r-config.js")));
+
+    // run.js is a wrapper around react-dom-server to render html for components
+    // on server
+    nashorn.eval(read(classpathResource("de/eddyson/tapestry/react/services/isomorphic/run.js")));
     return nashorn;
   }
 
-  private NashornModuleLoader buildNashornModuleLoader(ScriptEngine nashorn) {
-    return new NashornModuleLoader(nashorn, this.moduleManager, this._bindings, this.srs, this.tracker);
+  private ModuleLoader buildNashornModuleLoader(ScriptEngine nashorn) {
+    return new NashornModuleLoader(nashorn, this.moduleManager, this.srs, this.tracker);
   }
 
   private String read(InputStream resource) throws IOException {
-    
     try {
       return IOUtils.toString(resource, Charset.forName("UTF-8"));
-    }
-    finally {
+    } finally {
       IOUtils.closeQuietly(resource);
     }
   }

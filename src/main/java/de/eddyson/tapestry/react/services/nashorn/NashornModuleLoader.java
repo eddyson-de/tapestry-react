@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
@@ -22,26 +21,25 @@ import org.slf4j.LoggerFactory;
  * Nashorn module loader gets inserted into JavaScript executed by Nashorn and
  * loads AMD modules from classpath
  */
-public class NashornModuleLoader {
+public class NashornModuleLoader implements ModuleLoader {
 
   private static final Logger log = LoggerFactory.getLogger(NashornModuleLoader.class);
 
   private final ScriptEngine engine;
   private final ModuleManager moduleManager;
-  private final Bindings bindings;
   private final StreamableResourceSource srs;
   private final ResourceChangeTracker tracker;
 
-  public NashornModuleLoader(ScriptEngine engine, ModuleManager moduleManager, Bindings bindings,
-      StreamableResourceSource srs, ResourceChangeTracker tracker) {
+  public NashornModuleLoader(ScriptEngine engine, ModuleManager moduleManager, StreamableResourceSource srs,
+      ResourceChangeTracker tracker) {
     super();
     this.engine = engine;
     this.moduleManager = moduleManager;
-    this.bindings = bindings;
     this.srs = srs;
     this.tracker = tracker;
   }
 
+  @Override
   public void loadModule(String name) throws IOException, ScriptException {
     Resource resource = this.moduleManager.findResourceForModule(name);
     if (resource == null) {
@@ -51,7 +49,7 @@ public class NashornModuleLoader {
         StreamableResourceProcessing.COMPRESSION_DISABLED, this.tracker);
     try (InputStream is = streamableResource.openStream()) {
       log.debug("Evaluating {} in nashorn javascript engine", resource.getFile());
-      this.engine.eval(IOUtils.toString(is, Charset.forName("UTF-8")), this.bindings);
+      this.engine.eval(IOUtils.toString(is, Charset.forName("UTF-8")));
       log.debug("Finished evaluating {} in nashorn javascript engine", resource.getFile());
     }
   }
