@@ -69,7 +69,7 @@ public class NashornReactRenderEngineImplementation implements ReactRenderEngine
       resetEngine();
       throw new RuntimeException(e);
     } finally {
-      log.info("Rendering module '" + moduleName + "' took " + watch.toString());
+      log.info("Rendering module '{}' took {}", moduleName, watch);
     }
   }
 
