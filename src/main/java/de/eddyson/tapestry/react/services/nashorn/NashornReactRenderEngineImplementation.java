@@ -90,7 +90,7 @@ public class NashornReactRenderEngineImplementation implements ReactRenderEngine
 
     // r.js is the server side implementaiton of require.js for
     // Nashorn/Rhino/Node
-    // this is a patched verfsion, see r.js-README.md
+    // this is a patched version, see r.js-README.md
     nashorn.eval(read(classpathResource("de/eddyson/tapestry/react/services/isomorphic/r-patched.js")));
 
     // r-config.js injects the tapestry module loading mechanism in the r.js
