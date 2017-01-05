@@ -59,7 +59,7 @@ public class NashornReactRenderEngineImplementation implements ReactRenderEngine
   }
 
   // when an exception occurs while rendering react component discard the engine
-  // require.js set's some internal timeout values for modules that could not be
+  // require.js sets some internal timeout values for modules that could not be
   // loaded and throws an exception on next invocation of that module
   private void resetEngine() {
     this._engine = null;
