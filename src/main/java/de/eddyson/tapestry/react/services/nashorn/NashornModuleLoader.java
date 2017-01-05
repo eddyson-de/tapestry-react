@@ -19,24 +19,24 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Nashorn module loader gets inserted into JavaScript executed by Nashorn and
- * loads AMD modules from classpath
+ * loads AMD modules from the Tapestry asset pipline
  */
 public class NashornModuleLoader implements ModuleLoader {
 
   private static final Logger log = LoggerFactory.getLogger(NashornModuleLoader.class);
 
-  private final ScriptEngine engine;
   private final ModuleManager moduleManager;
   private final StreamableResourceSource srs;
   private final ResourceChangeTracker tracker;
+  private final ScriptEngine engine;
 
-  public NashornModuleLoader(ScriptEngine engine, ModuleManager moduleManager, StreamableResourceSource srs,
-      ResourceChangeTracker tracker) {
+  public NashornModuleLoader(ModuleManager moduleManager, StreamableResourceSource srs, ResourceChangeTracker tracker,
+      ScriptEngine scriptEngine) {
     super();
-    this.engine = engine;
     this.moduleManager = moduleManager;
     this.srs = srs;
     this.tracker = tracker;
+    this.engine = scriptEngine;
   }
 
   @Override

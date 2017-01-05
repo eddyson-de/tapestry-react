@@ -45,8 +45,10 @@ import de.eddyson.tapestry.react.requestfilters.ReactAPIFilter;
 import de.eddyson.tapestry.react.services.BabelCompiler;
 import de.eddyson.tapestry.react.services.CJSXCompiler;
 import de.eddyson.tapestry.react.services.NodeBabelCompiler;
-import de.eddyson.tapestry.react.services.nashorn.ReactRenderEngine;
+import de.eddyson.tapestry.react.services.nashorn.ModuleLoaderFactory;
+import de.eddyson.tapestry.react.services.nashorn.ModuleLoaderFactoryImplementation;
 import de.eddyson.tapestry.react.services.nashorn.NashornReactRenderEngineImplementation;
+import de.eddyson.tapestry.react.services.nashorn.ReactRenderEngine;
 
 public final class ReactModule {
 
@@ -54,6 +56,7 @@ public final class ReactModule {
 
   public static void bind(ServiceBinder binder) {
     binder.bind(ReactRenderEngine.class, NashornReactRenderEngineImplementation.class);
+    binder.bind(ModuleLoaderFactory.class, ModuleLoaderFactoryImplementation.class);
   }
 
   @Contribute(ModuleManager.class)
@@ -76,9 +79,10 @@ public final class ReactModule {
     configuration.add("react", new JavaScriptModuleConfiguration(assetSource.resourceForPath(reactAssetPathToUse)));
     configuration.add("react-dom", new JavaScriptModuleConfiguration(
         assetSource.resourceForPath(productionMode ? reactDomAssetPathProduction : reactDomAssetPath)));
-    
-    // for isomorphic server side rendering:
-    configuration.add("react-dom-server",new JavaScriptModuleConfiguration(assetSource.resourceForPath(productionMode ? reactDomServerAssetPathProduction : reactDomServerAssetPath)));
+
+    // for isomorphic server side rendering:<
+    configuration.add("react-dom-server", new JavaScriptModuleConfiguration(
+        assetSource.resourceForPath(productionMode ? reactDomServerAssetPathProduction : reactDomServerAssetPath)));
   }
 
   @Contribute(StreamableResourceSource.class)

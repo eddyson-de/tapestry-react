@@ -11,31 +11,28 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.tapestry5.internal.services.assets.ResourceChangeTracker;
 import org.apache.tapestry5.json.JSONObject;
-import org.apache.tapestry5.services.assets.StreamableResourceSource;
-import org.apache.tapestry5.services.javascript.ModuleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Stopwatch;
 
+/**
+ * 
+ * Nashorn based ReactRenderEngine
+ *
+ */
 public class NashornReactRenderEngineImplementation implements ReactRenderEngine {
 
   private static final Logger log = LoggerFactory.getLogger(NashornReactRenderEngineImplementation.class);
 
-  private final StreamableResourceSource srs;
-  private final ResourceChangeTracker tracker;
-  private final ModuleManager moduleManager;
+  private final ModuleLoaderFactory moduleLoaderFactory;
 
   private ScriptEngine _engine;
 
-  public NashornReactRenderEngineImplementation(ModuleManager moduleManager, StreamableResourceSource srs,
-      ResourceChangeTracker tracker) {
+  public NashornReactRenderEngineImplementation(ModuleLoaderFactory moduleLoaderFactory) {
     super();
-    this.moduleManager = moduleManager;
-    this.srs = srs;
-    this.tracker = tracker;
+    this.moduleLoaderFactory = moduleLoaderFactory;
   }
 
   @Override
@@ -79,11 +76,11 @@ public class NashornReactRenderEngineImplementation implements ReactRenderEngine
   private ScriptEngine buildEngine() throws ScriptException, IOException {
 
     ScriptEngine nashorn = new ScriptEngineManager().getEngineByName("nashorn");
-    
+
     // "__tapestry" is available in JavaScript code to load AMD modules from
     // Tapestry's ModuleManager
-    ModuleLoader nashornModuleLoader = buildNashornModuleLoader(nashorn);
-    nashorn.getBindings(ScriptContext.ENGINE_SCOPE).put("__tapestry", nashornModuleLoader);
+    nashorn.getBindings(ScriptContext.ENGINE_SCOPE).put("__tapestry",
+        this.moduleLoaderFactory.buildModuleLoader(nashorn));
 
     // polyfill.js contains some basic polyfills
     nashorn.eval(read(classpathResource("de/eddyson/tapestry/react/services/isomorphic/polyfill.js")));
@@ -101,10 +98,6 @@ public class NashornReactRenderEngineImplementation implements ReactRenderEngine
     // on server
     nashorn.eval(read(classpathResource("de/eddyson/tapestry/react/services/isomorphic/run.js")));
     return nashorn;
-  }
-
-  private ModuleLoader buildNashornModuleLoader(ScriptEngine nashorn) {
-    return new NashornModuleLoader(nashorn, this.moduleManager, this.srs, this.tracker);
   }
 
   private String read(InputStream resource) throws IOException {
