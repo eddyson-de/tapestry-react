@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import org.apache.tapestry5.Link;
 import org.apache.tapestry5.MarkupWriter;
 import org.apache.tapestry5.SymbolConstants;
-import org.apache.tapestry5.annotations.Path;
 import org.apache.tapestry5.dom.Element;
 import org.apache.tapestry5.internal.util.VirtualResource;
 import org.apache.tapestry5.internal.webresources.CacheMode;
@@ -18,7 +17,6 @@ import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.ObjectLocator;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
-import org.apache.tapestry5.ioc.Resource;
 import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Autobuild;
 import org.apache.tapestry5.ioc.annotations.Contribute;
@@ -68,8 +66,8 @@ public final class ReactModule {
       @Symbol(ReactSymbols.REACT_WITH_ADDONS_ASSET_PATH_PRODUCTION) final String reactWithAddonsAssetPathProduction,
       @Symbol(ReactSymbols.REACT_DOM_ASSET_PATH) final String reactDomAssetPath,
       @Symbol(ReactSymbols.REACT_DOM_ASSET_PATH_PRODUCTION) final String reactDomAssetPathProduction,
-      @Path("webjars:react:$version/react-dom-server.js") final Resource reactDomServer,
-      @Path("de/eddyson/tapestry/react/services/isomorphic/run.js") final Resource reactRunServerRendering) {
+      @Symbol(ReactSymbols.REACT_DOM_SERVER_ASSET_PATH) final String reactDomServerAssetPath,
+      @Symbol(ReactSymbols.REACT_DOM_SERVER_ASSET_PATH_PRODUCTION) final String reactDomServerAssetPathProduction) {
 
     String reactAssetPathToUse = useReactWithAddons
         ? (productionMode ? reactWithAddonsAssetPathProduction : reactWithAddonsAssetPath)
@@ -80,8 +78,7 @@ public final class ReactModule {
         assetSource.resourceForPath(productionMode ? reactDomAssetPathProduction : reactDomAssetPath)));
     
     // for isomorphic server side rendering:
-    configuration.add("react-dom-server", new JavaScriptModuleConfiguration(reactDomServer));
-    configuration.add("eddyson/react/isomorphic/run", new JavaScriptModuleConfiguration(reactRunServerRendering));
+    configuration.add("react-dom-server",new JavaScriptModuleConfiguration(assetSource.resourceForPath(productionMode ? reactDomServerAssetPathProduction : reactDomServerAssetPath)));
   }
 
   @Contribute(StreamableResourceSource.class)

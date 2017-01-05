@@ -3,20 +3,15 @@ package de.eddyson.tapestry.react.services.nashorn;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.script.Invocable;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import javax.script.SimpleBindings;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.tapestry5.annotations.Path;
 import org.apache.tapestry5.internal.services.assets.ResourceChangeTracker;
-import org.apache.tapestry5.ioc.Resource;
-import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.json.JSONObject;
 import org.apache.tapestry5.services.assets.StreamableResourceSource;
 import org.apache.tapestry5.services.javascript.ModuleManager;
@@ -34,8 +29,6 @@ public class NashornReactRenderEngineImplementation implements ReactRenderEngine
   private final ModuleManager moduleManager;
 
   private ScriptEngine _engine;
-
-  private AtomicInteger ai = new AtomicInteger(0);
 
   public NashornReactRenderEngineImplementation(ModuleManager moduleManager, StreamableResourceSource srs,
       ResourceChangeTracker tracker) {
@@ -86,6 +79,7 @@ public class NashornReactRenderEngineImplementation implements ReactRenderEngine
   private ScriptEngine buildEngine() throws ScriptException, IOException {
 
     ScriptEngine nashorn = new ScriptEngineManager().getEngineByName("nashorn");
+    
     // "__tapestry" is available in JavaScript code to load AMD modules from
     // Tapestry's ModuleManager
     ModuleLoader nashornModuleLoader = buildNashornModuleLoader(nashorn);
