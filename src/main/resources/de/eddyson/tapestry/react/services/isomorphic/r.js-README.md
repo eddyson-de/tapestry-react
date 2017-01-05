@@ -2,7 +2,7 @@
 
 Date: 2017-01-05
 
-As of writing this, the r.js library in it's current version (2.3.2) has an incompatibility with nashorn (Oracle Java 8 1.8.0_111) interpreter:
+As of writing this, the r.js library in its current version (2.3.2) has an incompatibility with nashorn (Oracle Java 8 1.8.0_111) interpreter:
 
 This problematic code is starting in line 300 of r.js:
 
