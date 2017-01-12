@@ -12,7 +12,6 @@ import org.apache.tapestry5.SymbolConstants;
 import org.apache.tapestry5.annotations.Path;
 import org.apache.tapestry5.internal.InternalConstants;
 import org.apache.tapestry5.internal.webresources.RhinoExecutor;
-import org.apache.tapestry5.internal.webresources.RhinoExecutorPool;
 import org.apache.tapestry5.ioc.OperationTracker;
 import org.apache.tapestry5.ioc.Resource;
 import org.apache.tapestry5.ioc.annotations.Symbol;
@@ -26,7 +25,7 @@ import de.eddyson.tapestry.react.ReactSymbols;
 public class BabelCompiler implements ResourceTransformer {
   private final static Charset UTF8 = StandardCharsets.UTF_8;
 
-  private final RhinoExecutorPool executorPool;
+  private final FixedRhinoExecutorPool executorPool;
 
   private final boolean useColoredOutput;
 
@@ -43,7 +42,7 @@ public class BabelCompiler implements ResourceTransformer {
       @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode) {
     this.useColoredOutput = useColoredOutput;
     this.productionMode = productionMode;
-    executorPool = new RhinoExecutorPool(tracker, Arrays.<Resource>asList(mainCompiler));
+    executorPool = new FixedRhinoExecutorPool(tracker, Arrays.<Resource>asList(mainCompiler));
   }
 
   private static String getString(final NativeObject object, final String key) {

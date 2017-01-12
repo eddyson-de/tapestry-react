@@ -12,7 +12,6 @@ import org.apache.tapestry5.internal.InternalConstants;
 import org.apache.tapestry5.internal.util.VirtualResource;
 import org.apache.tapestry5.internal.webresources.CoffeeScriptCompiler;
 import org.apache.tapestry5.internal.webresources.RhinoExecutor;
-import org.apache.tapestry5.internal.webresources.RhinoExecutorPool;
 import org.apache.tapestry5.ioc.OperationTracker;
 import org.apache.tapestry5.ioc.Resource;
 import org.apache.tapestry5.ioc.annotations.Autobuild;
@@ -25,7 +24,7 @@ import org.mozilla.javascript.NativeObject;
 public class CJSXCompiler implements ResourceTransformer {
   private final static Charset UTF8 = StandardCharsets.UTF_8;
 
-  private final RhinoExecutorPool executorPool;
+  private final FixedRhinoExecutorPool executorPool;
 
   private final CoffeeScriptCompiler coffeescritptCompiler;
 
@@ -36,7 +35,7 @@ public class CJSXCompiler implements ResourceTransformer {
 
   public CJSXCompiler(final OperationTracker tracker, @Autobuild final CoffeeScriptCompiler coffeescritptCompiler) {
     this.coffeescritptCompiler = coffeescritptCompiler;
-    executorPool = new RhinoExecutorPool(tracker, Arrays.<Resource> asList(
+    executorPool = new FixedRhinoExecutorPool(tracker, Arrays.<Resource>asList(
         new ClasspathResource("de/eddyson/tapestry/react/services/coffee-react-transform-standalone.js")));
   }
 
