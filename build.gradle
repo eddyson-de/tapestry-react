@@ -126,6 +126,9 @@ tasks.withType(Test){
   systemProperty 'webappLocation', 'src/test/webapp'
   systemProperty 'jettyPort', 9040
   enableAssertions = true
+  testLogging {
+    exceptionFormat "full"
+  }
 }
 
 task runTestApp(type:JavaExec) {
