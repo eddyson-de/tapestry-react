@@ -91,21 +91,24 @@ public class NodeBabelCompiler implements ResourceTransformer {
       bw.append("var params = " + params.toCompactString() + ";");
 
       bw.append(
-          "process.stdout.write(JSON.stringify(compileJSX(params.content, params.filename, params.isES6Module, params.useColoredOutput, params.withReact, params.productionMode)));");
+          "process.stdout.write(compileJSX(params.content, params.filename, params.isES6Module, params.useColoredOutput, params.withReact, params.productionMode));");
     }
 
     ProcessBuilder pb = new ProcessBuilder("node", tempFile.toString());
     Process process = pb.start();
     try {
       process.waitFor();
-      try (InputStream is = process.getInputStream()) {
-        String result = IOUtils.toString(is, UTF8);
-        JSONObject resultJSON = new JSONObject(result);
-        if (resultJSON.has("exception")) {
-          throw new RuntimeException(resultJSON.getString("exception"));
-        }
-        return IOUtils.toInputStream(resultJSON.getString("output"), UTF8);
+      if (process.exitValue() == 0) {
+        try (InputStream is = process.getInputStream()) {
+          String result = IOUtils.toString(is, UTF8);
+          return IOUtils.toInputStream(result, UTF8);
 
+        }
+      } else {
+        try (InputStream is = process.getErrorStream()) {
+          String errorMessage = IOUtils.toString(is, UTF8);
+          throw new RuntimeException(errorMessage);
+        }
       }
 
     } catch (InterruptedException e) {
