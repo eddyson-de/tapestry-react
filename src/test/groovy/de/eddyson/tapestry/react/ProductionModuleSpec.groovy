@@ -1,18 +1,13 @@
 package de.eddyson.tapestry.react
 
 import org.apache.tapestry5.SymbolConstants;
-import org.apache.tapestry5.annotations.InjectComponent;
 import org.apache.tapestry5.internal.InternalSymbols
 import org.apache.tapestry5.internal.services.assets.ResourceChangeTracker;
 import org.apache.tapestry5.internal.test.PageTesterContext
 import org.apache.tapestry5.ioc.MappedConfiguration;
-import org.apache.tapestry5.ioc.OperationTracker
-
 import org.apache.tapestry5.ioc.Resource
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.annotations.SubModule;
-import org.apache.tapestry5.ioc.internal.OperationTrackerImpl
-import org.apache.tapestry5.ioc.internal.util.ClasspathResource
 import org.apache.tapestry5.modules.AssetsModule;
 import org.apache.tapestry5.modules.TapestryModule
 import org.apache.tapestry5.services.ApplicationGlobals
@@ -23,9 +18,7 @@ import org.apache.tapestry5.services.assets.StreamableResourceProcessing;
 import org.apache.tapestry5.services.assets.StreamableResourceSource;
 import org.apache.tapestry5.services.javascript.ModuleManager
 import org.apache.tapestry5.webresources.modules.WebResourcesModule;
-import org.slf4j.Logger
 
-import de.eddyson.tapestry.react.services.BabelCompiler
 import de.eddyson.tapestry.webjars.WebjarsModule
 import spock.lang.Issue
 import spock.lang.Shared;
@@ -40,7 +33,7 @@ class ProductionModuleSpec extends Specification {
   @Inject
   @Shared
   private ApplicationGlobals applicationGlobals
-  
+
   @Inject
   @Shared
   private RequestGlobals requestGlobals

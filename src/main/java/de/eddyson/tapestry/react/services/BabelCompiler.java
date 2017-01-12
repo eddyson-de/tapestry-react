@@ -18,7 +18,6 @@ import org.apache.tapestry5.ContentType;
 import org.apache.tapestry5.SymbolConstants;
 import org.apache.tapestry5.annotations.Path;
 import org.apache.tapestry5.internal.InternalConstants;
-import org.apache.tapestry5.ioc.OperationTracker;
 import org.apache.tapestry5.ioc.Resource;
 import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.ioc.internal.util.CollectionFactory;
@@ -46,8 +45,7 @@ public class BabelCompiler implements ResourceTransformer {
     return InternalConstants.JAVASCRIPT_CONTENT_TYPE;
   }
 
-  public BabelCompiler(final OperationTracker tracker,
-      @Path("de/eddyson/tapestry/react/services/browser.js") final Resource mainCompiler,
+  public BabelCompiler(@Path("de/eddyson/tapestry/react/services/browser.js") final Resource mainCompiler,
       @Symbol(ReactSymbols.USE_COLORED_BABEL_OUTPUT) final boolean useColoredOutput,
       @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode) throws IOException, ScriptException {
     this.useColoredOutput = useColoredOutput;

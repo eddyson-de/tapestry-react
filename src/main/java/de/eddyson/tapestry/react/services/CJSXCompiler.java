@@ -19,7 +19,6 @@ import org.apache.tapestry5.ContentType;
 import org.apache.tapestry5.internal.InternalConstants;
 import org.apache.tapestry5.internal.util.VirtualResource;
 import org.apache.tapestry5.internal.webresources.CoffeeScriptCompiler;
-import org.apache.tapestry5.ioc.OperationTracker;
 import org.apache.tapestry5.ioc.Resource;
 import org.apache.tapestry5.ioc.annotations.Autobuild;
 import org.apache.tapestry5.ioc.internal.util.CollectionFactory;
@@ -43,8 +42,7 @@ public class CJSXCompiler implements ResourceTransformer {
     return InternalConstants.JAVASCRIPT_CONTENT_TYPE;
   }
 
-  public CJSXCompiler(final OperationTracker tracker, @Autobuild final CoffeeScriptCompiler coffeescritptCompiler)
-      throws IOException, ScriptException {
+  public CJSXCompiler(@Autobuild final CoffeeScriptCompiler coffeescritptCompiler) throws IOException, ScriptException {
     this.coffeescritptCompiler = coffeescritptCompiler;
 
     ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
