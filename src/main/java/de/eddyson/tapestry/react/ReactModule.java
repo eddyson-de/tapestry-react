@@ -44,6 +44,7 @@ import de.eddyson.tapestry.react.requestfilters.ReactAPIFilter;
 import de.eddyson.tapestry.react.services.BabelCompiler;
 import de.eddyson.tapestry.react.services.CJSXCompiler;
 import de.eddyson.tapestry.react.services.NodeBabelCompiler;
+import de.eddyson.tapestry.react.services.ScriptEngineBabelCompiler;
 
 public final class ReactModule {
 
@@ -86,14 +87,30 @@ public final class ReactModule {
         if (exitCode == 0) {
           canUseNode = true;
         } else {
-          logger.warn("Received exit code {} from call to node executable, falling back to Rhino compiler.");
+          logger.warn("Received exit code {} from call to node executable, falling back to Java-based compiler.");
         }
       } catch (IOException e) {
-        logger.warn("Failed to call node executable, make sure it is on the PATH. Falling back to Rhino compiler.");
+        logger
+            .warn("Failed to call node executable, make sure it is on the PATH. Falling back to Java-based compiler.");
       }
     }
-    ResourceTransformer jsxCompiler = canUseNode ? objectLocator.autobuild(NodeBabelCompiler.class)
-        : objectLocator.autobuild(BabelCompiler.class);
+
+    ResourceTransformer jsxCompiler;
+    if (canUseNode) {
+      jsxCompiler = objectLocator.autobuild(NodeBabelCompiler.class);
+    } else {
+      // work around https://bugs.openjdk.java.net/browse/JDK-8135190
+      String javaVersion = System.getProperty("java.version");
+      String[] parts = javaVersion.split("_");
+      if ("1.8".equals(parts[0]) && Integer.parseInt(parts[1]) < 91) {
+        logger.warn(
+            "Installed Java version is affected by https://bugs.openjdk.java.net/browse/JDK-8135190, falling back to Rhino compiler.");
+        jsxCompiler = objectLocator.autobuild(BabelCompiler.class);
+      } else {
+        jsxCompiler = objectLocator.autobuild(ScriptEngineBabelCompiler.class);
+      }
+
+    }
 
     // regular module with React support
     configuration.add("jsx",

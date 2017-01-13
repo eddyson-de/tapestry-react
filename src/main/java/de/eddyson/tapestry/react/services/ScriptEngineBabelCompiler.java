@@ -2,51 +2,64 @@ package de.eddyson.tapestry.react.services;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.Set;
+
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.tapestry5.ContentType;
 import org.apache.tapestry5.SymbolConstants;
 import org.apache.tapestry5.annotations.Path;
 import org.apache.tapestry5.internal.InternalConstants;
-import org.apache.tapestry5.internal.webresources.RhinoExecutor;
-import org.apache.tapestry5.ioc.OperationTracker;
 import org.apache.tapestry5.ioc.Resource;
 import org.apache.tapestry5.ioc.annotations.Symbol;
+import org.apache.tapestry5.ioc.internal.util.CollectionFactory;
 import org.apache.tapestry5.ioc.internal.util.InternalUtils;
 import org.apache.tapestry5.services.assets.ResourceDependencies;
 import org.apache.tapestry5.services.assets.ResourceTransformer;
-import org.mozilla.javascript.NativeObject;
 
 import de.eddyson.tapestry.react.ReactSymbols;
+import de.eddyson.tapestry.react.ScriptEngineUtilities;
 
-public class BabelCompiler implements ResourceTransformer {
+public class ScriptEngineBabelCompiler implements ResourceTransformer {
   private final static Charset UTF8 = StandardCharsets.UTF_8;
-
-  private final FixedRhinoExecutorPool executorPool;
 
   private final boolean useColoredOutput;
 
   private final boolean productionMode;
+
+  private final ScriptEngine engine;
+
+  private final static Set<String> expectedKeysInEngineScope = CollectionFactory.newSet("__core-js_shared__",
+      "compileJSX", "Babel");
 
   @Override
   public ContentType getTransformedContentType() {
     return InternalConstants.JAVASCRIPT_CONTENT_TYPE;
   }
 
-  public BabelCompiler(final OperationTracker tracker,
-      @Path("de/eddyson/tapestry/react/services/browser.js") final Resource mainCompiler,
+  public ScriptEngineBabelCompiler(@Path("de/eddyson/tapestry/react/services/browser.js") final Resource mainCompiler,
       @Symbol(ReactSymbols.USE_COLORED_BABEL_OUTPUT) final boolean useColoredOutput,
-      @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode) {
+      @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode) throws IOException, ScriptException {
     this.useColoredOutput = useColoredOutput;
     this.productionMode = productionMode;
-    executorPool = new FixedRhinoExecutorPool(tracker, Arrays.<Resource>asList(mainCompiler));
-  }
 
-  private static String getString(final NativeObject object, final String key) {
-    return object.get(key).toString();
+    ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
+    if (!(engine instanceof Invocable)) {
+      throw new IllegalStateException("ScriptEngine for JavaScript does not implement Invocable");
+    }
+    try (Reader reader = new InputStreamReader(mainCompiler.openStream(), StandardCharsets.UTF_8)) {
+      engine.eval(reader);
+    }
+    ScriptEngineUtilities.checkNothingLeaked(engine, expectedKeysInEngineScope);
+    this.engine = engine;
   }
 
   @Override
@@ -60,8 +73,6 @@ public class BabelCompiler implements ResourceTransformer {
     } finally {
       InternalUtils.close(is);
     }
-
-    RhinoExecutor executor = executorPool.get();
 
     boolean isES6Module = false;
     boolean withReact = false;
@@ -86,18 +97,14 @@ public class BabelCompiler implements ResourceTransformer {
     }
 
     try {
-
-      NativeObject result = (NativeObject) executor.invokeFunction("compileJSX", content, source.toString(),
+      String result = (String) ((Invocable) engine).invokeFunction("compileJSX", content, source.toString(),
           isES6Module, useColoredOutput, withReact, productionMode);
+      ScriptEngineUtilities.checkNothingLeaked(engine, expectedKeysInEngineScope);
 
-      if (result.containsKey("exception")) {
-        throw new RuntimeException(getString(result, "exception"));
-      }
+      return IOUtils.toInputStream(result, UTF8);
 
-      return IOUtils.toInputStream(getString(result, "output"), UTF8);
-
-    } finally {
-      executor.discard();
+    } catch (ScriptException | NoSuchMethodException e) {
+      throw new RuntimeException(e);
     }
 
   }
