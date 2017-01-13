@@ -86,7 +86,6 @@ task createBabelBrowserPackage(type: NodeTask, dependsOn: npmInstall) {
      '--plugin', 'derequire/plugin',
      '--plugin', 'bundle-collapser/plugin',
      '-g', '[', 'envify', 'purge', '--NODE_ENV', 'production', ']',
-     '-p', '[', 'minifyify', '--no-map', ']',
      '-i', 'esprima-fb',
      '-i', 'through']
   doFirst {
