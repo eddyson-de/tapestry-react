@@ -1,4 +1,4 @@
-package de.eddyson.tapestry.react.services;
+package de.eddyson.tapestry.react;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +29,7 @@ import org.mozilla.javascript.ScriptableObject;
 // org.apache.tapestry5.internal.webresources.RhinoExecutorPool from the
 // tapestry-webresources package with a fix for
 // https://github.com/eddyson-de/tapestry-react/issues/62
-public class FixedRhinoExecutorPool {
+public class ReactRhinoExecutorPool {
 
   private final OperationTracker tracker;
 
@@ -39,7 +39,7 @@ public class FixedRhinoExecutorPool {
 
   private final ContextFactory contextFactory = new ContextFactory();
 
-  public FixedRhinoExecutorPool(final OperationTracker tracker, final List<Resource> scripts) {
+  public ReactRhinoExecutorPool(final OperationTracker tracker, final List<Resource> scripts) {
     this.tracker = tracker;
     this.scripts = scripts;
   }

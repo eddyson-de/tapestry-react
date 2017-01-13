@@ -20,12 +20,13 @@ import org.apache.tapestry5.services.assets.ResourceDependencies;
 import org.apache.tapestry5.services.assets.ResourceTransformer;
 import org.mozilla.javascript.NativeObject;
 
+import de.eddyson.tapestry.react.ReactRhinoExecutorPool;
 import de.eddyson.tapestry.react.ReactSymbols;
 
 public class RhinoBabelCompiler implements ResourceTransformer {
   private final static Charset UTF8 = StandardCharsets.UTF_8;
 
-  private final FixedRhinoExecutorPool executorPool;
+  private final ReactRhinoExecutorPool executorPool;
 
   private final boolean useColoredOutput;
 
@@ -42,7 +43,7 @@ public class RhinoBabelCompiler implements ResourceTransformer {
       @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode) {
     this.useColoredOutput = useColoredOutput;
     this.productionMode = productionMode;
-    executorPool = new FixedRhinoExecutorPool(tracker, Arrays.<Resource>asList(mainCompiler));
+    executorPool = new ReactRhinoExecutorPool(tracker, Arrays.<Resource>asList(mainCompiler));
   }
 
   private static String getString(final NativeObject object, final String key) {
