@@ -19,6 +19,15 @@ public final class ScriptEngineUtilities {
     }
   }
 
+  public static boolean isSupportedScriptEngine() {
+    String javaVersion = System.getProperty("java.version");
+    String[] parts = javaVersion.split("_");
+    if ("1.8".equals(parts[0]) && Integer.parseInt(parts[1]) < 91) {
+      return false;
+    }
+    return true;
+  }
+
   private ScriptEngineUtilities() {
   }
 }

@@ -15,9 +15,13 @@ import org.apache.tapestry5.webresources.modules.WebResourcesModule
 
 import de.eddyson.tapestry.react.services.ScriptEngineBabelCompiler
 import de.eddyson.tapestry.webjars.WebjarsModule
+import spock.lang.IgnoreIf
 import spock.lang.Shared
 import spock.lang.Specification
 @SubModule([TapestryModule, ReactModule, TestModule, AssetsModule, WebjarsModule, WebResourcesModule])
+@IgnoreIf({
+  !ScriptEngineUtilities.isSupportedScriptEngine()
+})
 class ScriptEngineBabelCompilerSpec extends Specification {
 
   @Autobuild

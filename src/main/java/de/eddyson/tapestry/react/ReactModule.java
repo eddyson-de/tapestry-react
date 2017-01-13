@@ -100,9 +100,7 @@ public final class ReactModule {
       jsxCompiler = objectLocator.autobuild(NodeBabelCompiler.class);
     } else {
       // work around https://bugs.openjdk.java.net/browse/JDK-8135190
-      String javaVersion = System.getProperty("java.version");
-      String[] parts = javaVersion.split("_");
-      if ("1.8".equals(parts[0]) && Integer.parseInt(parts[1]) < 91) {
+      if (!ScriptEngineUtilities.isSupportedScriptEngine()) {
         logger.warn(
             "Installed Java version is affected by https://bugs.openjdk.java.net/browse/JDK-8135190, falling back to Rhino compiler.");
         jsxCompiler = objectLocator.autobuild(BabelCompiler.class);
