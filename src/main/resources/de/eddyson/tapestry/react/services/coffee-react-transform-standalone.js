@@ -1431,5 +1431,5 @@ module.exports.transform = function(code, opts) {
 
 //FIXME added by eddyson to work around https://github.com/jsdf/coffee-react-transform/issues/61
 var coffeeReactTransform = function(source){
-  return java.util.Collections.singletonMap("output", self.coffeeReactTransform(source));
+  return {output: self.coffeeReactTransform(source)};
 };

@@ -15,13 +15,13 @@ import org.apache.tapestry5.webresources.modules.WebResourcesModule
 
 import spock.lang.Shared
 import spock.lang.Specification
-import de.eddyson.tapestry.react.services.RhinoBabelCompiler
+import de.eddyson.tapestry.react.services.BabelCompiler
 import de.eddyson.tapestry.webjars.WebjarsModule
 @SubModule([TapestryModule, ReactModule, TestModule, AssetsModule, WebjarsModule, WebResourcesModule])
-class RhinoBabelCompilerSpec extends Specification {
+class BabelCompilerSpec extends Specification {
 
   @Autobuild
-  private RhinoBabelCompiler babelCompiler
+  private BabelCompiler babelCompiler
 
   @Inject
   @Shared

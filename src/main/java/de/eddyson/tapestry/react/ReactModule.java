@@ -41,10 +41,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.eddyson.tapestry.react.requestfilters.ReactAPIFilter;
-import de.eddyson.tapestry.react.services.RhinoBabelCompiler;
+import de.eddyson.tapestry.react.services.BabelCompiler;
 import de.eddyson.tapestry.react.services.CJSXCompiler;
 import de.eddyson.tapestry.react.services.NodeBabelCompiler;
-import de.eddyson.tapestry.react.services.ScriptEngineBabelCompiler;
 
 public final class ReactModule {
 
@@ -87,28 +86,14 @@ public final class ReactModule {
         if (exitCode == 0) {
           canUseNode = true;
         } else {
-          logger.warn("Received exit code {} from call to node executable, falling back to Java-based compiler.");
+          logger.warn("Received exit code {} from call to node executable, falling back to Rhino compiler.");
         }
       } catch (IOException e) {
-        logger
-            .warn("Failed to call node executable, make sure it is on the PATH. Falling back to Java-based compiler.");
+        logger.warn("Failed to call node executable, make sure it is on the PATH. Falling back to Rhino compiler.");
       }
     }
-
-    ResourceTransformer jsxCompiler;
-    if (canUseNode) {
-      jsxCompiler = objectLocator.autobuild(NodeBabelCompiler.class);
-    } else {
-      // work around https://bugs.openjdk.java.net/browse/JDK-8135190
-      if (!ScriptEngineUtilities.isSupportedScriptEngine()) {
-        logger.warn(
-            "Installed Java version is affected by https://bugs.openjdk.java.net/browse/JDK-8135190, falling back to Rhino compiler.");
-        jsxCompiler = objectLocator.autobuild(RhinoBabelCompiler.class);
-      } else {
-        jsxCompiler = objectLocator.autobuild(ScriptEngineBabelCompiler.class);
-      }
-
-    }
+    ResourceTransformer jsxCompiler = canUseNode ? objectLocator.autobuild(NodeBabelCompiler.class)
+        : objectLocator.autobuild(BabelCompiler.class);
 
     // regular module with React support
     configuration.add("jsx",

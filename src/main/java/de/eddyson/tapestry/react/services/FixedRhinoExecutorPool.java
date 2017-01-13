@@ -1,4 +1,4 @@
-package de.eddyson.tapestry.react;
+package de.eddyson.tapestry.react.services;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +18,6 @@ import org.apache.tapestry5.ioc.util.ExceptionUtils;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.NativeFunction;
-import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.ScriptableObject;
 
 /**
@@ -29,7 +28,7 @@ import org.mozilla.javascript.ScriptableObject;
 // org.apache.tapestry5.internal.webresources.RhinoExecutorPool from the
 // tapestry-webresources package with a fix for
 // https://github.com/eddyson-de/tapestry-react/issues/62
-public class ReactRhinoExecutorPool {
+public class FixedRhinoExecutorPool {
 
   private final OperationTracker tracker;
 
@@ -39,7 +38,7 @@ public class ReactRhinoExecutorPool {
 
   private final ContextFactory contextFactory = new ContextFactory();
 
-  public ReactRhinoExecutorPool(final OperationTracker tracker, final List<Resource> scripts) {
+  public FixedRhinoExecutorPool(final OperationTracker tracker, final List<Resource> scripts) {
     this.tracker = tracker;
     this.scripts = scripts;
   }
@@ -92,13 +91,7 @@ public class ReactRhinoExecutorPool {
                 try {
                   NativeFunction function = (NativeFunction) scope.get(functionName, scope);
 
-                  Object value = function.call(context, scope, null, arguments);
-                  if (!(value instanceof ScriptableObject)) {
-                    NativeObject wrapper = new NativeObject();
-                    ScriptableObject.putProperty(wrapper, "output", value);
-                    value = wrapper;
-                  }
-                  return (ScriptableObject) value;
+                  return (ScriptableObject) function.call(context, scope, null, arguments);
                 } finally {
                   Context.exit();
                 }

@@ -12,6 +12,7 @@ import org.apache.tapestry5.ContentType;
 import org.apache.tapestry5.SymbolConstants;
 import org.apache.tapestry5.annotations.Path;
 import org.apache.tapestry5.internal.InternalConstants;
+import org.apache.tapestry5.ioc.OperationTracker;
 import org.apache.tapestry5.ioc.Resource;
 import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.json.JSONObject;
@@ -34,7 +35,8 @@ public class NodeBabelCompiler implements ResourceTransformer {
     return InternalConstants.JAVASCRIPT_CONTENT_TYPE;
   }
 
-  public NodeBabelCompiler(@Path("de/eddyson/tapestry/react/services/browser.js") final Resource mainCompiler,
+  public NodeBabelCompiler(final OperationTracker tracker,
+      @Path("de/eddyson/tapestry/react/services/browser.js") final Resource mainCompiler,
       @Symbol(ReactSymbols.USE_COLORED_BABEL_OUTPUT) final boolean useColoredOutput,
       @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode) throws InterruptedException, IOException {
     this.useColoredOutput = useColoredOutput;
@@ -89,24 +91,21 @@ public class NodeBabelCompiler implements ResourceTransformer {
       bw.append("var params = " + params.toCompactString() + ";");
 
       bw.append(
-          "process.stdout.write(compileJSX(params.content, params.filename, params.isES6Module, params.useColoredOutput, params.withReact, params.productionMode));");
+          "process.stdout.write(JSON.stringify(compileJSX(params.content, params.filename, params.isES6Module, params.useColoredOutput, params.withReact, params.productionMode)));");
     }
 
     ProcessBuilder pb = new ProcessBuilder("node", tempFile.toString());
     Process process = pb.start();
     try {
       process.waitFor();
-      if (process.exitValue() == 0) {
-        try (InputStream is = process.getInputStream()) {
-          String result = IOUtils.toString(is, UTF8);
-          return IOUtils.toInputStream(result, UTF8);
+      try (InputStream is = process.getInputStream()) {
+        String result = IOUtils.toString(is, UTF8);
+        JSONObject resultJSON = new JSONObject(result);
+        if (resultJSON.has("exception")) {
+          throw new RuntimeException(resultJSON.getString("exception"));
+        }
+        return IOUtils.toInputStream(resultJSON.getString("output"), UTF8);
 
-        }
-      } else {
-        try (InputStream is = process.getErrorStream()) {
-          String errorMessage = IOUtils.toString(is, UTF8);
-          throw new RuntimeException(errorMessage);
-        }
       }
 
     } catch (InterruptedException e) {
