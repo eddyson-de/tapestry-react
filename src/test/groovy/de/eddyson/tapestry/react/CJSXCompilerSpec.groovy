@@ -1,26 +1,18 @@
 package de.eddyson.tapestry.react
 
 import org.apache.tapestry5.internal.webresources.CoffeeScriptCompiler
-import org.apache.tapestry5.ioc.OperationTracker
-import org.apache.tapestry5.ioc.Resource
-import org.apache.tapestry5.ioc.internal.OperationTrackerImpl
 import org.apache.tapestry5.ioc.internal.util.ClasspathResource
-import org.apache.tapestry5.modules.TapestryModule
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
-import spock.lang.Specification
 import de.eddyson.tapestry.react.services.CJSXCompiler;
- 
+import spock.lang.Specification
+
 class CJSXCompilerSpec extends Specification {
 
   def "Compile a CJSX template"(){
     setup:
-    Logger logger = LoggerFactory.getLogger(OperationTracker)
-    OperationTracker operationTracker = new OperationTrackerImpl(logger)
     CoffeeScriptCompiler coffeeScriptCompiler = Mock()
- 
-    CJSXCompiler jsxCompiler = new CJSXCompiler(operationTracker, coffeeScriptCompiler)
+
+    CJSXCompiler jsxCompiler = new CJSXCompiler( coffeeScriptCompiler)
     def resource = new ClasspathResource("de/eddyson/tapestry/react/template.cjsx")
 
     expect:
