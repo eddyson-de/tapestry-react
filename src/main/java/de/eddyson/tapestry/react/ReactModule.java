@@ -41,7 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.eddyson.tapestry.react.requestfilters.ReactAPIFilter;
-import de.eddyson.tapestry.react.services.BabelCompiler;
+import de.eddyson.tapestry.react.services.RhinoBabelCompiler;
 import de.eddyson.tapestry.react.services.CJSXCompiler;
 import de.eddyson.tapestry.react.services.NodeBabelCompiler;
 import de.eddyson.tapestry.react.services.ScriptEngineBabelCompiler;
@@ -103,7 +103,7 @@ public final class ReactModule {
       if (!ScriptEngineUtilities.isSupportedScriptEngine()) {
         logger.warn(
             "Installed Java version is affected by https://bugs.openjdk.java.net/browse/JDK-8135190, falling back to Rhino compiler.");
-        jsxCompiler = objectLocator.autobuild(BabelCompiler.class);
+        jsxCompiler = objectLocator.autobuild(RhinoBabelCompiler.class);
       } else {
         jsxCompiler = objectLocator.autobuild(ScriptEngineBabelCompiler.class);
       }

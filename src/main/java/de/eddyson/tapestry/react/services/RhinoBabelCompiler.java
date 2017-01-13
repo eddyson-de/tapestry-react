@@ -22,7 +22,7 @@ import org.mozilla.javascript.NativeObject;
 
 import de.eddyson.tapestry.react.ReactSymbols;
 
-public class BabelCompiler implements ResourceTransformer {
+public class RhinoBabelCompiler implements ResourceTransformer {
   private final static Charset UTF8 = StandardCharsets.UTF_8;
 
   private final FixedRhinoExecutorPool executorPool;
@@ -36,7 +36,7 @@ public class BabelCompiler implements ResourceTransformer {
     return InternalConstants.JAVASCRIPT_CONTENT_TYPE;
   }
 
-  public BabelCompiler(final OperationTracker tracker,
+  public RhinoBabelCompiler(final OperationTracker tracker,
       @Path("de/eddyson/tapestry/react/services/browser.js") final Resource mainCompiler,
       @Symbol(ReactSymbols.USE_COLORED_BABEL_OUTPUT) final boolean useColoredOutput,
       @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode) {
