@@ -21,8 +21,7 @@ public final class ScriptEngineUtilities {
 
   public static boolean isSupportedScriptEngine() {
     String javaVersion = System.getProperty("java.version");
-    String[] parts = javaVersion.split("_");
-    if ("1.8".equals(parts[0]) && Integer.parseInt(parts[1]) < 91) {
+    if (javaVersion.startsWith("1.8.0_") && Integer.parseInt(javaVersion.substring(6)) < 91) {
       return false;
     }
     return true;
