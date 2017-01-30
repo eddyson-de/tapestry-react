@@ -54,7 +54,7 @@ dependencies {
   testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$versions.selenium"
   
   testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
-  testRuntime 'org.objenesis:objenesis:2.5'
+  testRuntime 'org.objenesis:objenesis:2.5.1'
 }
 
 def compiledCoffeeScriptDir = "${project.buildDir}/compiled-coffeescript"
