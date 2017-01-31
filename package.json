@@ -5,7 +5,7 @@
     "babel-plugin-inline-replace-variables": "1.1.2",
     "babel-preset-es2015": "6.22.0",
     "babel-preset-react": "6.22.0",
-    "browserify": "latest",
+    "browserify": "13.3.0",
     "coffee-script": "latest",
     "derequire": "latest",
     "minifyify": "latest",
