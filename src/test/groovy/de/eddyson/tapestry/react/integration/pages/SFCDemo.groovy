@@ -2,11 +2,11 @@ package de.eddyson.tapestry.react.integration.pages
 
 import de.eddyson.tapestrygeb.TapestryPage
 
-class ReactDemo extends TapestryPage {
+class SFCDemo extends TapestryPage {
 
-  static url = "reactdemo"
+  static url = "sfcdemo"
 
-  static at = { title == "React Component Demo" }
+  static at = { title == "Stateless Functional Component Demo" }
 
   static content = {
     hello { $('#reactcomponent') }
