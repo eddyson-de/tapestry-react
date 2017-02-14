@@ -1,12 +1,12 @@
 plugins {
     id "com.jfrog.bintray" version "1.7.3"
-    id "com.moowork.node" version "1.0.1"
+    id "com.moowork.node" version "1.1.0"
 }
 
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.19.1"
+version = "0.22.0"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -54,8 +54,7 @@ dependencies {
   testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$versions.selenium"
   
   testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
-  testRuntime "cglib:cglib-nodep:3.2.4"
-  testRuntime 'org.objenesis:objenesis:2.4'
+  testRuntime 'org.objenesis:objenesis:2.5.1'
 }
 
 def compiledCoffeeScriptDir = "${project.buildDir}/compiled-coffeescript"
@@ -126,6 +125,9 @@ tasks.withType(Test){
   systemProperty 'webappLocation', 'src/test/webapp'
   systemProperty 'jettyPort', 9040
   enableAssertions = true
+  testLogging {
+    exceptionFormat "full"
+  }
 }
 
 task runTestApp(type:JavaExec) {

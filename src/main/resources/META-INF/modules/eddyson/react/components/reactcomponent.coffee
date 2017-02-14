@@ -61,6 +61,4 @@ define ["react", "react-dom", "require", "t5/core/dom", "t5/core/events", "t5/co
       children = (convertNode c, "c#{idx}" for c, idx in element.childNodes)
       reactElement = React.createElement (if componentClass.__esModule then componentClass.default else componentClass), parameters, children
       reactComponent = ReactDOM.render reactElement, element
-      unless reactComponent
-        throw new Error("Stateless components are not supported")
       elementsWithMountedComponents.push clientId

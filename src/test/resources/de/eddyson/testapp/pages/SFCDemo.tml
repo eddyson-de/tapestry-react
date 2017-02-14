@@ -1,0 +1,15 @@
+<html xmlns:t="http://tapestry.apache.org/schema/tapestry_5_4.xsd"
+	t:type="Layout" title="Stateless Functional Component Demo" xmlns:r="tapestry-library:react">
+	<div class="row">
+		<div class="col-sm-12">
+			<t:alerts />
+		</div>
+		<div class="col-sm-12">
+			<r:reactcomponent module="testapp/Hello" name="John" />
+		</div>
+		<t:zone t:id="zone" class="col-sm-12">
+			<r:reactcomponent module="testapp/WrappedTalkativeComponent" />
+			<t:eventlink event="updatezone" async="true">Update zone</t:eventlink>
+		</t:zone>
+	</div>
+</html>

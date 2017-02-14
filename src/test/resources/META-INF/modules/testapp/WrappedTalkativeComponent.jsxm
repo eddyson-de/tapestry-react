@@ -1,0 +1,4 @@
+import React from "react"
+import TalkativeComponent from './TalkativeComponent'
+
+export default (props)=><TalkativeComponent {...props} />;
