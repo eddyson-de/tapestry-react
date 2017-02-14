@@ -20,7 +20,7 @@ def versions= [
   
   // test scopes
   spock: '1.0-groovy-2.4',
-  selenium: '3.0.1'
+  selenium: '2.53.1'
   
 ]
 
@@ -50,7 +50,7 @@ dependencies {
 
   testCompile "javax.servlet:servlet-api:2.5"
   testCompile "org.spockframework:spock-tapestry:$versions.spock"
-  testCompile 'de.eddyson:tapestry-geb:0.31.1'
+  testCompile 'de.eddyson:tapestry-geb:0.29.0'
   testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$versions.selenium"
   
   testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
