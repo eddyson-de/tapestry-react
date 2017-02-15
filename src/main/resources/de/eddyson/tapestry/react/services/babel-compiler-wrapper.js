@@ -1,6 +1,6 @@
 var Babel = require("babel-core");
 var react = require("babel-preset-react");
-var es2015 = require("babel-preset-es2015");
+var latest = require("babel-preset-latest");
 var amd = require("babel-plugin-transform-es2015-modules-amd")
 var inlineReplaceVariables = require("babel-plugin-inline-replace-variables")
 
@@ -14,7 +14,7 @@ compileJSX = function(input, filename, outputamd, useColoredOutput, loadReactPre
         if (outputamd){
           plugins.push(amd);
         }
-        var presets = [es2015];
+        var presets = [latest];
         if (loadReactPreset){
           presets.push(react);
         }
