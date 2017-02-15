@@ -128,6 +128,7 @@ public final class ReactModule {
         "webjars:react:$version/react-with-addons.min.js");
     configuration.add(ReactSymbols.REACT_DOM_ASSET_PATH, "webjars:react:$version/react-dom.js");
     configuration.add(ReactSymbols.REACT_DOM_ASSET_PATH_PRODUCTION, "webjars:react:$version/react-dom.min.js");
+    configuration.add(ReactSymbols.ENABLE_STAGE_3_TRANSFORMATIONS, false);
   }
 
   @Contribute(ModuleManager.class)

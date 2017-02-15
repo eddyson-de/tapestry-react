@@ -31,6 +31,8 @@ public class BabelCompiler implements ResourceTransformer {
 
   private final boolean productionMode;
 
+  private final boolean enableStage3Transformations;
+
   @Override
   public ContentType getTransformedContentType() {
     return InternalConstants.JAVASCRIPT_CONTENT_TYPE;
@@ -39,8 +41,10 @@ public class BabelCompiler implements ResourceTransformer {
   public BabelCompiler(final OperationTracker tracker,
       @Path("de/eddyson/tapestry/react/services/browser.js") final Resource mainCompiler,
       @Symbol(ReactSymbols.USE_COLORED_BABEL_OUTPUT) final boolean useColoredOutput,
+      @Symbol(ReactSymbols.ENABLE_STAGE_3_TRANSFORMATIONS) final boolean enableStage3Transformations,
       @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode) {
     this.useColoredOutput = useColoredOutput;
+    this.enableStage3Transformations = enableStage3Transformations;
     this.productionMode = productionMode;
     executorPool = new FixedRhinoExecutorPool(tracker, Arrays.<Resource>asList(mainCompiler));
   }
@@ -88,7 +92,7 @@ public class BabelCompiler implements ResourceTransformer {
     try {
 
       NativeObject result = (NativeObject) executor.invokeFunction("compileJSX", content, source.toString(),
-          isES6Module, useColoredOutput, withReact, productionMode);
+          isES6Module, useColoredOutput, withReact, productionMode, enableStage3Transformations);
 
       if (result.containsKey("exception")) {
         throw new RuntimeException(getString(result, "exception"));
