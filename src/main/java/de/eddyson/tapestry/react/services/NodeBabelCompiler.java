@@ -30,6 +30,8 @@ public class NodeBabelCompiler implements ResourceTransformer {
 
   private final boolean productionMode;
 
+  private final boolean enableStage3Transformations;
+
   @Override
   public ContentType getTransformedContentType() {
     return InternalConstants.JAVASCRIPT_CONTENT_TYPE;
@@ -38,8 +40,10 @@ public class NodeBabelCompiler implements ResourceTransformer {
   public NodeBabelCompiler(final OperationTracker tracker,
       @Path("de/eddyson/tapestry/react/services/browser.js") final Resource mainCompiler,
       @Symbol(ReactSymbols.USE_COLORED_BABEL_OUTPUT) final boolean useColoredOutput,
+      @Symbol(ReactSymbols.ENABLE_STAGE_3_TRANSFORMATIONS) final boolean enableStage3Transformations,
       @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode) throws InterruptedException, IOException {
     this.useColoredOutput = useColoredOutput;
+    this.enableStage3Transformations = enableStage3Transformations;
     this.productionMode = productionMode;
 
     try (InputStream is = mainCompiler.openStream()) {
@@ -88,10 +92,11 @@ public class NodeBabelCompiler implements ResourceTransformer {
       params.put("useColoredOutput", useColoredOutput);
       params.put("withReact", withReact);
       params.put("productionMode", productionMode);
+      params.put("enableStage3Transformations", enableStage3Transformations);
       bw.append("var params = " + params.toCompactString() + ";");
 
       bw.append(
-          "process.stdout.write(JSON.stringify(compileJSX(params.content, params.filename, params.isES6Module, params.useColoredOutput, params.withReact, params.productionMode)));");
+          "process.stdout.write(JSON.stringify(compileJSX(params.content, params.filename, params.isES6Module, params.useColoredOutput, params.withReact, params.productionMode, params.enableStage3Transformations)));");
     }
 
     ProcessBuilder pb = new ProcessBuilder("node", tempFile.toString());
