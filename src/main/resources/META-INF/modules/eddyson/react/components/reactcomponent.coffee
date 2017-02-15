@@ -1,4 +1,4 @@
-define ["react", "react-dom", "require", "t5/core/dom", "t5/core/events", "t5/core/console"], (React, ReactDOM, require, dom, events, console)->
+define ["react", "react-dom", "require", "t5/core/dom", "t5/core/events"], (React, ReactDOM, require, dom, events)->
 
   elementsWithMountedComponents = []
   
@@ -58,7 +58,11 @@ define ["react", "react-dom", "require", "t5/core/dom", "t5/core/events", "t5/co
   (module, clientId, parameters) ->
     element = document.getElementById clientId
     require [module], (componentClass)->
-      children = (convertNode c, "c#{idx}" for c, idx in element.childNodes)
+      # Felix Gonschorek: when rendering isomorphic components we have to handle things differently...
+      if element.childNodes.length > 0 and element.childNodes[0].hasAttribute?('data-reactroot')
+        children = null
+      else
+        children = (convertNode c, "c#{idx}" for c, idx in element.childNodes)
       reactElement = React.createElement (if componentClass.__esModule then componentClass.default else componentClass), parameters, children
       reactComponent = ReactDOM.render reactElement, element
       elementsWithMountedComponents.push clientId

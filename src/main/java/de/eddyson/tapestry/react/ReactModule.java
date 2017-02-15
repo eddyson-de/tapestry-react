@@ -17,6 +17,7 @@ import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.ObjectLocator;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
+import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Autobuild;
 import org.apache.tapestry5.ioc.annotations.Contribute;
 import org.apache.tapestry5.ioc.annotations.Symbol;
@@ -44,10 +45,19 @@ import de.eddyson.tapestry.react.requestfilters.ReactAPIFilter;
 import de.eddyson.tapestry.react.services.BabelCompiler;
 import de.eddyson.tapestry.react.services.CJSXCompiler;
 import de.eddyson.tapestry.react.services.NodeBabelCompiler;
+import de.eddyson.tapestry.react.services.nashorn.ModuleLoaderFactory;
+import de.eddyson.tapestry.react.services.nashorn.ModuleLoaderFactoryImplementation;
+import de.eddyson.tapestry.react.services.nashorn.NashornReactRenderEngineImplementation;
+import de.eddyson.tapestry.react.services.nashorn.ReactRenderEngine;
 
 public final class ReactModule {
 
   private final static Logger logger = LoggerFactory.getLogger(ReactModule.class);
+
+  public static void bind(ServiceBinder binder) {
+    binder.bind(ReactRenderEngine.class, NashornReactRenderEngineImplementation.class);
+    binder.bind(ModuleLoaderFactory.class, ModuleLoaderFactoryImplementation.class);
+  }
 
   @Contribute(ModuleManager.class)
   public static void setupJSModules(final MappedConfiguration<String, JavaScriptModuleConfiguration> configuration,
@@ -58,7 +68,9 @@ public final class ReactModule {
       @Symbol(ReactSymbols.REACT_WITH_ADDONS_ASSET_PATH) final String reactWithAddonsAssetPath,
       @Symbol(ReactSymbols.REACT_WITH_ADDONS_ASSET_PATH_PRODUCTION) final String reactWithAddonsAssetPathProduction,
       @Symbol(ReactSymbols.REACT_DOM_ASSET_PATH) final String reactDomAssetPath,
-      @Symbol(ReactSymbols.REACT_DOM_ASSET_PATH_PRODUCTION) final String reactDomAssetPathProduction) {
+      @Symbol(ReactSymbols.REACT_DOM_ASSET_PATH_PRODUCTION) final String reactDomAssetPathProduction,
+      @Symbol(ReactSymbols.REACT_DOM_SERVER_ASSET_PATH) final String reactDomServerAssetPath,
+      @Symbol(ReactSymbols.REACT_DOM_SERVER_ASSET_PATH_PRODUCTION) final String reactDomServerAssetPathProduction) {
 
     String reactAssetPathToUse = useReactWithAddons
         ? (productionMode ? reactWithAddonsAssetPathProduction : reactWithAddonsAssetPath)
@@ -67,14 +79,17 @@ public final class ReactModule {
     configuration.add("react", new JavaScriptModuleConfiguration(assetSource.resourceForPath(reactAssetPathToUse)));
     configuration.add("react-dom", new JavaScriptModuleConfiguration(
         assetSource.resourceForPath(productionMode ? reactDomAssetPathProduction : reactDomAssetPath)));
+
+    // for isomorphic server side rendering:<
+    configuration.add("react-dom-server", new JavaScriptModuleConfiguration(
+        assetSource.resourceForPath(productionMode ? reactDomServerAssetPathProduction : reactDomServerAssetPath)));
   }
 
   @Contribute(StreamableResourceSource.class)
   public static void provideCompilers(final MappedConfiguration<String, ResourceTransformer> configuration,
       final ResourceTransformerFactory factory, final ObjectLocator objectLocator,
       @Autobuild final CJSXCompiler cjsxCompiler,
-      @Symbol(ReactSymbols.USE_NODE_IF_AVAILABLE) final boolean useNodeIfAvailable)
-      throws InterruptedException, IOException {
+      @Symbol(ReactSymbols.USE_NODE_IF_AVAILABLE) final boolean useNodeIfAvailable) throws InterruptedException {
     // contribution ids are file extensions:
 
     boolean canUseNode = false;

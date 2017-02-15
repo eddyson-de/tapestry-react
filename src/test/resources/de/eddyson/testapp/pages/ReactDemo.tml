@@ -5,7 +5,7 @@
 			<t:alerts />
 		</div>
 		<div class="col-sm-12">
-			<r:reactcomponent module="testapp/Hello" name="John" />
+			<r:reactcomponent module="testapp/Hello" name="John" isomorphic="true" />
 		</div>
 		<t:zone t:id="zone" class="col-sm-12">
 			<r:reactcomponent module="testapp/TalkativeComponent" />
