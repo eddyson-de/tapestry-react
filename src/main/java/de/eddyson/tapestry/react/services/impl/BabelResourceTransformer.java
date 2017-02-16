@@ -3,6 +3,8 @@ package de.eddyson.tapestry.react.services.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.tapestry5.ContentType;
@@ -64,9 +66,9 @@ public class BabelResourceTransformer implements ResourceTransformer {
         }
       }
 
-      String result = babelCompiler.compile(content, fileName, isES6Module, useColoredOutput, withReact, productionMode,
-          enableStage3Transformations);
-      return IOUtils.toInputStream(result, StandardCharsets.UTF_8);
+      Map<String, String> result = babelCompiler.compile(Collections.singletonMap(fileName, content), isES6Module,
+          useColoredOutput, withReact, productionMode, enableStage3Transformations);
+      return IOUtils.toInputStream(result.get(fileName), StandardCharsets.UTF_8);
     }
   }
 

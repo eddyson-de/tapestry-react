@@ -23,7 +23,7 @@ public class CompilingBabelReader extends FilterReader {
     try (Scanner sc = new Scanner(reader)) {
       sc.useDelimiter(delimiter);
       String content = sc.next();
-      String compiled = compiler.compile(content, null);
+      String compiled = compiler.compile(content, "input.jsxm");
       return new StringReader(compiled);
 
     }

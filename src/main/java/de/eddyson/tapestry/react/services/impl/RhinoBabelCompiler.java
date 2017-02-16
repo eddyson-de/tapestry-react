@@ -1,6 +1,8 @@
 package de.eddyson.tapestry.react.services.impl;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tapestry5.internal.webresources.RhinoExecutor;
 import org.apache.tapestry5.ioc.OperationTracker;
@@ -32,22 +34,30 @@ public class RhinoBabelCompiler implements BabelCompiler {
   }
 
   @Override
-  public String compile(final String input, final String fileName, final boolean outputAMD,
+  public Map<String, String> compile(final Map<String, String> inputs, final boolean outputAMD,
       final boolean useColoredOutput, final boolean includeReactPreset, final boolean productionMode,
       final boolean enableStage3Transformations) {
 
     RhinoExecutor executor = executorPool.get();
 
     try {
+      NativeObject inputsAsNativeObject = new NativeObject();
+      for (Map.Entry<String, String> entry : inputs.entrySet()) {
+        inputsAsNativeObject.defineProperty(entry.getKey(), entry.getValue(), NativeObject.READONLY);
+      }
 
-      NativeObject result = (NativeObject) executor.invokeFunction("compileJSX", input, fileName, outputAMD,
+      NativeObject result = (NativeObject) executor.invokeFunction("compileJSX", inputsAsNativeObject, outputAMD,
           useColoredOutput, includeReactPreset, productionMode, enableStage3Transformations);
 
       if (result.containsKey("exception")) {
         throw new RuntimeException(getString(result, "exception"));
       }
-
-      return getString(result, "output");
+      NativeObject output = (NativeObject) result.get("output");
+      Map<String, String> compiled = new HashMap<>(inputs.size());
+      for (String fileName : inputs.keySet()) {
+        compiled.put(fileName, getString(output, fileName));
+      }
+      return compiled;
 
     } finally {
       executor.discard();

@@ -6,6 +6,9 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.tapestry5.ioc.Resource;
@@ -33,7 +36,7 @@ public class NodeBabelCompiler implements BabelCompiler {
   }
 
   @Override
-  public String compile(final String input, final String fileName, final boolean outputAMD,
+  public Map<String, String> compile(final Map<String, String> inputs, final boolean outputAMD,
       final boolean useColoredOutput, final boolean includeReactPreset, final boolean productionMode,
       final boolean enableStage3Transformations) throws IOException {
 
@@ -42,9 +45,12 @@ public class NodeBabelCompiler implements BabelCompiler {
     try (BufferedWriter bw = Files.newBufferedWriter(tempFile, UTF8)) {
       bw.append(compilerText);
       bw.newLine();
+      JSONObject inputsParam = new JSONObject();
+      for (Entry<String, String> e : inputs.entrySet()) {
+        inputsParam.put(e.getKey(), e.getValue());
+      }
       JSONObject params = new JSONObject();
-      params.put("content", input);
-      params.put("filename", fileName);
+      params.put("inputs", inputsParam);
       params.put("outputAMD", outputAMD);
       params.put("useColoredOutput", useColoredOutput);
       params.put("withReact", includeReactPreset);
@@ -53,28 +59,35 @@ public class NodeBabelCompiler implements BabelCompiler {
       bw.append("var params = " + params.toCompactString() + ";");
 
       bw.append(
-          "process.stdout.write(JSON.stringify(compileJSX(params.content, params.filename, params.outputAMD, params.useColoredOutput, params.withReact, params.productionMode, params.enableStage3Transformations)));");
+          "process.stdout.write(JSON.stringify(compileJSX(params.inputs, params.outputAMD, params.useColoredOutput, params.withReact, params.productionMode, params.enableStage3Transformations)));");
     }
 
     ProcessBuilder pb = new ProcessBuilder("node", tempFile.toString());
     Process process = pb.start();
+    String result;
     try {
-      int exitCode = process.waitFor();
-      if (exitCode == 0) {
-        try (InputStream is = process.getInputStream()) {
-          String result = IOUtils.toString(is, UTF8);
+      try (InputStream is = process.getInputStream()) {
+        result = IOUtils.toString(is, UTF8);
+        int exitCode = process.waitFor();
+        if (exitCode == 0) {
+
           JSONObject resultJSON = new JSONObject(result);
           if (resultJSON.has("exception")) {
             throw new RuntimeException(resultJSON.getString("exception"));
           }
-          return resultJSON.getString("output");
+          Map<String, String> compiled = new HashMap<>(inputs.size());
+          JSONObject output = resultJSON.getJSONObject("output");
+          for (String fileName : inputs.keySet()) {
+            compiled.put(fileName, output.getString(fileName));
+          }
+          return compiled;
 
-        }
-      } else {
-        try (InputStream err = process.getErrorStream()) {
-          String result = IOUtils.toString(err);
+        } else {
+          try (InputStream err = process.getErrorStream()) {
+            result = IOUtils.toString(err);
 
-          throw new RuntimeException("Compiler process exited with code " + exitCode + ", message: " + result);
+            throw new RuntimeException("Compiler process exited with code " + exitCode + ", message: " + result);
+          }
         }
       }
     } catch (InterruptedException e) {

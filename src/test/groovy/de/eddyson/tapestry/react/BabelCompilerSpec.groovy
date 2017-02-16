@@ -33,7 +33,9 @@ class BabelCompilerSpec extends Specification {
   }
 
   def compile(Resource resource){
-    return babelCompiler.compile(resource.openStream().text, resource.file, true, false, true, true, false)
+    def inputs = [:]
+    inputs.put(resource.file, resource.openStream().text)
+    return babelCompiler.compile(inputs, true, false, true, true, false)[resource.file]
   }
 
   def "Compile a JSX template"(){

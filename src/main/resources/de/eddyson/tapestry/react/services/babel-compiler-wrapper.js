@@ -5,7 +5,7 @@ var stage3 = require("babel-preset-stage-3");
 var amd = require("babel-plugin-transform-es2015-modules-amd")
 var inlineReplaceVariables = require("babel-plugin-inline-replace-variables")
 
-compileJSX = function(input, filename, outputamd, useColoredOutput, loadReactPreset, productionMode, useStage3) {
+compileJSX = function(inputs, outputamd, useColoredOutput, loadReactPreset, productionMode, useStage3) {
     try {
         var plugins = [
           [inlineReplaceVariables, {
@@ -22,14 +22,21 @@ compileJSX = function(input, filename, outputamd, useColoredOutput, loadReactPre
         if (useStage3){
           presets.push(stage3);
         }
-        var config = {filename: filename,
-                      compact: false,
-                      ast: false,
-                      babelrc: false,
-                      presets: presets,
-                      plugins: plugins,
-                      highlightCode: useColoredOutput};
-        return { output: Babel.transform(input, config).code };
+        var output = {};
+        Object.keys(inputs).forEach(function(filename){
+          var config = {
+              filename: filename,
+              compact: false,
+              ast: false,
+              babelrc: false,
+              presets: presets,
+              plugins: plugins,
+              highlightCode: useColoredOutput
+          };
+          var input = inputs[filename];
+          output[filename] = Babel.transform(input, config).code;
+        });
+        return { output: output };
     }
     catch (err) {
         return { exception: err.toString() };
