@@ -18,7 +18,8 @@ public class RhinoBabelCompiler implements BabelCompiler {
 
   @Inject
   public RhinoBabelCompiler(final OperationTracker tracker) {
-    this(tracker, new ClasspathResource("de/eddyson/tapestry/react/services/browser.js"));
+    this(tracker, new ClasspathResource(RhinoBabelCompiler.class.getClassLoader(),
+        "de/eddyson/tapestry/react/services/browser.js"));
   }
 
   public RhinoBabelCompiler(final OperationTracker tracker, final Resource mainCompiler) {

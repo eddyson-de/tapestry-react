@@ -22,7 +22,8 @@ public class NodeBabelCompiler implements BabelCompiler {
 
   @Inject
   public NodeBabelCompiler() throws IOException {
-    this(new ClasspathResource("/de/eddyson/tapestry/react/services/browser.js"));
+    this(new ClasspathResource(NodeBabelCompiler.class.getClassLoader(),
+        "/de/eddyson/tapestry/react/services/browser.js"));
   }
 
   public NodeBabelCompiler(final Resource mainCompiler) throws IOException {

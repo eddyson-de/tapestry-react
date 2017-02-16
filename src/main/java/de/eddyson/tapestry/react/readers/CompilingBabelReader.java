@@ -19,8 +19,8 @@ public class CompilingBabelReader extends FilterReader {
 
   }
 
-  private static Reader createJavaScriptReader(final Reader coffeeScriptReader) throws IOException {
-    try (Scanner sc = new Scanner(coffeeScriptReader)) {
+  private static Reader createJavaScriptReader(final Reader reader) throws IOException {
+    try (Scanner sc = new Scanner(reader)) {
       sc.useDelimiter(delimiter);
       String content = sc.next();
       String compiled = compiler.compile(content, null);
