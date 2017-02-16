@@ -2,23 +2,20 @@ package de.eddyson.tapestry.react
 
 import org.apache.tapestry5.ioc.internal.util.ClasspathResource
 
+import de.eddyson.tapestry.react.readers.CompilingBabelReader
 import spock.lang.Specification
-class StandaloneCompilerSpec extends Specification {
+class CompilingBabelReaderSpec extends Specification {
 
 
   def "Compile a JSX template"(){
     setup:
 
     def resource = new ClasspathResource("de/eddyson/tapestry/react/template.jsx")
-    def compiler = new StandaloneCompiler()
+    def srcReader = new StringReader(resource.openStream().text)
+    def wrapperReader = new CompilingBabelReader(srcReader)
 
     expect:
-    resource.exists()
-
-    when:
-    def result = compiler.compile(resource.openStream().text, resource.file)
-    then:
-    result == '''define([], function () {
+    wrapperReader.text == '''define([], function () {
   'use strict';
 
   ReactDOM.render(React.createElement(

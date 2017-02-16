@@ -10,64 +10,32 @@ import java.nio.file.Files;
 import org.apache.commons.io.IOUtils;
 import org.apache.tapestry5.ioc.Resource;
 import org.apache.tapestry5.ioc.annotations.Inject;
-import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.ioc.internal.util.ClasspathResource;
 import org.apache.tapestry5.json.JSONObject;
 
-import de.eddyson.tapestry.react.ReactSymbols;
 import de.eddyson.tapestry.react.services.BabelCompiler;
 
 public class NodeBabelCompiler implements BabelCompiler {
   private final static Charset UTF8 = StandardCharsets.UTF_8;
 
-  private final boolean useColoredOutput;
-
   private final String compilerText;
 
-  private final boolean enableStage3Transformations;
-
   @Inject
-  public NodeBabelCompiler(@Symbol(ReactSymbols.USE_COLORED_BABEL_OUTPUT) final boolean useColoredOutput,
-      @Symbol(ReactSymbols.ENABLE_STAGE_3_TRANSFORMATIONS) final boolean enableStage3Transformations)
-      throws InterruptedException, IOException {
-    this(new ClasspathResource("/de/eddyson/tapestry/react/services/browser.js"), useColoredOutput,
-        enableStage3Transformations);
+  public NodeBabelCompiler() throws IOException {
+    this(new ClasspathResource("/de/eddyson/tapestry/react/services/browser.js"));
   }
 
-  public NodeBabelCompiler(final Resource mainCompiler,
-      @Symbol(ReactSymbols.USE_COLORED_BABEL_OUTPUT) final boolean useColoredOutput,
-      @Symbol(ReactSymbols.ENABLE_STAGE_3_TRANSFORMATIONS) final boolean enableStage3Transformations)
-      throws InterruptedException, IOException {
-    this.useColoredOutput = useColoredOutput;
-    this.enableStage3Transformations = enableStage3Transformations;
-
+  public NodeBabelCompiler(final Resource mainCompiler) throws IOException {
     try (InputStream is = mainCompiler.openStream()) {
       this.compilerText = IOUtils.toString(is, StandardCharsets.UTF_8);
     }
   }
 
   @Override
-  public String compile(final String input, final String fileName, final boolean productionMode) throws IOException {
-    boolean isES6Module = false;
-    boolean withReact = false;
-    if (fileName != null) {
-      int idx = fileName.lastIndexOf('.');
-      if (idx >= -1) {
-        String extension = fileName.substring(idx + 1);
-        switch (extension) {
-        case "jsm":
-          isES6Module = true;
-          break;
-        case "jsxm":
-          isES6Module = true;
-          withReact = true;
-          break;
-        case "jsx":
-          withReact = true;
-          break;
-        }
-      }
-    }
+  public String compile(final String input, final String fileName, final boolean outputAMD,
+      final boolean useColoredOutput, final boolean includeReactPreset, final boolean productionMode,
+      final boolean enableStage3Transformations) throws IOException {
+
     java.nio.file.Path tempFile = Files.createTempFile("babel-compile", ".js");
     // TODO use a shared compiler file and pass the parameters to node -e
     try (BufferedWriter bw = Files.newBufferedWriter(tempFile, UTF8)) {
@@ -76,15 +44,15 @@ public class NodeBabelCompiler implements BabelCompiler {
       JSONObject params = new JSONObject();
       params.put("content", input);
       params.put("filename", fileName);
-      params.put("isES6Module", isES6Module);
+      params.put("outputAMD", outputAMD);
       params.put("useColoredOutput", useColoredOutput);
-      params.put("withReact", withReact);
+      params.put("withReact", includeReactPreset);
       params.put("productionMode", productionMode);
       params.put("enableStage3Transformations", enableStage3Transformations);
       bw.append("var params = " + params.toCompactString() + ";");
 
       bw.append(
-          "process.stdout.write(JSON.stringify(compileJSX(params.content, params.filename, params.isES6Module, params.useColoredOutput, params.withReact, params.productionMode, params.enableStage3Transformations)));");
+          "process.stdout.write(JSON.stringify(compileJSX(params.content, params.filename, params.outputAMD, params.useColoredOutput, params.withReact, params.productionMode, params.enableStage3Transformations)));");
     }
 
     ProcessBuilder pb = new ProcessBuilder("node", tempFile.toString());

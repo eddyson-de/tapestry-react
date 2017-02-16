@@ -4,6 +4,7 @@ import org.apache.tapestry5.SymbolConstants
 import org.apache.tapestry5.internal.InternalSymbols
 import org.apache.tapestry5.internal.test.PageTesterContext
 import org.apache.tapestry5.ioc.MappedConfiguration
+import org.apache.tapestry5.ioc.Resource
 import org.apache.tapestry5.ioc.annotations.Autobuild
 import org.apache.tapestry5.ioc.annotations.Inject
 import org.apache.tapestry5.ioc.annotations.SubModule
@@ -31,6 +32,10 @@ class BabelCompilerSpec extends Specification {
     applicationGlobals.storeContext(new PageTesterContext("/test"));
   }
 
+  def compile(Resource resource){
+    return babelCompiler.compile(resource.openStream().text, resource.file, true, false, true, true, false)
+  }
+
   def "Compile a JSX template"(){
     setup:
 
@@ -40,15 +45,17 @@ class BabelCompilerSpec extends Specification {
     resource.exists()
 
     when:
-    def result = babelCompiler.compile(resource.openStream().text, resource.file, true)
+    def result = compile(resource)
     then:
-    result == ''''use strict';
+    result == '''define([], function () {
+  'use strict';
 
-ReactDOM.render(React.createElement(
-  'h1',
-  null,
-  'Hello, world!'
-), document.getElementById('example'));'''
+  ReactDOM.render(React.createElement(
+    'h1',
+    null,
+    'Hello, world!'
+  ), document.getElementById('example'));
+});'''
   }
 
   def "Compile a regular ES6 module"(){
@@ -60,7 +67,7 @@ ReactDOM.render(React.createElement(
     resource.exists()
 
     when:
-    def result = babelCompiler.compile(resource.openStream().text, resource.file, true)
+    def result = compile(resource)
     then:
     result == '''define(["exports"], function (exports) {
   "use strict";
@@ -82,7 +89,7 @@ ReactDOM.render(React.createElement(
     resource.exists()
 
     when:
-    def result = babelCompiler.compile(resource.openStream().text, resource.file, true)
+    def result = compile(resource)
     then:
     result == '''define(["exports"], function (exports) {
   "use strict";

@@ -15,7 +15,7 @@ respositories {
 }
 
 dependencies {
-  runtime 'de.eddyson:tapestry-react:0.24.0'
+  runtime 'de.eddyson:tapestry-react:0.25.0'
 }
 
 ```
@@ -92,7 +92,7 @@ if (__DEV__) {
 This will be compiled to `if (true)` or `if (false)` depending on the value of the `tapestry.production-mode` symbol.
 
 ## Standalone compiler
-If you want to compile code outside of a Tapestry application (e.g. in your Gradle build, you can use the `de.eddyson.tapestry.react.StandaloneCompiler` class.
+If you want to compile code outside of a Tapestry application (e.g. in your Gradle build), you can use the `de.eddyson.tapestry.react.StandaloneCompiler` and `de.eddyson.tapestry.react.readers.CompilingBabelReader` classes.
 
 
 ## Demo?

@@ -4,6 +4,7 @@ import org.apache.tapestry5.SymbolConstants
 import org.apache.tapestry5.internal.InternalSymbols
 import org.apache.tapestry5.internal.test.PageTesterContext
 import org.apache.tapestry5.ioc.MappedConfiguration
+import org.apache.tapestry5.ioc.Resource
 import org.apache.tapestry5.ioc.annotations.Autobuild
 import org.apache.tapestry5.ioc.annotations.Inject
 import org.apache.tapestry5.ioc.annotations.SubModule
@@ -31,6 +32,10 @@ class NodeBabelCompilerSpec extends Specification {
     applicationGlobals.storeContext(new PageTesterContext("/test"));
   }
 
+  def compile(Resource resource){
+    return nodeBabelCompiler.compile(resource.openStream().text, resource.file, true, false, true, true, false)
+  }
+
   def "Compile a JSX template"(){
     setup:
 
@@ -40,7 +45,7 @@ class NodeBabelCompilerSpec extends Specification {
     resource.exists()
 
     when:
-    def result = nodeBabelCompiler.compile(resource.openStream().text, resource.file, true)
+    def result = compile(resource)
     then:
     result == NodeBabelCompilerSpec.class.getResourceAsStream('regexp.jsxm.out').text
   }
@@ -54,7 +59,7 @@ class NodeBabelCompilerSpec extends Specification {
     resource.exists()
 
     when:
-    def result = nodeBabelCompiler.compile(resource.openStream().text, resource.file, true)
+    def result = compile(resource)
     then:
     result == '''define(["exports"], function (exports) {
   "use strict";
