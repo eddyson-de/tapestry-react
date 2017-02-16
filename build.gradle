@@ -6,7 +6,7 @@ plugins {
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.23.0"
+version = "0.24.0"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -113,7 +113,7 @@ processResources.dependsOn(createBabelBrowserPackage)
 
 jar {
   dependsOn compileCoffeeScript
-  manifest { attributes 'Tapestry-Module-Classes': 'de.eddyson.tapestry.react.ReactModule' }
+  manifest { attributes 'Tapestry-Module-Classes': 'de.eddyson.tapestry.react.modules.ReactModule' }
   rootSpec.exclude 'META-INF/modules/**/*.coffee'
   from(compiledCoffeeScriptDir){ into "META-INF/modules" }
   from(generatedJavaScriptDir)

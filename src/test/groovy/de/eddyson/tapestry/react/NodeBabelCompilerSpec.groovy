@@ -13,11 +13,11 @@ import org.apache.tapestry5.modules.TapestryModule
 import org.apache.tapestry5.services.ApplicationGlobals
 import org.apache.tapestry5.webresources.modules.WebResourcesModule
 
+import de.eddyson.tapestry.react.services.impl.NodeBabelCompiler
+import de.eddyson.tapestry.webjars.WebjarsModule
 import spock.lang.Shared
 import spock.lang.Specification
-import de.eddyson.tapestry.react.services.NodeBabelCompiler
-import de.eddyson.tapestry.webjars.WebjarsModule
-@SubModule([TapestryModule, ReactModule, TestModule, AssetsModule, WebjarsModule, WebResourcesModule])
+@SubModule([TapestryModule, de.eddyson.tapestry.react.modules.ReactModule, NodeBabelCompilerSpec.TestModule, AssetsModule, WebjarsModule, WebResourcesModule])
 class NodeBabelCompilerSpec extends Specification {
 
   @Autobuild
@@ -40,9 +40,9 @@ class NodeBabelCompilerSpec extends Specification {
     resource.exists()
 
     when:
-    def result = nodeBabelCompiler.transform(resource, null)
+    def result = nodeBabelCompiler.compile(resource.openStream().text, resource.file, true)
     then:
-    result.text == NodeBabelCompilerSpec.class.getResourceAsStream('regexp.jsxm.out').text
+    result == NodeBabelCompilerSpec.class.getResourceAsStream('regexp.jsxm.out').text
   }
 
   def "Development code is removed in production"(){
@@ -54,9 +54,9 @@ class NodeBabelCompilerSpec extends Specification {
     resource.exists()
 
     when:
-    def result = nodeBabelCompiler.transform(resource, null)
+    def result = nodeBabelCompiler.compile(resource.openStream().text, resource.file, true)
     then:
-    result.text == '''define(["exports"], function (exports) {
+    result == '''define(["exports"], function (exports) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {

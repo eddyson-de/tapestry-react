@@ -15,7 +15,7 @@ respositories {
 }
 
 dependencies {
-  runtime 'de.eddyson:tapestry-react:0.23.0'
+  runtime 'de.eddyson:tapestry-react:0.24.0'
 }
 
 ```
@@ -90,6 +90,10 @@ if (__DEV__) {
 
 ```
 This will be compiled to `if (true)` or `if (false)` depending on the value of the `tapestry.production-mode` symbol.
+
+## Standalone compiler
+If you want to compile code outside of a Tapestry application (e.g. in your Gradle build, you can use the `de.eddyson.tapestry.react.StandaloneCompiler` class.
+
 
 ## Demo?
 Unfortunately, there is no live demo available, but the test application can be examined by running `./gradlew runTestApp` and pointing your browser to `http://localhost:9040/`.

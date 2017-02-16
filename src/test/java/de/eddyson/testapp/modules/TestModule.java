@@ -7,9 +7,7 @@ import org.apache.tapestry5.ioc.annotations.ImportModule;
 import org.apache.tapestry5.ioc.services.ApplicationDefaults;
 import org.apache.tapestry5.ioc.services.SymbolProvider;
 
-import de.eddyson.tapestry.react.ReactModule;
-
-@ImportModule({ ReactModule.class })
+@ImportModule({ de.eddyson.tapestry.react.modules.ReactModule.class })
 public final class TestModule {
 
   @Contribute(SymbolProvider.class)

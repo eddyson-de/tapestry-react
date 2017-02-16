@@ -21,6 +21,8 @@ import org.apache.tapestry5.services.assets.ResourceDependencies;
 import org.apache.tapestry5.services.assets.ResourceTransformer;
 import org.mozilla.javascript.NativeObject;
 
+import de.eddyson.tapestry.react.FixedRhinoExecutorPool;
+
 public class CJSXCompiler implements ResourceTransformer {
   private final static Charset UTF8 = StandardCharsets.UTF_8;
 
