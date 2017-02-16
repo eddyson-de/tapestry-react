@@ -13,15 +13,15 @@ import org.apache.tapestry5.modules.TapestryModule
 import org.apache.tapestry5.services.ApplicationGlobals
 import org.apache.tapestry5.webresources.modules.WebResourcesModule
 
+import de.eddyson.tapestry.react.services.impl.RhinoBabelCompiler
+import de.eddyson.tapestry.webjars.WebjarsModule
 import spock.lang.Shared
 import spock.lang.Specification
-import de.eddyson.tapestry.react.services.BabelCompiler
-import de.eddyson.tapestry.webjars.WebjarsModule
-@SubModule([TapestryModule, ReactModule, TestModule, AssetsModule, WebjarsModule, WebResourcesModule])
+@SubModule([TapestryModule, de.eddyson.tapestry.react.modules.ReactModule, BabelCompilerSpec.TestModule, AssetsModule, WebjarsModule, WebResourcesModule])
 class BabelCompilerSpec extends Specification {
 
   @Autobuild
-  private BabelCompiler babelCompiler
+  private RhinoBabelCompiler babelCompiler
 
   @Inject
   @Shared
@@ -40,9 +40,9 @@ class BabelCompilerSpec extends Specification {
     resource.exists()
 
     when:
-    def result = babelCompiler.transform(resource, null)
+    def result = babelCompiler.compile(resource.openStream().text, resource.file, true)
     then:
-    result.text == ''''use strict';
+    result == ''''use strict';
 
 ReactDOM.render(React.createElement(
   'h1',
@@ -60,9 +60,9 @@ ReactDOM.render(React.createElement(
     resource.exists()
 
     when:
-    def result = babelCompiler.transform(resource, null)
+    def result = babelCompiler.compile(resource.openStream().text, resource.file, true)
     then:
-    result.text == '''define(["exports"], function (exports) {
+    result == '''define(["exports"], function (exports) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {
@@ -82,9 +82,9 @@ ReactDOM.render(React.createElement(
     resource.exists()
 
     when:
-    def result = babelCompiler.transform(resource, null)
+    def result = babelCompiler.compile(resource.openStream().text, resource.file, true)
     then:
-    result.text == '''define(["exports"], function (exports) {
+    result == '''define(["exports"], function (exports) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {

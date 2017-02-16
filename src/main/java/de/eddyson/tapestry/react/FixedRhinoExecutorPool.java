@@ -1,4 +1,4 @@
-package de.eddyson.tapestry.react.services;
+package de.eddyson.tapestry.react;
 
 import java.io.IOException;
 import java.io.InputStream;
