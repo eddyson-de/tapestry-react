@@ -11,6 +11,6 @@
     "coffee-script": "1.12.4",
     "derequire": "2.0.6",
     "envify": "4.0.0",
-    "minifyify": "7.3.4"
+    "minifyify": "7.3.5"
   }
 }
