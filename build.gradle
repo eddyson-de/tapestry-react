@@ -91,14 +91,6 @@ task createBabelBrowserPackage(type: NodeTask, dependsOn: npmInstall) {
   doFirst {
     file(generatedCompiler).parentFile.mkdirs()
   }
-  doLast {
-    // rewrite the Resource to work around
-    // https://github.com/mozilla/rhino/issues/153
-
-    // try-catch pattern
-    file(generatedCompiler).text = file(generatedCompiler).text.replaceFirst(/\Qvoid 0;try{throw new Error}catch(t){a=t.stack.split("\n").slice(1).join("\n")}\E/, '"transforming JSX template";')
-  
-  }
 }
 
 sourceSets {
