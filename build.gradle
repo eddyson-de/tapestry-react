@@ -6,7 +6,7 @@ plugins {
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.26.0"
+version = "0.27.0"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -44,14 +44,18 @@ dependencies {
   compile "org.slf4j:slf4j-api:$versions.slf4j"
   compile "org.apache.tapestry:tapestry-core:$versions.tapestry"
   compile "de.eddyson:tapestry-webjars:$versions.webjars"
-  compile "org.apache.tapestry:tapestry-webresources:$versions.tapestry"
-  
+  compile ("org.apache.tapestry:tapestry-webresources:$versions.tapestry"){
+    exclude group:'com.google.javascript', module: 'closure-compiler'
+    exclude group:'com.github.sommeri', module: 'less4j'
+  }
+  compile "commons-io:commons-io:2.5"
   runtime "org.webjars.bower:react:$versions.react"
 
   testCompile "javax.servlet:servlet-api:2.5"
   testCompile "org.spockframework:spock-tapestry:$versions.spock"
   testCompile 'de.eddyson:tapestry-geb:0.29.0'
   testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$versions.selenium"
+  testCompile "org.apache.tapestry:tapestry-webresources:$versions.tapestry"
   
   testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
   testRuntime 'org.objenesis:objenesis:2.5.1'
