@@ -1,16 +1,5 @@
 {
   "devDependencies": {
-    "babel-core": "6.24.0",
-    "babel-plugin-inline-replace-variables": "1.2.1",
-    "babel-plugin-transform-es2015-modules-amd": "6.24.0",
-    "babel-preset-latest": "^6.24.0",
-    "babel-preset-react": "6.23.0",
-    "babel-preset-stage-3": "^6.22.0",
-    "browserify": "13.3.0",
-    "bundle-collapser": "1.2.1",
-    "coffee-script": "1.12.4",
-    "derequire": "2.0.6",
-    "envify": "4.0.0",
-    "minifyify": "7.3.5"
+    "coffee-script": "1.12.4"
   }
 }
