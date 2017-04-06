@@ -50,6 +50,7 @@ dependencies {
   }
   compile "commons-io:commons-io:2.5"
   runtime "org.webjars.bower:react:$versions.react"
+  runtime "org.webjars.npm:babel-standalone:6.24.0"
 
   testCompile "javax.servlet:servlet-api:2.5"
   testCompile "org.spockframework:spock-tapestry:$versions.spock"
@@ -62,7 +63,6 @@ dependencies {
 }
 
 def compiledCoffeeScriptDir = "${project.buildDir}/compiled-coffeescript"
-def generatedJavaScriptDir = "${project.buildDir}/generated-js"
 
 task compileCoffeeScript(type: NodeTask, dependsOn: npmInstall) {
   inputs.files fileTree(dir: 'src/main/resources/META-INF/modules', include: '**/*.coffee')
@@ -75,44 +75,11 @@ task compileCoffeeScript(type: NodeTask, dependsOn: npmInstall) {
   }
 }
 
-def generatedCompiler = "$generatedJavaScriptDir/de/eddyson/tapestry/react/services/browser.js"
-
-task createBabelBrowserPackage(type: NodeTask, dependsOn: npmInstall) {
-  inputs.file 'package.json'
-  inputs.file "src/main/resources/de/eddyson/tapestry/react/services/babel-compiler-wrapper.js"
-  outputs.file generatedCompiler
-
-  script = file('node_modules/.bin/browserify')
-  args = ['src/main/resources/de/eddyson/tapestry/react/services/babel-compiler-wrapper.js',
-     '-s', 'Babel',
-     '-o', generatedCompiler,
-     '--plugin', 'derequire/plugin',
-     '--plugin', 'bundle-collapser/plugin',
-     '-g', '[', 'envify', 'purge', '--NODE_ENV', 'production', ']',
-     '-p', '[', 'minifyify', '--no-map', ']',
-     '-i', 'esprima-fb',
-     '-i', 'through']
-  doFirst {
-    file(generatedCompiler).parentFile.mkdirs()
-  }
-}
-
-sourceSets {
-  main {
-    resources {
-      srcDir generatedJavaScriptDir
-    }
-  }
-}
-
-processResources.dependsOn(createBabelBrowserPackage)
-
 jar {
   dependsOn compileCoffeeScript
   manifest { attributes 'Tapestry-Module-Classes': 'de.eddyson.tapestry.react.modules.ReactModule' }
   rootSpec.exclude 'META-INF/modules/**/*.coffee'
   from(compiledCoffeeScriptDir){ into "META-INF/modules" }
-  from(generatedJavaScriptDir)
 }
 
 tasks.withType(Test){

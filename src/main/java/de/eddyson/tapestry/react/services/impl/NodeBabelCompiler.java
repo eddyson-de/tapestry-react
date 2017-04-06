@@ -26,12 +26,15 @@ public class NodeBabelCompiler implements BabelCompiler {
   @Inject
   public NodeBabelCompiler() throws IOException {
     this(new ClasspathResource(NodeBabelCompiler.class.getClassLoader(),
-        "/de/eddyson/tapestry/react/services/browser.js"));
+        "META-INF/resources/webjars/babel-standalone/6.24.0/babel.min.js"));
   }
 
   public NodeBabelCompiler(final Resource mainCompiler) throws IOException {
-    try (InputStream is = mainCompiler.openStream()) {
-      this.compilerText = IOUtils.toString(is, StandardCharsets.UTF_8);
+    try (InputStream is = mainCompiler.openStream();
+        InputStream wrapperIs = NodeBabelCompiler.class
+            .getResourceAsStream("/de/eddyson/tapestry/react/services/babel-compiler-wrapper.js")) {
+      this.compilerText = IOUtils.toString(is, StandardCharsets.UTF_8)
+          + IOUtils.toString(wrapperIs, StandardCharsets.UTF_8);
     }
   }
 
