@@ -1,6 +1,7 @@
 import ajax from 't5/core/ajax';
 import React from 'react';
 import { createEventURI } from '../../utils'
+import { string, array, bool } from 'prop-types'
 
 class EventLink extends React.Component {
 
@@ -26,9 +27,9 @@ class EventLink extends React.Component {
 }
 
 EventLink.propTypes = {
-    event: React.PropTypes.string.isRequired,
-    context: React.PropTypes.array,
-    async: React.PropTypes.bool
+    event: string.isRequired,
+    context: array,
+    async: bool
 }
 
 export default EventLink;

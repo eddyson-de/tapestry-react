@@ -2,11 +2,12 @@ import alert from 't5/core/alert';
 import ajax from 't5/core/ajax';
 import React from 'react';
 import { createAPIURL } from '../../utils'
+import { bool } from 'prop-types'
 
 const retrieveURL = createAPIURL('retrieve-alerts');
 const dismissURL = createAPIURL('dismiss-alerts');
 
-// TODO: regularly poll server for new alerts. May have to rewrite compoennt without t5/core/alert for that
+// TODO: regularly poll server for new alerts. May have to rewrite component without t5/core/alert for that
 // so that persistent alerts do not get added again and again
 class Alerts extends React.Component {
 
@@ -31,7 +32,7 @@ class Alerts extends React.Component {
 }
 
 Alerts.propTypes = {
-    showDismissAll: React.PropTypes.bool
+    showDismissAll: bool
 }
 
 export default Alerts;
