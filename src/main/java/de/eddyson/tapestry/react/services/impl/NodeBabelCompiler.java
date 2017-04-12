@@ -26,7 +26,7 @@ public class NodeBabelCompiler implements BabelCompiler {
   @Inject
   public NodeBabelCompiler() throws IOException {
     this(new ClasspathResource(NodeBabelCompiler.class.getClassLoader(),
-        "META-INF/resources/webjars/babel-standalone/6.24.0/babel.min.js"));
+        "de/eddyson/tapestry/react/services/babel.min.js"));
   }
 
   public NodeBabelCompiler(final Resource mainCompiler) throws IOException {

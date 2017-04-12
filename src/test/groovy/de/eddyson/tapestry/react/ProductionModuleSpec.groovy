@@ -19,12 +19,11 @@ import org.apache.tapestry5.services.assets.StreamableResourceSource;
 import org.apache.tapestry5.services.javascript.ModuleManager
 import org.apache.tapestry5.webresources.modules.WebResourcesModule;
 
-import de.eddyson.tapestry.webjars.WebjarsModule
 import spock.lang.Issue
 import spock.lang.Shared;
 import spock.lang.Specification
 
-@SubModule([TapestryModule, de.eddyson.tapestry.react.modules.ReactModule, ProductionModuleSpec.TestModule, AssetsModule, WebjarsModule, WebResourcesModule])
+@SubModule([TapestryModule, de.eddyson.tapestry.react.modules.ReactModule, ProductionModuleSpec.TestModule, AssetsModule, WebResourcesModule])
 class ProductionModuleSpec extends Specification {
 
   @Inject

@@ -21,7 +21,7 @@ public class RhinoBabelCompiler implements BabelCompiler {
   @Inject
   public RhinoBabelCompiler(final OperationTracker tracker) {
     this(tracker, new ClasspathResource(RhinoBabelCompiler.class.getClassLoader(),
-        "META-INF/resources/webjars/babel-standalone/6.24.0/babel.min.js"));
+        "de/eddyson/tapestry/react/services/babel.min.js"));
   }
 
   public RhinoBabelCompiler(final OperationTracker tracker, final Resource mainCompiler) {

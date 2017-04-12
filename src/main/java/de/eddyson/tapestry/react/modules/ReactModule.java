@@ -105,15 +105,19 @@ public final class ReactModule {
   @Contribute(SymbolProvider.class)
   public static void setupDefaultConfiguration(final MappedConfiguration<String, Object> configuration) {
     configuration.add(ReactSymbols.USE_REACT_WITH_ADDONS, false);
-    configuration.add(ReactSymbols.REACT_ASSET_PATH, "webjars:react:$version/dist/react.js");
-    configuration.add(ReactSymbols.REACT_ASSET_PATH_PRODUCTION, "webjars:react:$version/dist/react.min.js");
-    configuration.add(ReactSymbols.REACT_WITH_ADDONS_ASSET_PATH, "webjars:react:$version/dist/react-with-addons.js");
+    configuration.add(ReactSymbols.REACT_ASSET_PATH, "classpath:de/eddyson/tapestry/react/services/react.js");
+    configuration.add(ReactSymbols.REACT_ASSET_PATH_PRODUCTION,
+        "classpath:de/eddyson/tapestry/react/services/react.min.js");
+    configuration.add(ReactSymbols.REACT_WITH_ADDONS_ASSET_PATH,
+        "classpath:de/eddyson/tapestry/react/services/react-with-addons.js");
     configuration.add(ReactSymbols.REACT_WITH_ADDONS_ASSET_PATH_PRODUCTION,
-        "webjars:react:$version/dist/react-with-addons.min.js");
-    configuration.add(ReactSymbols.REACT_DOM_ASSET_PATH, "webjars:react-dom:$version/dist/react-dom.js");
-    configuration.add(ReactSymbols.REACT_DOM_ASSET_PATH_PRODUCTION, "webjars:react-dom:$version/dist/react-dom.min.js");
-    configuration.add(ReactSymbols.PROP_TYPES_ASSET_PATH, "webjars:prop-types:$version/prop-types.js");
-    configuration.add(ReactSymbols.PROP_TYPES_ASSET_PATH_PRODUCTION, "webjars:prop-types:$version/prop-types.min.js");
+        "classpath:de/eddyson/tapestry/react/services/react-with-addons.min.js");
+    configuration.add(ReactSymbols.REACT_DOM_ASSET_PATH, "classpath:de/eddyson/tapestry/react/services/react-dom.js");
+    configuration.add(ReactSymbols.REACT_DOM_ASSET_PATH_PRODUCTION,
+        "classpath:de/eddyson/tapestry/react/services/react-dom.min.js");
+    configuration.add(ReactSymbols.PROP_TYPES_ASSET_PATH, "classpath:de/eddyson/tapestry/react/services/prop-types.js");
+    configuration.add(ReactSymbols.PROP_TYPES_ASSET_PATH_PRODUCTION,
+        "classpath:de/eddyson/tapestry/react/services/prop-types.min.js");
   }
 
   @Contribute(ModuleManager.class)

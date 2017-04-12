@@ -6,15 +6,13 @@ plugins {
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.28.0"
+version = "0.29.0"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
 
 
 def versions= [
-  react: '15.5.3',
-  webjars: '1.0.0',
   tapestry: '5.4.1',
   slf4j: '1.7.25',
   
@@ -43,22 +41,11 @@ artifacts {
 dependencies {
   compile "org.slf4j:slf4j-api:$versions.slf4j"
   compile "org.apache.tapestry:tapestry-core:$versions.tapestry"
-  compile "de.eddyson:tapestry-webjars:$versions.webjars"
   compile ("org.apache.tapestry:tapestry-webresources:$versions.tapestry"){
     exclude group:'com.google.javascript', module: 'closure-compiler'
     exclude group:'com.github.sommeri', module: 'less4j'
   }
   compile "commons-io:commons-io:2.5"
-  runtime ("org.webjars.npm:react:$versions.react"){
-    transitive = false
-  }
-  runtime ("org.webjars.npm:react-dom:$versions.react"){
-    transitive = false
-  }
-  runtime ("org.webjars.npm:prop-types:15.5.6"){
-    transitive = false
-  }
-  runtime "org.webjars.npm:babel-standalone:6.24.0"
 
   testCompile "javax.servlet:servlet-api:2.5"
   testCompile "org.spockframework:spock-tapestry:$versions.spock"
@@ -80,6 +67,24 @@ task compileCoffeeScript(type: NodeTask, dependsOn: npmInstall) {
   args = [ "-c", "-o", compiledCoffeeScriptDir, 'src/main/resources/META-INF/modules' ]
   doFirst {
     delete compiledCoffeeScriptDir
+  }
+}
+
+processResources {
+  dependsOn npmInstall
+  from('node_modules/react/dist'){
+    into 'de/eddyson/tapestry/react/services'
+  }
+  from('node_modules/react-dom/dist'){
+    into 'de/eddyson/tapestry/react/services'
+  }
+  from('node_modules/prop-types'){
+    include 'prop-types*.js'
+    into 'de/eddyson/tapestry/react/services'
+  }
+  from('node_modules/babel-standalone'){
+    include 'babel.min.js'
+    into 'de/eddyson/tapestry/react/services'
   }
 }
 
