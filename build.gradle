@@ -13,7 +13,7 @@ apply plugin: 'maven'
 
 
 def versions= [
-  tapestry: '5.4.1',
+  tapestry: '5.4.2',
   slf4j: '1.7.25',
   
   // test scopes

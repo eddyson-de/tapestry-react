@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tapestry5.internal.webresources.RhinoExecutor;
+import org.apache.tapestry5.internal.webresources.RhinoExecutorPool;
 import org.apache.tapestry5.ioc.OperationTracker;
 import org.apache.tapestry5.ioc.Resource;
 import org.apache.tapestry5.ioc.annotations.Inject;
@@ -11,12 +12,11 @@ import org.apache.tapestry5.ioc.internal.util.ClasspathResource;
 import org.apache.tapestry5.ioc.internal.util.CollectionFactory;
 import org.mozilla.javascript.NativeObject;
 
-import de.eddyson.tapestry.react.FixedRhinoExecutorPool;
 import de.eddyson.tapestry.react.services.BabelCompiler;
 
 public class RhinoBabelCompiler implements BabelCompiler {
 
-  private final FixedRhinoExecutorPool executorPool;
+  private final RhinoExecutorPool executorPool;
 
   @Inject
   public RhinoBabelCompiler(final OperationTracker tracker) {
@@ -25,7 +25,7 @@ public class RhinoBabelCompiler implements BabelCompiler {
   }
 
   public RhinoBabelCompiler(final OperationTracker tracker, final Resource mainCompiler) {
-    executorPool = new FixedRhinoExecutorPool(tracker,
+    executorPool = new RhinoExecutorPool(tracker,
         CollectionFactory.<Resource, Resource>newList(mainCompiler,
             new ClasspathResource(RhinoBabelCompiler.class.getClassLoader(),
                 "de/eddyson/tapestry/react/services/babel-compiler-wrapper.js")));
