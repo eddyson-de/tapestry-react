@@ -17,7 +17,7 @@ def versions= [
   slf4j: '1.7.25',
   
   // test scopes
-  spock: '1.0-groovy-2.4',
+  spock: '1.1-groovy-2.4',
   selenium: '2.53.1'
   
 ]
