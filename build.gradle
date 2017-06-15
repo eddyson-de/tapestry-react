@@ -1,6 +1,6 @@
 plugins {
     id "com.jfrog.bintray" version "1.7.3"
-    id "com.moowork.node" version "1.1.0"
+    id "com.moowork.node" version "1.2.0"
 }
 
 description = "Use React together with Tapestry"
