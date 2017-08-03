@@ -13,7 +13,7 @@ This library provides basic integration for using JSX and CJSX templates with Ta
 
 ### `build.gradle`:
 ```groovy
-respositories {
+repositories {
   jcenter()
 }
 
