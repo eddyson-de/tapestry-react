@@ -15,7 +15,7 @@ compileJSX = function(inputs, outputamd, useColoredOutput, loadReactPreset, prod
           presets.push('react');
         }
         if (useStage3){
-          presets.push('stage3');
+          presets.push('stage-3');
         }
         var output = {};
         Object.keys(inputs).forEach(function(filename){
