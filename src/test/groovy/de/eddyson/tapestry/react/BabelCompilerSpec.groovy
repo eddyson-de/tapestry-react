@@ -31,10 +31,10 @@ class BabelCompilerSpec extends Specification {
     applicationGlobals.storeContext(new PageTesterContext("/test"));
   }
 
-  def compile(Resource resource){
+  def compile(Resource resource, boolean enableStage3 = false){
     def inputs = [:]
     inputs.put(resource.file, resource.openStream().text)
-    return babelCompiler.compile(inputs, true, false, true, true, false)[resource.file]
+    return babelCompiler.compile(inputs, true, false, true, true, enableStage3)[resource.file]
   }
 
   def "Compile a JSX template"(){
@@ -104,6 +104,28 @@ class BabelCompilerSpec extends Specification {
   }
 
   exports.default = _exports;
+});'''
+  }
+
+  def "Compile with stage-3 transformations"(){
+    setup:
+
+    def resource = new ClasspathResource("de/eddyson/tapestry/react/template.jsx")
+
+    expect:
+    resource.exists()
+
+    when:
+    def result = compile(resource, true)
+    then:
+    result == '''define([], function () {
+  'use strict';
+
+  ReactDOM.render(React.createElement(
+    'h1',
+    null,
+    'Hello, world!'
+  ), document.getElementById('example'));
 });'''
   }
 
