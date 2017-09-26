@@ -3,7 +3,7 @@
     "babel-standalone": "6.26.0",
     "coffee-script": "1.12.7",
     "prop-types": "15.5.10",
-    "react": "15.6.1",
+    "react": "15.6.2",
     "react-dom": "15.6.1"
   }
 }
