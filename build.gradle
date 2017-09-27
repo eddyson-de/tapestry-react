@@ -6,7 +6,7 @@ plugins {
 description = "Use React together with Tapestry"
 
 group = "de.eddyson"
-version = "0.30.3"
+version = "0.31.0"
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -72,10 +72,10 @@ task compileCoffeeScript(type: NodeTask, dependsOn: npmInstall) {
 
 processResources {
   dependsOn npmInstall
-  from('node_modules/react/dist'){
+  from('node_modules/react/umd'){
     into 'de/eddyson/tapestry/react/services'
   }
-  from('node_modules/react-dom/dist'){
+  from('node_modules/react-dom/umd'){
     into 'de/eddyson/tapestry/react/services'
   }
   from('node_modules/prop-types'){

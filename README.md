@@ -18,13 +18,13 @@ repositories {
 }
 
 dependencies {
-  runtime 'de.eddyson:tapestry-react:0.30.3'
+  runtime 'de.eddyson:tapestry-react:0.31.0'
 }
 
 ```
 
 That's it, now you can import modules written in (C)JSX. Just give them the `.(c)jsx` extension and they will be compiled to JavaScript automatically.  
-**Note: CJSX transformation may not work with React 0.14 and/or React 15 features.** 
+**Note: CJSX transformation may not work with React 0.14 and/or React 15+ features.** 
 
 ### `/META-INF/modules/app/react-test.cjsx`:
 ```coffeescript

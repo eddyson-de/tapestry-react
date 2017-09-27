@@ -53,21 +53,15 @@ public final class ReactModule {
   @Contribute(ModuleManager.class)
   public static void setupJSModules(final MappedConfiguration<String, JavaScriptModuleConfiguration> configuration,
       final AssetSource assetSource, @Symbol(SymbolConstants.PRODUCTION_MODE) final boolean productionMode,
-      @SuppressWarnings("deprecation") @Symbol(ReactSymbols.USE_REACT_WITH_ADDONS) final boolean useReactWithAddons,
       @Symbol(ReactSymbols.REACT_ASSET_PATH) final String reactAssetPath,
       @Symbol(ReactSymbols.REACT_ASSET_PATH_PRODUCTION) final String reactAssetPathProduction,
-      @SuppressWarnings("deprecation") @Symbol(ReactSymbols.REACT_WITH_ADDONS_ASSET_PATH) final String reactWithAddonsAssetPath,
-      @SuppressWarnings("deprecation") @Symbol(ReactSymbols.REACT_WITH_ADDONS_ASSET_PATH_PRODUCTION) final String reactWithAddonsAssetPathProduction,
       @Symbol(ReactSymbols.REACT_DOM_ASSET_PATH) final String reactDomAssetPath,
       @Symbol(ReactSymbols.REACT_DOM_ASSET_PATH_PRODUCTION) final String reactDomAssetPathProduction,
       @Symbol(ReactSymbols.PROP_TYPES_ASSET_PATH) final String propTypesAssetPath,
       @Symbol(ReactSymbols.PROP_TYPES_ASSET_PATH_PRODUCTION) final String propTypesAssetPathProduction) {
 
-    String reactAssetPathToUse = useReactWithAddons
-        ? (productionMode ? reactWithAddonsAssetPathProduction : reactWithAddonsAssetPath)
-        : (productionMode ? reactAssetPathProduction : reactAssetPath);
 
-    configuration.add("react", new JavaScriptModuleConfiguration(assetSource.resourceForPath(reactAssetPathToUse)));
+    configuration.add("react", new JavaScriptModuleConfiguration(assetSource.resourceForPath(productionMode ? reactAssetPathProduction : reactAssetPath)));
     configuration.add("react-dom", new JavaScriptModuleConfiguration(
         assetSource.resourceForPath(productionMode ? reactDomAssetPathProduction : reactDomAssetPath)));
     configuration.add("prop-types", new JavaScriptModuleConfiguration(
@@ -100,21 +94,15 @@ public final class ReactModule {
     configuration.add(new LibraryMapping("react", "de.eddyson.tapestry.react"));
   }
 
-  @SuppressWarnings("deprecation")
   @FactoryDefaults
   @Contribute(SymbolProvider.class)
   public static void setupDefaultConfiguration(final MappedConfiguration<String, Object> configuration) {
-    configuration.add(ReactSymbols.USE_REACT_WITH_ADDONS, false);
-    configuration.add(ReactSymbols.REACT_ASSET_PATH, "classpath:de/eddyson/tapestry/react/services/react.js");
+    configuration.add(ReactSymbols.REACT_ASSET_PATH, "classpath:de/eddyson/tapestry/react/services/react.development.js");
     configuration.add(ReactSymbols.REACT_ASSET_PATH_PRODUCTION,
-        "classpath:de/eddyson/tapestry/react/services/react.min.js");
-    configuration.add(ReactSymbols.REACT_WITH_ADDONS_ASSET_PATH,
-        "classpath:de/eddyson/tapestry/react/services/react-with-addons.js");
-    configuration.add(ReactSymbols.REACT_WITH_ADDONS_ASSET_PATH_PRODUCTION,
-        "classpath:de/eddyson/tapestry/react/services/react-with-addons.min.js");
-    configuration.add(ReactSymbols.REACT_DOM_ASSET_PATH, "classpath:de/eddyson/tapestry/react/services/react-dom.js");
+        "classpath:de/eddyson/tapestry/react/services/react.production.min.js");
+    configuration.add(ReactSymbols.REACT_DOM_ASSET_PATH, "classpath:de/eddyson/tapestry/react/services/react-dom.development.js");
     configuration.add(ReactSymbols.REACT_DOM_ASSET_PATH_PRODUCTION,
-        "classpath:de/eddyson/tapestry/react/services/react-dom.min.js");
+        "classpath:de/eddyson/tapestry/react/services/react-dom.production.min.js");
     configuration.add(ReactSymbols.PROP_TYPES_ASSET_PATH, "classpath:de/eddyson/tapestry/react/services/prop-types.js");
     configuration.add(ReactSymbols.PROP_TYPES_ASSET_PATH_PRODUCTION,
         "classpath:de/eddyson/tapestry/react/services/prop-types.min.js");
