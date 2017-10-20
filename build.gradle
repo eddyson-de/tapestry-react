@@ -45,7 +45,7 @@ dependencies {
     exclude group:'com.google.javascript', module: 'closure-compiler'
     exclude group:'com.github.sommeri', module: 'less4j'
   }
-  compile "commons-io:commons-io:2.5"
+  compile "commons-io:commons-io:2.6"
 
   testCompile "javax.servlet:servlet-api:2.5"
   testCompile "org.spockframework:spock-tapestry:$versions.spock"
