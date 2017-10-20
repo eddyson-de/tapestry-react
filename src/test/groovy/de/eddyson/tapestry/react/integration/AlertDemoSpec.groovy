@@ -17,8 +17,10 @@ class AlertDemoSpec extends JettyGebSpec {
     given:
     to AlertDemo
     expect:
+    waitFor {
+      helloTapestry.displayed
+    }
     !helloWorld.displayed
-    
     when:
     helloTapestry.click(AlertDemo)
     then:
@@ -49,8 +51,10 @@ class AlertDemoSpec extends JettyGebSpec {
     given:
     to AlertDemo
     expect:
+    waitFor {
+      sayHello.displayed
+    }
     !helloRoger.displayed
-    
     when:
     sayHello.click()
     then:
