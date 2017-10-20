@@ -24,7 +24,9 @@ class AlertDemoSpec extends JettyGebSpec {
     then:
     // TODO: this will need a custom ApplicationStatePersistenceStrategy
     // applicationStateManager.get(AlertStorage).alerts.size() == 1
-    helloWorld.displayed
+    waitFor {
+      helloWorld.displayed
+    }
     when:
     driver.navigate().refresh();
     then:

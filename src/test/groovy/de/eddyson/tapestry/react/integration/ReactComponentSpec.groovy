@@ -10,14 +10,18 @@ class ReactComponentSpec extends JettyGebSpec {
     given:
     to ReactDemo
     expect:
-    hello.text().contains ('Hello John!')
+    waitFor {
+      hello.text().contains ('Hello John!')
+    }
   }
 
   def "Unmount component inside Zone"(){
     given:
     to ReactDemo
     expect:
-    mountedTalkativeComponent.displayed
+    waitFor {
+      mountedTalkativeComponent.displayed
+    }
     when:
     updateZone.click()
     then:
