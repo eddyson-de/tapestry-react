@@ -32,7 +32,9 @@ class ReactComponentSpec extends JettyGebSpec {
     given:
     to SFCDemo
     expect:
-    mountedTalkativeComponent.displayed
+    waitFor {
+      mountedTalkativeComponent.displayed
+    }
     when:
     updateZone.click()
     then:
