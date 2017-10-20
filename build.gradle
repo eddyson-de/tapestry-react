@@ -51,8 +51,10 @@ dependencies {
   testCompile "org.spockframework:spock-tapestry:$versions.spock"
   testCompile 'de.eddyson:tapestry-geb:0.29.0'
   testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$versions.selenium"
+  testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$versions.selenium"
   testCompile "org.apache.tapestry:tapestry-webresources:$versions.tapestry"
-  
+  testCompile "io.github.bonigarcia:webdrivermanager:1.7.1"
+
   testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
   testRuntime 'org.objenesis:objenesis:2.5.1'
 }
@@ -96,6 +98,7 @@ jar {
 }
 
 tasks.withType(Test){
+  systemProperty "geb.env", System.getProperty("geb.env") ?: 'firefox'
   systemProperties["tapestry.service-reloading-enabled"] = "false"
   systemProperties["tapestry.execution-mode"] = "test"
   systemProperty 'webappLocation', 'src/test/webapp'
