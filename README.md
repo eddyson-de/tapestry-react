@@ -6,7 +6,7 @@
 
 Use React (http://facebook.github.io/react/index.html) together with Tapestry (http://tapestry.apache.org/).
 
-This library provides basic integration for using JSX and CJSX templates with Tapestry.
+This library provides basic integration for using JSX templates with Tapestry.
 
 ## Usage
 
@@ -23,28 +23,34 @@ dependencies {
 
 ```
 
-That's it, now you can import modules written in (C)JSX. Just give them the `.(c)jsx` extension and they will be compiled to JavaScript automatically.  
-**Note: CJSX transformation may not work with React 0.14 and/or React 15+ features.** 
+That's it, now you can import modules written in JSX. Just give them the `.jsx(m)` extension and they will be compiled to JavaScript automatically.
 
-### `/META-INF/modules/app/react-test.cjsx`:
-```coffeescript
-define ['t5/core/dom', 'react', 'react-dom'], (dom, React, ReactDOM)->
-  HelloMessage = React.createClass
-    render: -> <div>Hello {this.props.name}</div>
-  mountNode = (dom 'example').element
-  ReactDOM.render <HelloMessage name="John" />, mountNode
-  return
+### `/META-INF/modules/app/react-test.jsx`:
+```javascript
+define(['t5/core/dom', 'react', 'react-dom'], function(dom, React, ReactDOM) {
+  var HelloMessage = React.createClass({
+    render: function() {
+      return <div>Hello {this.props.name}</div>;
+    }
+  });
+  var mountNode = (dom('example')).element;
+  ReactDOM.render(<HelloMessage name="John" />, mountNode);
+});
+
 ```
 
 ## Components
 You can also use the `ReactComponent` component to keep the components' code separate from the page code:
 
-### `/META-INF/modules/app/react/HelloMessage.cjsx`:
-```coffeescript
-define ['react'], (React)->
-  React.createClass
-    render: -> <div>Hello {this.props.name}</div>
-
+### `/META-INF/modules/app/react/HelloMessage.jsx`:
+```javascript
+define(['react'], function(React) {
+  return React.createClass({
+    render: function() {
+      return <div>Hello {this.props.name}</div>;
+    }
+  });
+});
 ```
 
 ### `/org/example/app/pages/ReactDemo.tml`:
@@ -103,7 +109,7 @@ Unfortunately, there is no live demo available, but the test application can be 
 
 ## Notes
 ### Speeding things up in production
-Compiling templates can take some time, especially when using CJSX. Combined with minification, this can quickly lead to Require.js timeouts in production.  
+Compiling templates can take some time. Combined with minification, this can quickly lead to Require.js timeouts in production.  
 To speed things up, you can have the files pre-compiled and minified upon registry startup using https://github.com/eddyson-de/tapestry-minification-cache-warming.
 ### Calling server-side code
 You will probably end up having a lot of React components that do not have an associated page class. If this is the case and you find yourself wanting a proper REST API rather than component- or page-level event handlers, have a look at https://github.com/tynamo/tapestry-resteasy.
