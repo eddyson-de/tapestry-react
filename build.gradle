@@ -56,7 +56,8 @@ dependencies {
   testCompile "io.github.bonigarcia:webdrivermanager:1.7.2"
 
   testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
-  testRuntime 'org.objenesis:objenesis:2.5.1'
+  // required to mock a CoffeeScriptCompiler
+  testRuntime 'org.objenesis:objenesis:2.6'
 }
 
 def compiledCoffeeScriptDir = "${project.buildDir}/compiled-coffeescript"
