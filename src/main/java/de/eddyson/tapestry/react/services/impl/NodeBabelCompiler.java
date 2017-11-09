@@ -70,7 +70,7 @@ public class NodeBabelCompiler implements BabelCompiler {
     String result;
     try {
       try (InputStream is = process.getInputStream()) {
-        result = IOUtils.toString(is, UTF8);
+        result = IOUtils.toString(is, Charset.defaultCharset());
         int exitCode = process.waitFor();
         if (exitCode == 0) {
 
@@ -87,7 +87,7 @@ public class NodeBabelCompiler implements BabelCompiler {
 
         } else {
           try (InputStream err = process.getErrorStream()) {
-            result = IOUtils.toString(err);
+            result = IOUtils.toString(err, Charset.defaultCharset());
 
             throw new RuntimeException("Compiler process exited with code " + exitCode + ", message: " + result);
           }
