@@ -1,7 +1,7 @@
 {
   "devDependencies": {
     "babel-standalone": "6.26.0",
-    "coffeescript": "^2.0.2",
+    "coffee-script": "1.12.7",
     "prop-types": "15.6.0",
     "react": "16.1.0",
     "react-dom": "16.1.0"
