@@ -53,7 +53,7 @@ dependencies {
   testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$versions.selenium"
   testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$versions.selenium"
   testCompile "org.apache.tapestry:tapestry-webresources:$versions.tapestry"
-  testCompile "io.github.bonigarcia:webdrivermanager:2.0.0"
+  testCompile "io.github.bonigarcia:webdrivermanager:2.0.1"
 
   testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
 }
