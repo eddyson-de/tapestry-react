@@ -25,6 +25,11 @@ repositories {
 
 sourceCompatibility = "11"
 
+node {
+  download = true
+  version = "14.17.3"
+}
+
 task sourceJar(type: Jar) {
   dependsOn classes
   classifier "sources"
