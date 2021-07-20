@@ -1,32 +1,29 @@
 plugins {
-    id "com.jfrog.bintray" version "1.8.0"
-    id "com.moowork.node" version "1.2.0"
+  id "groovy"
+  id "maven-publish"
+  id "com.github.node-gradle.node" version "3.1.0"
 }
 
 description = "Use React together with Tapestry"
-
 group = "de.eddyson"
-version = "0.33.0"
-
-apply plugin: 'groovy'
-apply plugin: 'maven'
-
+version = "0.34.0"
 
 def versions= [
-  tapestry: '5.4.3',
-  slf4j: '1.7.25',
-  
+  tapestry: '5.6.1',
+  slf4j: '1.7.31',
+
   // test scopes
-  spock: '1.1-groovy-2.4',
-  selenium: '2.53.1'
-  
+  spock: '1.3-groovy-2.5',
+  geb: '4.1',
+  selenium: '3.141.59'
 ]
 
 repositories {
-  jcenter()
+  mavenCentral()
+  maven { url "https://jitpack.io" }
 }
 
-sourceCompatibility = '1.7'
+sourceCompatibility = "11"
 
 task sourceJar(type: Jar) {
   dependsOn classes
@@ -34,38 +31,48 @@ task sourceJar(type: Jar) {
   from sourceSets.main.allSource
 }
 
-artifacts {
-  archives sourceJar
+publishing {
+  publications {
+    maven(MavenPublication) {
+      from components.java
+      artifact tasks.sourceJar
+    }
+  }
 }
 
 dependencies {
-  compile "org.slf4j:slf4j-api:$versions.slf4j"
-  compile "org.apache.tapestry:tapestry-core:$versions.tapestry"
-  compile ("org.apache.tapestry:tapestry-webresources:$versions.tapestry"){
+  implementation "org.slf4j:slf4j-api:$versions.slf4j"
+  implementation "org.apache.tapestry:tapestry-core:$versions.tapestry"
+  implementation ("org.apache.tapestry:tapestry-webresources:$versions.tapestry"){
     exclude group:'com.google.javascript', module: 'closure-compiler'
     exclude group:'com.github.sommeri', module: 'less4j'
   }
-  compile "commons-io:commons-io:2.6"
+  implementation "commons-io:commons-io:2.6"
+  implementation "org.mozilla:rhino:1.7.13" // DNK-2311
 
-  testCompile "javax.servlet:servlet-api:2.5"
-  testCompile "org.spockframework:spock-tapestry:$versions.spock"
-  testCompile 'de.eddyson:tapestry-geb:0.29.0'
-  testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$versions.selenium"
-  testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$versions.selenium"
-  testCompile "org.apache.tapestry:tapestry-webresources:$versions.tapestry"
-  testCompile "io.github.bonigarcia:webdrivermanager:1.7.2"
+  testImplementation "javax.servlet:javax.servlet-api:4.0.1"
+  testImplementation "org.spockframework:spock-tapestry:$versions.spock"
+  testImplementation "com.github.eddyson-de:tapestry-geb:0.45.2"
+  testImplementation "org.gebish:geb-spock:$versions.geb"
+  testImplementation "org.seleniumhq.selenium:selenium-firefox-driver:$versions.selenium"
+  testImplementation "org.seleniumhq.selenium:selenium-chrome-driver:$versions.selenium"
+  testImplementation "org.apache.tapestry:tapestry-webresources:$versions.tapestry"
+  testImplementation "io.github.bonigarcia:webdrivermanager:4.4.3"
 
-  testRuntime "org.slf4j:slf4j-simple:$versions.slf4j"
+  testImplementation "org.slf4j:slf4j-simple:$versions.slf4j"
 }
 
 def compiledCoffeeScriptDir = "${project.buildDir}/compiled-coffeescript"
 
-task compileCoffeeScript(type: NodeTask, dependsOn: npmInstall) {
+task compileCoffeeScript(type: NpxTask) {
+  dependsOn npmInstall
+
+  command = "coffee"
+  args = [ "-c", "-o", compiledCoffeeScriptDir, 'src/main/resources/META-INF/modules' ]
+
   inputs.files fileTree(dir: 'src/main/resources/META-INF/modules', include: '**/*.coffee')
   outputs.dir compiledCoffeeScriptDir
 
-  script = file('node_modules/.bin/coffee')
-  args = [ "-c", "-o", compiledCoffeeScriptDir, 'src/main/resources/META-INF/modules' ]
   doFirst {
     delete compiledCoffeeScriptDir
   }
@@ -98,8 +105,8 @@ jar {
 
 tasks.withType(Test){
   systemProperty "geb.env", System.getProperty("geb.env") ?: 'firefox'
-  systemProperties["tapestry.service-reloading-enabled"] = "false"
-  systemProperties["tapestry.execution-mode"] = "test"
+  systemProperty "tapestry.service-reloading-enabled", "false"
+  systemProperty "tapestry.execution-mode", "test"
   systemProperty 'webappLocation', 'src/test/webapp'
   systemProperty 'jettyPort', 9040
   enableAssertions = true
@@ -109,25 +116,12 @@ tasks.withType(Test){
 }
 
 task runTestApp(type:JavaExec) {
-  main = 'org.apache.tapestry5.test.Jetty7Runner'
+  mainClass = "org.apache.tapestry5.test.JettyRunner"
   args "-d", "src/test/webapp/", "-p", "9040"
   systemProperties["tapestry.execution-mode"] = "test"
-  classpath = configurations.testRuntime + sourceSets.test.output + sourceSets.main.output
+  classpath = configurations.testRuntimeClasspath + sourceSets.test.output + sourceSets.main.output
 }
 
 clean {
   delete 'node_modules'
-}
-
-bintray {
-    user = 'fooberger'
-    key = System.env.bintrayAPIKey
-    configurations = ['archives']
-    publish = true
-    pkg {
-        repo = 'maven'
-        name = 'de.eddyson:tapestry-react'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/eddyson-de/tapestry-react'
-    }
 }

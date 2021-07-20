@@ -1,18 +1,15 @@
 package de.eddyson.tapestry.react.integration
-import de.eddyson.tapestry.react.integration.pages.AlertDemo;
+
+import de.eddyson.tapestry.react.integration.pages.AlertDemo
 import de.eddyson.tapestrygeb.JettyGebSpec
-
-import org.apache.tapestry5.alerts.AlertStorage;
 import org.apache.tapestry5.ioc.annotations.Inject
-import org.apache.tapestry5.services.ApplicationStateManager;
-import org.openqa.selenium.Keys
-
+import org.apache.tapestry5.services.ApplicationStateManager
 
 class AlertDemoSpec extends JettyGebSpec {
-  
+
   @Inject
   ApplicationStateManager applicationStateManager
-  
+
   def "Trigger alert with traditional event link"(){
     given:
     to AlertDemo
@@ -46,7 +43,7 @@ class AlertDemoSpec extends JettyGebSpec {
     then:
     !helloWorld.displayed
   }
- 
+
   def "Trigger alert with async event link"(){
     given:
     to AlertDemo
@@ -63,8 +60,8 @@ class AlertDemoSpec extends JettyGebSpec {
     waitFor {
       helloRoger.displayed
     }
-   
+
   }
-  
-  
+
+
 }

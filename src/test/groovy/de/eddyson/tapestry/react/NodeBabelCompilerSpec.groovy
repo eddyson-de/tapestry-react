@@ -1,23 +1,24 @@
 package de.eddyson.tapestry.react
 
+import de.eddyson.tapestry.react.modules.ReactModule
+import de.eddyson.tapestry.react.services.impl.NodeBabelCompiler
 import org.apache.tapestry5.SymbolConstants
 import org.apache.tapestry5.internal.InternalSymbols
 import org.apache.tapestry5.internal.test.PageTesterContext
 import org.apache.tapestry5.ioc.MappedConfiguration
 import org.apache.tapestry5.ioc.Resource
 import org.apache.tapestry5.ioc.annotations.Autobuild
+import org.apache.tapestry5.ioc.annotations.ImportModule
 import org.apache.tapestry5.ioc.annotations.Inject
-import org.apache.tapestry5.ioc.annotations.SubModule
 import org.apache.tapestry5.ioc.internal.util.ClasspathResource
 import org.apache.tapestry5.modules.AssetsModule
 import org.apache.tapestry5.modules.TapestryModule
 import org.apache.tapestry5.services.ApplicationGlobals
 import org.apache.tapestry5.webresources.modules.WebResourcesModule
-
-import de.eddyson.tapestry.react.services.impl.NodeBabelCompiler
 import spock.lang.Shared
 import spock.lang.Specification
-@SubModule([TapestryModule, de.eddyson.tapestry.react.modules.ReactModule, NodeBabelCompilerSpec.TestModule, AssetsModule, WebResourcesModule])
+
+@ImportModule([TapestryModule, ReactModule, TestModule, AssetsModule, WebResourcesModule])
 class NodeBabelCompilerSpec extends Specification {
 
   @Autobuild
