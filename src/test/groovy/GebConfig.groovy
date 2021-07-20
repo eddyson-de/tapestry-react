@@ -1,9 +1,7 @@
+import io.github.bonigarcia.wdm.WebDriverManager
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.firefox.FirefoxDriver
-import org.openqa.selenium.remote.DesiredCapabilities
-
-import io.github.bonigarcia.wdm.ChromeDriverManager
 
 reportsDir = 'build/reports/geb'
 baseUrl = "http://localhost:${System.properties['jettyPort']}/"
@@ -11,21 +9,17 @@ baseUrl = "http://localhost:${System.properties['jettyPort']}/"
 environments {
   'chrome-headless' {
     driver = {
-      ChromeDriverManager.getInstance().setup()
+      WebDriverManager.chromedriver().setup()
       ChromeOptions options = new ChromeOptions()
-      options.addArguments('headless')
+      options.setHeadless(true)
       options.addArguments('disable-gpu') // https://developers.google.com/web/updates/2017/04/headless-chrome
-      DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-      capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-      new ChromeDriver(capabilities)
+      new ChromeDriver(options)
     }
   }
   'firefox' {
     driver = {
-      DesiredCapabilities.firefox().with {
-        setCapability("marionette", false);
-        new FirefoxDriver(it)
-      }
+      WebDriverManager.firefoxdriver().setup()
+      new FirefoxDriver()
     }
   }
 }
