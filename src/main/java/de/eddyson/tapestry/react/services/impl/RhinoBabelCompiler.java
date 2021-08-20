@@ -1,18 +1,17 @@
 package de.eddyson.tapestry.react.services.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import de.eddyson.tapestry.react.services.BabelCompiler;
+import org.apache.tapestry5.commons.Resource;
 import org.apache.tapestry5.internal.webresources.RhinoExecutor;
 import org.apache.tapestry5.internal.webresources.RhinoExecutorPool;
 import org.apache.tapestry5.ioc.OperationTracker;
-import org.apache.tapestry5.ioc.Resource;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.internal.util.ClasspathResource;
-import org.apache.tapestry5.ioc.internal.util.CollectionFactory;
 import org.mozilla.javascript.NativeObject;
 
-import de.eddyson.tapestry.react.services.BabelCompiler;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RhinoBabelCompiler implements BabelCompiler {
 
@@ -26,9 +25,8 @@ public class RhinoBabelCompiler implements BabelCompiler {
 
   public RhinoBabelCompiler(final OperationTracker tracker, final Resource mainCompiler) {
     executorPool = new RhinoExecutorPool(tracker,
-        CollectionFactory.<Resource, Resource>newList(mainCompiler,
-            new ClasspathResource(RhinoBabelCompiler.class.getClassLoader(),
-                "de/eddyson/tapestry/react/services/babel-compiler-wrapper.js")));
+        List.of(mainCompiler, new ClasspathResource(RhinoBabelCompiler.class.getClassLoader(),
+            "de/eddyson/tapestry/react/services/babel-compiler-wrapper.js")));
   }
 
   private static String getString(final NativeObject object, final String key) {

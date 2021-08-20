@@ -1,21 +1,19 @@
 package de.eddyson.tapestry.react
 
 import de.eddyson.tapestry.react.modules.ReactModule
+import de.eddyson.tapestry.react.services.impl.RhinoBabelCompiler
 import org.apache.tapestry5.SymbolConstants
-import org.apache.tapestry5.internal.InternalSymbols
+import org.apache.tapestry5.commons.MappedConfiguration
+import org.apache.tapestry5.commons.Resource
+import org.apache.tapestry5.http.services.ApplicationGlobals
 import org.apache.tapestry5.internal.test.PageTesterContext
-import org.apache.tapestry5.ioc.MappedConfiguration
-import org.apache.tapestry5.ioc.Resource
 import org.apache.tapestry5.ioc.annotations.Autobuild
 import org.apache.tapestry5.ioc.annotations.ImportModule
 import org.apache.tapestry5.ioc.annotations.Inject
 import org.apache.tapestry5.ioc.internal.util.ClasspathResource
 import org.apache.tapestry5.modules.AssetsModule
 import org.apache.tapestry5.modules.TapestryModule
-import org.apache.tapestry5.services.ApplicationGlobals
 import org.apache.tapestry5.webresources.modules.WebResourcesModule
-
-import de.eddyson.tapestry.react.services.impl.RhinoBabelCompiler
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -135,7 +133,7 @@ class BabelCompilerSpec extends Specification {
   public static class TestModule {
 
     def contributeApplicationDefaults(MappedConfiguration configuration){
-      configuration.add(InternalSymbols.APP_NAME, "test")
+      configuration.add("tapestry.app-name", "test")
       configuration.add("tapestry.app-package", "react")
       configuration.add(SymbolConstants.MINIFICATION_ENABLED, false)
     }

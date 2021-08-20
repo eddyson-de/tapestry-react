@@ -1,5 +1,12 @@
 package de.eddyson.tapestry.react.services.impl;
 
+import de.eddyson.tapestry.react.services.BabelCompiler;
+import org.apache.commons.io.IOUtils;
+import org.apache.tapestry5.commons.Resource;
+import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.ioc.internal.util.ClasspathResource;
+import org.apache.tapestry5.json.JSONObject;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,14 +16,6 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.tapestry5.ioc.Resource;
-import org.apache.tapestry5.ioc.annotations.Inject;
-import org.apache.tapestry5.ioc.internal.util.ClasspathResource;
-import org.apache.tapestry5.json.JSONObject;
-
-import de.eddyson.tapestry.react.services.BabelCompiler;
 
 public class NodeBabelCompiler implements BabelCompiler {
   private final static Charset UTF8 = StandardCharsets.UTF_8;

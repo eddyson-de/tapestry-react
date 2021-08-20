@@ -1,22 +1,21 @@
 package de.eddyson.tapestry.react.services.impl;
 
+import de.eddyson.tapestry.react.ReactSymbols;
+import de.eddyson.tapestry.react.services.BabelCompiler;
+import org.apache.commons.io.IOUtils;
+import org.apache.tapestry5.SymbolConstants;
+import org.apache.tapestry5.commons.Resource;
+import org.apache.tapestry5.http.ContentType;
+import org.apache.tapestry5.internal.InternalConstants;
+import org.apache.tapestry5.ioc.annotations.Symbol;
+import org.apache.tapestry5.services.assets.ResourceDependencies;
+import org.apache.tapestry5.services.assets.ResourceTransformer;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.tapestry5.ContentType;
-import org.apache.tapestry5.SymbolConstants;
-import org.apache.tapestry5.internal.InternalConstants;
-import org.apache.tapestry5.ioc.Resource;
-import org.apache.tapestry5.ioc.annotations.Symbol;
-import org.apache.tapestry5.services.assets.ResourceDependencies;
-import org.apache.tapestry5.services.assets.ResourceTransformer;
-
-import de.eddyson.tapestry.react.ReactSymbols;
-import de.eddyson.tapestry.react.services.BabelCompiler;
 
 public class BabelResourceTransformer implements ResourceTransformer {
 

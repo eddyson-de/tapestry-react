@@ -1,17 +1,16 @@
 package de.eddyson.tapestry.react.modules;
 
-import org.apache.tapestry5.ioc.MappedConfiguration;
-import org.apache.tapestry5.ioc.ObjectLocator;
-import org.apache.tapestry5.ioc.annotations.Contribute;
-import org.apache.tapestry5.ioc.annotations.Symbol;
-import org.apache.tapestry5.ioc.services.FactoryDefaults;
-import org.apache.tapestry5.ioc.services.SymbolProvider;
-
 import de.eddyson.tapestry.react.ReactSymbols;
 import de.eddyson.tapestry.react.components.ReactUtilities;
 import de.eddyson.tapestry.react.services.BabelCompiler;
 import de.eddyson.tapestry.react.services.impl.NodeBabelCompiler;
 import de.eddyson.tapestry.react.services.impl.RhinoBabelCompiler;
+import org.apache.tapestry5.commons.MappedConfiguration;
+import org.apache.tapestry5.commons.ObjectLocator;
+import org.apache.tapestry5.ioc.annotations.Contribute;
+import org.apache.tapestry5.ioc.annotations.Symbol;
+import org.apache.tapestry5.ioc.services.FactoryDefaults;
+import org.apache.tapestry5.ioc.services.SymbolProvider;
 
 public final class ReactCoreModule {
 

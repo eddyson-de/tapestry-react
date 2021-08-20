@@ -2,18 +2,17 @@ package de.eddyson.tapestry.react
 
 import de.eddyson.tapestry.react.modules.ReactModule
 import org.apache.tapestry5.SymbolConstants
-import org.apache.tapestry5.internal.InternalSymbols
+import org.apache.tapestry5.commons.MappedConfiguration
+import org.apache.tapestry5.commons.Resource
+import org.apache.tapestry5.http.services.ApplicationGlobals
+import org.apache.tapestry5.http.services.Request
+import org.apache.tapestry5.http.services.RequestGlobals
 import org.apache.tapestry5.internal.services.assets.ResourceChangeTracker
 import org.apache.tapestry5.internal.test.PageTesterContext
-import org.apache.tapestry5.ioc.MappedConfiguration
-import org.apache.tapestry5.ioc.Resource
 import org.apache.tapestry5.ioc.annotations.ImportModule
 import org.apache.tapestry5.ioc.annotations.Inject
 import org.apache.tapestry5.modules.AssetsModule
 import org.apache.tapestry5.modules.TapestryModule
-import org.apache.tapestry5.services.ApplicationGlobals
-import org.apache.tapestry5.services.Request
-import org.apache.tapestry5.services.RequestGlobals
 import org.apache.tapestry5.services.assets.StreamableResource
 import org.apache.tapestry5.services.assets.StreamableResourceProcessing
 import org.apache.tapestry5.services.assets.StreamableResourceSource
@@ -74,7 +73,7 @@ class ProductionModuleSpec extends Specification {
   public static class TestModule {
 
     def contributeApplicationDefaults(MappedConfiguration configuration){
-      configuration.add(InternalSymbols.APP_NAME, "test")
+      configuration.add("tapestry.app-name", "test")
       configuration.add("tapestry.app-package", "react")
       configuration.add(SymbolConstants.MINIFICATION_ENABLED, false)
     }

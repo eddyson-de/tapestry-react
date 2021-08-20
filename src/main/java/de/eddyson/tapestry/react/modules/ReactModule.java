@@ -1,21 +1,21 @@
 package de.eddyson.tapestry.react.modules;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-
-import org.apache.tapestry5.Link;
+import de.eddyson.tapestry.react.ReactSymbols;
+import de.eddyson.tapestry.react.requestfilters.ReactAPIFilter;
+import de.eddyson.tapestry.react.services.impl.BabelResourceTransformer;
 import org.apache.tapestry5.MarkupWriter;
 import org.apache.tapestry5.SymbolConstants;
+import org.apache.tapestry5.commons.Configuration;
+import org.apache.tapestry5.commons.MappedConfiguration;
+import org.apache.tapestry5.commons.OrderedConfiguration;
 import org.apache.tapestry5.dom.Element;
+import org.apache.tapestry5.http.Link;
+import org.apache.tapestry5.http.services.RequestFilter;
+import org.apache.tapestry5.http.services.RequestGlobals;
+import org.apache.tapestry5.http.services.RequestHandler;
 import org.apache.tapestry5.internal.util.VirtualResource;
 import org.apache.tapestry5.internal.webresources.CacheMode;
 import org.apache.tapestry5.internal.webresources.ResourceTransformerFactory;
-import org.apache.tapestry5.ioc.Configuration;
-import org.apache.tapestry5.ioc.MappedConfiguration;
-import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.annotations.Autobuild;
 import org.apache.tapestry5.ioc.annotations.Contribute;
 import org.apache.tapestry5.ioc.annotations.ImportModule;
@@ -30,9 +30,6 @@ import org.apache.tapestry5.services.LibraryMapping;
 import org.apache.tapestry5.services.MarkupRenderer;
 import org.apache.tapestry5.services.MarkupRendererFilter;
 import org.apache.tapestry5.services.PageRenderLinkSource;
-import org.apache.tapestry5.services.RequestFilter;
-import org.apache.tapestry5.services.RequestGlobals;
-import org.apache.tapestry5.services.RequestHandler;
 import org.apache.tapestry5.services.assets.ResourceTransformer;
 import org.apache.tapestry5.services.assets.StreamableResourceSource;
 import org.apache.tapestry5.services.javascript.JavaScriptModuleConfiguration;
@@ -40,9 +37,11 @@ import org.apache.tapestry5.services.javascript.ModuleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.eddyson.tapestry.react.ReactSymbols;
-import de.eddyson.tapestry.react.requestfilters.ReactAPIFilter;
-import de.eddyson.tapestry.react.services.impl.BabelResourceTransformer;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 @ImportModule(ReactCoreModule.class)
 public final class ReactModule {
@@ -148,7 +147,7 @@ public final class ReactModule {
 
   @Contribute(MarkupRenderer.class)
   public static void prepareHTMLPageOnRender(final OrderedConfiguration<MarkupRendererFilter> configuration,
-      final RequestGlobals requestGlobals, final PageRenderLinkSource pageRenderLinkSource) {
+                                             final RequestGlobals requestGlobals, final PageRenderLinkSource pageRenderLinkSource) {
     configuration.add("AddPageName", new MarkupRendererFilter() {
 
       @Override
