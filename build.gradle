@@ -6,7 +6,7 @@ plugins {
 
 description = "Use React together with Tapestry"
 group = "de.eddyson"
-version = "0.35.0"
+version = "0.36.0"
 
 def versions= [
   tapestry: '5.8.2',

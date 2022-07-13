@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.github.eddyson-de:tapestry-react:0.34.0'
+  implementation 'com.github.eddyson-de:tapestry-react:0.36.0'
 }
 
 ```
