@@ -22,26 +22,14 @@ repositories {
   maven { url "https://jitpack.io" }
 }
 
-sourceCompatibility = "11"
+java {
+  sourceCompatibility = JavaVersion.VERSION_11
+  targetCompatibility = JavaVersion.VERSION_11
+}
 
 node {
   download = true
   version = "14.20.0"
-}
-
-task sourceJar(type: Jar) {
-  dependsOn classes
-  classifier "sources"
-  from sourceSets.main.allSource
-}
-
-publishing {
-  publications {
-    maven(MavenPublication) {
-      from components.java
-      artifact tasks.sourceJar
-    }
-  }
 }
 
 dependencies {
@@ -83,7 +71,7 @@ task compileCoffeeScript(type: NpxTask) {
 }
 
 processResources {
-  dependsOn npmInstall
+  dependsOn npmInstall, compileCoffeeScript
   from('node_modules/react/umd'){
     into 'de/eddyson/tapestry/react/services'
   }
@@ -100,11 +88,8 @@ processResources {
   }
 }
 
-jar {
-  dependsOn compileCoffeeScript
-  manifest { attributes 'Tapestry-Module-Classes': 'de.eddyson.tapestry.react.modules.ReactModule' }
-  rootSpec.exclude 'META-INF/modules/**/*.coffee'
-  from(compiledCoffeeScriptDir){ into "META-INF/modules" }
+test {
+  useJUnitPlatform()
 }
 
 tasks.withType(Test){
@@ -116,6 +101,27 @@ tasks.withType(Test){
   enableAssertions = true
   testLogging {
     exceptionFormat "full"
+  }
+}
+
+jar {
+  manifest { attributes 'Tapestry-Module-Classes': 'de.eddyson.tapestry.react.modules.ReactModule' }
+  rootSpec.exclude 'META-INF/modules/**/*.coffee'
+  from(compiledCoffeeScriptDir){ into "META-INF/modules" }
+}
+
+task sourceJar(type: Jar) {
+  dependsOn classes
+  classifier "sources"
+  from sourceSets.main.allSource
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+      from components.java
+      artifact tasks.sourceJar
+    }
   }
 }
 
