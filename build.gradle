@@ -140,6 +140,7 @@ publishing {
   }
 }
 
+//does not work anymore with jetty 12 because tapestry-test-jakarta uses older Jetty
 tasks.register("runTestApp", JavaExec) {
   mainClass = "org.apache.tapestry5.test.JettyRunner"
   args "-d", "src/test/webapp/", "-p", "9040"
