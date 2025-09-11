@@ -9,10 +9,10 @@ baseUrl = "http://localhost:${System.properties['jettyPort']}/"
 environments {
   'chrome-headless' {
     driver = {
-      WebDriverManager.chromedriver().setup()
+      WebDriverManager.chromiumdriver().setup()
       ChromeOptions options = new ChromeOptions()
-      options.setHeadless(true)
-      options.addArguments('disable-gpu') // https://developers.google.com/web/updates/2017/04/headless-chrome
+      options.addArguments("--headless")
+      options.addArguments("--disable-gpu") // https://developers.google.com/web/updates/2017/04/headless-chrome
       new ChromeDriver(options)
     }
   }
