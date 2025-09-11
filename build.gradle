@@ -8,13 +8,13 @@ description = "Use React together with Tapestry"
 group = "de.eddyson"
 version = "0.36.0"
 
-def versions= [
-  tapestry: '5.8.2',
-  slf4j: '1.7.36',
+def versions = [
+    tapestry: '5.9.0',
+    slf4j   : '2.0.13',
 
-  // test scopes
-  geb: '5.1',
-  selenium: '3.141.59'
+    // test scopes
+    geb     : '6.0',
+    selenium: '4.30.0'
 ]
 
 repositories {
@@ -32,24 +32,36 @@ node {
   version = "14.20.0"
 }
 
+configurations.configureEach {
+  resolutionStrategy {
+    force(
+        "org.codehaus.groovy:groovy:3.0.24"
+    )
+  }
+}
+
 dependencies {
   implementation "org.slf4j:slf4j-api:$versions.slf4j"
-  implementation "org.apache.tapestry:tapestry-core:$versions.tapestry"
-  implementation ("org.apache.tapestry:tapestry-webresources:$versions.tapestry"){
-    exclude group:'com.google.javascript', module: 'closure-compiler'
-    exclude group:'com.github.sommeri', module: 'less4j'
+  implementation "org.apache.tapestry:tapestry-core-jakarta:$versions.tapestry"
+  implementation("org.apache.tapestry:tapestry-webresources-jakarta:$versions.tapestry") {
+    exclude group: 'com.google.javascript', module: 'closure-compiler'
+    exclude group: 'com.github.sommeri', module: 'less4j'
   }
-  implementation "commons-io:commons-io:2.11.0"
-  implementation "org.mozilla:rhino:1.7.14" // DNK-2311
+  implementation "commons-io:commons-io:2.16.1"
+  implementation "org.mozilla:rhino:1.7.15" // DNK-2311
 
-  testImplementation "javax.servlet:javax.servlet-api:4.0.1"
-  testImplementation "org.apache.tapestry:tapestry-spock:$versions.tapestry"
-  testImplementation "com.github.eddyson-de:tapestry-geb:0.47.0"
+  testImplementation "jakarta.servlet:jakarta.servlet-api:6.1.0"
+
+  testImplementation "org.apache.tapestry:tapestry-spock-jakarta:$versions.tapestry"
+  testImplementation("org.apache.tapestry:tapestry-test-jakarta:$versions.tapestry") {
+    exclude group: 'org.seleniumhq.selenium'
+  }
+  testImplementation "com.github.eddyson-de:tapestry-geb:v0.50.0"
   testImplementation "org.gebish:geb-spock:$versions.geb"
   testImplementation "org.seleniumhq.selenium:selenium-firefox-driver:$versions.selenium"
   testImplementation "org.seleniumhq.selenium:selenium-chrome-driver:$versions.selenium"
-  testImplementation "org.apache.tapestry:tapestry-webresources:$versions.tapestry"
-  testImplementation "io.github.bonigarcia:webdrivermanager:5.2.1"
+  testImplementation "org.apache.tapestry:tapestry-webresources-jakarta:$versions.tapestry"
+  testImplementation "io.github.bonigarcia:webdrivermanager:6.3.1"
 
   testImplementation "org.slf4j:slf4j-simple:$versions.slf4j"
 }
