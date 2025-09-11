@@ -56,7 +56,7 @@ dependencies {
 
 def compiledCoffeeScriptDir = "${project.buildDir}/compiled-coffeescript"
 
-task compileCoffeeScript(type: NpxTask) {
+tasks.register("compileCoffeeScript", NpxTask) {
   dependsOn npmInstall
 
   command = "coffee"
@@ -92,7 +92,7 @@ test {
   useJUnitPlatform()
 }
 
-tasks.withType(Test){
+tasks.withType(Test).configureEach {
   systemProperty "geb.env", System.getProperty("geb.env") ?: 'firefox'
   systemProperty "tapestry.service-reloading-enabled", "false"
   systemProperty "tapestry.execution-mode", "test"
@@ -110,9 +110,9 @@ jar {
   from(compiledCoffeeScriptDir){ into "META-INF/modules" }
 }
 
-task sourceJar(type: Jar) {
+tasks.register("sourceJar", Jar) {
   dependsOn classes
-  classifier "sources"
+  archiveClassifier.set("sources")
   from sourceSets.main.allSource
 }
 
@@ -125,7 +125,7 @@ publishing {
   }
 }
 
-task runTestApp(type:JavaExec) {
+tasks.register("runTestApp", JavaExec) {
   mainClass = "org.apache.tapestry5.test.JettyRunner"
   args "-d", "src/test/webapp/", "-p", "9040"
   systemProperties["tapestry.execution-mode"] = "test"
