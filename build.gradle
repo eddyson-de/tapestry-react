@@ -55,8 +55,9 @@ dependencies {
   testImplementation "org.apache.tapestry:tapestry-spock-jakarta:$versions.tapestry"
   testImplementation("org.apache.tapestry:tapestry-test-jakarta:$versions.tapestry") {
     exclude group: 'org.seleniumhq.selenium'
+    exclude group: 'org.eclipse.jetty'
   }
-  testImplementation "com.github.eddyson-de:tapestry-geb:v0.50.0"
+  testImplementation "com.github.eddyson-de:tapestry-geb:v0.51.0"
   testImplementation "org.gebish:geb-spock:$versions.geb"
   testImplementation "org.seleniumhq.selenium:selenium-firefox-driver:$versions.selenium"
   testImplementation "org.seleniumhq.selenium:selenium-chrome-driver:$versions.selenium"
@@ -140,9 +141,8 @@ publishing {
   }
 }
 
-//does not work anymore with jetty 12 because tapestry-test-jakarta uses older Jetty
 tasks.register("runTestApp", JavaExec) {
-  mainClass = "org.apache.tapestry5.test.JettyRunner"
+  mainClass = "de.eddyson.tapestrygeb.JettyRunner"
   args "-d", "src/test/webapp/", "-p", "9040"
   systemProperties["tapestry.execution-mode"] = "test"
   classpath = configurations.testRuntimeClasspath + sourceSets.test.output + sourceSets.main.output
